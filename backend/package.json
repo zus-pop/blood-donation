@@ -1,0 +1,33 @@
+{
+    "name": "blood-donation",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "start": "tsc && node ./dist/app.js",
+        "dev": "nodemon -L -e src/**/*.ts --exec \"npm run compile || exit 1\"",
+        "build": "tsc",
+        "compile": "tsc && ts-node ./src/app.ts"
+    },
+    "dependencies": {
+        "cookie-parser": "^1.4.7",
+        "debug": "^4.4.1",
+        "express": "^5.1.0",
+        "mongoose": "^8.15.1",
+        "morgan": "^1.10.0"
+    },
+    "devDependencies": {
+        "@swc/core": "^1.11.24",
+        "@swc/helpers": "^0.5.17",
+        "@types/cookie-parser": "^1.4.8",
+        "@types/express": "^5.0.1",
+        "@types/morgan": "^1.9.9",
+        "@types/node": "^22.15.18",
+        "dotenv": "^16.5.0",
+        "install": "^0.13.0",
+        "nodemon": "^3.1.10",
+        "npm": "^11.3.0",
+        "regenerator-runtime": "^0.14.1",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.8.3"
+    }
+}
