@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { BloodRequestQuery } from "@src/types/bloodrequest.type";
+import { BloodRequestQuery } from "../types/bloodrequest.type";
 import { BloodRequestService } from "../services/bloodrequest.service";
 const router = express.Router();
 
