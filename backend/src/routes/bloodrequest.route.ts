@@ -10,5 +10,12 @@ router.get("/", async (req: Request, res: Response) => {
     const bloodRequests = await bloodRequestService.getBloodRequests(query);
     res.json(bloodRequests);
 });
-
+router.post("/", async (req: Request, res: Response) => {
+    try {
+        const request = await bloodRequestService.createBloodRequest(req.body);
+        res.status(201).json(request);
+    } catch (err) {
+        res.status(400).json({ error: "Cannot create blood request", detail: err });
+    }
+});
 export default router;
