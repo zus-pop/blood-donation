@@ -8,7 +8,8 @@ import db from "./database/db";
 // Router
 import blogRouter from "./routes/blogs.route";
 import categoryRouter from "./routes/category.route";
-
+import userRouter from "./routes/user.route";
+import bloodRequestRouter from "./routes/bloodrequest.route";
 // DB initialize
 db();
 
@@ -22,6 +23,8 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/blogs", blogRouter);
 app.use("/categories", categoryRouter);
+app.use("/users", userRouter);
+app.use("/bloodrequests", bloodRequestRouter);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`App listening on port ${process.env.PORT || 3000}`);
