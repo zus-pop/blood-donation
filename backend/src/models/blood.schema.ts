@@ -1,5 +1,12 @@
 import { Schema } from "mongoose";
 
+const BloodCompatibilitySchema = new Schema(
+    {
+        receiveFrom: [{ type: Schema.Types.ObjectId, ref: "Blood" }],
+        donateTo: [{ type: Schema.Types.ObjectId, ref: "Blood" }]
+    },
+)
+
 export const BloodSchema = new Schema(
     {
         bloodType: {
@@ -7,22 +14,10 @@ export const BloodSchema = new Schema(
             required: true,
         },
         compatibility: {
-            wholeBlood: {
-                receiveFrom: [{ type: Schema.Types.ObjectId, ref: "Blood" }],
-                donateTo: [{ type: Schema.Types.ObjectId, ref: "Blood" }]
-            },
-            rbc: {
-                receiveFrom: [{ type: Schema.Types.ObjectId, ref: "Blood" }],
-                donateTo: [{ type: Schema.Types.ObjectId, ref: "Blood" }]
-            },
-            plasma: {
-                receiveFrom: [{ type: Schema.Types.ObjectId, ref: "Blood" }],
-                donateTo: [{ type: Schema.Types.ObjectId, ref: "Blood" }]
-            },
-            platelets: {
-                receiveFrom: [{ type: Schema.Types.ObjectId, ref: "Blood" }],
-                donateTo: [{ type: Schema.Types.ObjectId, ref: "Blood" }]
-            }
+            wholeBlood: BloodCompatibilitySchema,
+            rbc: BloodCompatibilitySchema,
+            plasma: BloodCompatibilitySchema,
+            platelets: BloodCompatibilitySchema,
         }
     },
     { timestamps: true, collection: "blood" }
