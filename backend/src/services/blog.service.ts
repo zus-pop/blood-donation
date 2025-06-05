@@ -1,5 +1,5 @@
 import { Blog } from "../models";
-import { BlogQuery, CreateBlogDto } from "../types/blog.type";
+import { BlogQuery, CreateBlogDto, UpdateBlogDto } from "../types/blog.type";
 import { findCategoryById } from "./category.service";
 
 export async function findBlogs(query: BlogQuery) {
@@ -15,26 +15,45 @@ export async function findBlogs(query: BlogQuery) {
   return blogs;
 }
 
-export async function findById(id: string) {
+export async function findBlogById(id: string) {
   const blog = await Blog.findById(id);
-  if (!blog) throw new Error("Resource not found");
+  if (!blog) throw new Error("Blog not found");
   return blog;
 }
 
 export async function createBlog(blog: CreateBlogDto) {
-  try {
-    const category = await findCategoryById(blog.category);
-    const newBlog = new Blog({
-      slug: blog.slug,
-      title: blog.title,
-      category: category,
-      summary: blog.summary,
-      content: blog.content,
-      image: blog.image,
-    });
-    return await newBlog.save();
-  } catch (error) {
-    throw new Error(error.message);
-  }
+  const category = await findCategoryById(blog.category);
+  const newBlog = new Blog({
+    slug: blog.slug,
+    title: blog.title,
+    category: category._id,
+    summary: blog.summary,
+    content: blog.content,
+    image: blog.image,
+  });
+  return await newBlog.save();
 }
 
+export async function updateBlog(id: string, data: UpdateBlogDto) {
+  const blog = await findBlogById(id);
+  const { category, content, image, summary, title } = data;
+
+  if (content) blog.content = content;
+  if (image) blog.image = image;
+  if (summary) blog.summary = summary;
+  if (title) blog.title = title;
+
+  if (category) {
+    const newCategory = await findCategoryById(category);
+    blog.category = newCategory._id;
+  }
+  return await blog.save();
+}
+
+export async function deleteBlog(id: string) {
+  const deletedBlog = await Blog.findByIdAndDelete(id);
+
+  if (!deletedBlog) throw new Error("Blog not found");
+
+  return deletedBlog;
+}

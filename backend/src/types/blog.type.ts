@@ -4,10 +4,18 @@ export interface BlogQuery {
 }
 
 export interface CreateBlogDto {
-    slug: string;
-    title: string;
-    category: string;
-    summary: string;
-    content: string;
-    image: string
+  slug: string;
+  title: string;
+  category: string;
+  summary: string;
+  content: string;
+  image: string;
+}
+
+export interface UpdateBlogDto {
+    image?: string,
+    title?: string,
+    category?: string,
+    summary?: string,
+    content?: string,
 }

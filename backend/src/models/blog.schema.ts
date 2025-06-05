@@ -1,10 +1,11 @@
-import { model, Schema } from "mongoose";
+import { Schema } from "mongoose";
 
 export const BlogSchema = new Schema(
   {
     slug: {
       type: String,
       required: true,
+      unique: true,
     },
     title: {
       type: String,
