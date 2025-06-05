@@ -3,7 +3,8 @@ import { Schema } from "mongoose"
 export const InventorySchema = new Schema(
   {
     bloodType: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: "Blood",
       required: true,
     },
     participation: {
