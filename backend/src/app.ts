@@ -3,15 +3,16 @@ import "dotenv/config";
 import express from "express";
 import logger from "morgan";
 import path from "path";
-import db from "./database/db";
+import connect from "./database/db";
 
 // Router
 import blogRouter from "./routes/blogs.route";
 import categoryRouter from "./routes/category.route";
 import userRouter from "./routes/user.route";
 import bloodRequestRouter from "./routes/bloodrequest.route";
+
 // DB initialize
-db();
+connect();
 
 const app = express();
 
