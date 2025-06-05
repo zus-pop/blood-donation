@@ -8,7 +8,8 @@ import db from "./database/db";
 // Router
 import blogRouter from "./routes/blogs.route";
 import categoryRouter from "./routes/category.route";
-
+import donationEventRouter from "./routes/donationevent.route";
+import participationRouter from "./routes/participation.route";
 // DB initialize
 db();
 
@@ -22,7 +23,8 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/blogs", blogRouter);
 app.use("/categories", categoryRouter);
-
+app.use("/donationevents", donationEventRouter);
+app.use("/participations", participationRouter);
 app.listen(process.env.PORT || 3000, () => {
   console.log(`App listening on port ${process.env.PORT || 3000}`);
 });
