@@ -1,21 +1,20 @@
 import { BloodRequest } from "../models";
-import { BloodRequestQuery } from "@src/types/bloodrequest.type";
+import { BloodRequestInput, BloodRequestQuery } from "../types/bloodrequest.type";
 
 export class BloodRequestService {
-    async createBloodRequest(data: any) {
+    async createBloodRequest(data: BloodRequestInput) {
         const bloodRequest = new BloodRequest(data);
         return await bloodRequest.save();
     }
 
     async getBloodRequests(query: BloodRequestQuery) {
-        const { userId, bloodType, bloodComponent, status } = query;
-        const filter: any = {};
+        const filter: BloodRequestQuery = {};
 
-        if (userId) filter.userId = userId;
-        if (bloodType) filter.bloodType = bloodType;
-        if (bloodComponent) filter.bloodComponent = bloodComponent;
-        if (status) filter.status = status;
+        if (query.userId) filter.userId = query.userId;
+        if (query.bloodType) filter.bloodType = query.bloodType;
+        if (query.bloodComponent) filter.bloodComponent = query.bloodComponent;
+        if (query.status) filter.status = query.status;
 
-        return await BloodRequest.find(filter).populate("userId");
+        return BloodRequest.find(filter).populate("userId");
     }
 }

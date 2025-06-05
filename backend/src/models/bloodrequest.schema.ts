@@ -14,6 +14,7 @@ export const BloodRequestSchema = new Schema(
         bloodComponent: {
             type: String,
             required: true,
+            enum: ["Whole Blood", "Plasma", "Platelets", "Red Cells", "White Cells"],
         },
         quantity: {
             type: Number,
@@ -21,7 +22,8 @@ export const BloodRequestSchema = new Schema(
         },
         status: {
             type: String,
-            required: true,
+            default: "pending",
+            enum: ["Pending", "Approved", "Rejected", "Cancelled", "Matched", "Fullfilled", "In Progress"],
         },
         address: {
             type: String,
