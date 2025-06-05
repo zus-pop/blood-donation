@@ -7,6 +7,4 @@ export interface InventoryQuery {
     componentType: string;
     quantity: number;
     status: string;
-    createdAt?: Date;
-    updatedAt?: Date;
 }
