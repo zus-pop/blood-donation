@@ -1,16 +1,17 @@
 import {
-    IconCamera,
-    IconDashboard,
-    IconDatabase,
-    IconFileAi,
-    IconFileDescription,
-    IconFileWord,
-    IconHelp,
-    IconInnerShadowTop,
-    IconListDetails,
-    IconReport,
-    IconSearch,
-    IconSettings
+  IconCamera,
+  IconDashboard,
+  IconDatabase,
+  IconFileAi,
+  IconFileDescription,
+  IconFileWord,
+  IconHelp,
+  IconInnerShadowTop,
+  IconListDetails,
+  IconReport,
+  IconSearch,
+  IconSettings,
+  IconDropletPlus
 } from "@tabler/icons-react";
 import * as React from "react";
 
@@ -19,13 +20,13 @@ import { NavMain } from "@/components/nav-main";
 import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
 const data = {
@@ -39,6 +40,11 @@ const data = {
       title: "Donation Event",
       url: "#",
       icon: IconDashboard,
+    },
+    {
+      title: "Blood Requests",
+      url: "/bloodrequests",
+      icon: IconDropletPlus,
     },
     {
       title: "Blood Inventory",
