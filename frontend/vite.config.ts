@@ -11,4 +11,18 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            return "vendor"; // Split vendor libraries
+          }
+          if (id.includes("src/components/")) {
+            return "components"; // Split components into their own chunk
+          }
+        },
+      },
+    },
+  },
 });
