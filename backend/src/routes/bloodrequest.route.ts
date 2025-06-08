@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { BloodRequestQuery } from "../types/bloodrequest.type";
-import { createBloodRequest, deleteBloodRequest, findBloodRequestById, getBloodRequests, updateBloodRequest } from "@src/services/bloodrequest.service";
+import { createBloodRequest, deleteBloodRequest, findBloodRequestById, getBloodRequests, updateBloodRequest } from "../services/bloodrequest.service";
 
 const router = express.Router();
 
