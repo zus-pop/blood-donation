@@ -1,8 +1,10 @@
 import { createBrowserRouter } from "react-router";
-import Home from "./Home";
-import Dashboard from "./pages/Dashboard";
 import WelcomeDashBoard from "./components/welcome-dashboard";
-import BloodRequests from "./pages/BloodRequests";
+import BlogTable from "./pages/dashboard/blog/blog-table";
+import CategoryTable from "./pages/dashboard/category/category-table";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Home from "./pages/Home";
+import BloodRequests from "./pages/dashboard/bloodrequest/index";
 
 export default createBrowserRouter([
   {
@@ -16,6 +18,14 @@ export default createBrowserRouter([
       {
         index: true,
         Component: WelcomeDashBoard,
+      },
+      {
+        path: "blog",
+        element: <BlogTable />,
+      },
+      {
+        path: "category",
+        element: <CategoryTable />,
       },
       {
         path: "bloodrequests",

@@ -9,6 +9,7 @@ export const CategorySchema = new Schema(
     slug: {
       type: String,
       required: true,
+      unique: true,
     },
     description: {
       type: String,
@@ -16,4 +17,3 @@ export const CategorySchema = new Schema(
   },
   { timestamps: true, collection: "category" }
 );
-
