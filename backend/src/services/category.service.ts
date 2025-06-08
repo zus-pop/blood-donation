@@ -13,7 +13,7 @@ export async function findCategories(query: CategoryQuery) {
   if (name) filter.name = { $regex: name, $options: "i" };
   if (slug) filter.slug = slug;
 
-  const categories = await Category.find(filter);
+  const categories = await Category.find(filter).sort({ updatedAt: "desc" });
   return categories;
 }
 

@@ -1,11 +1,11 @@
 import express, { Request, Response } from "express";
 import { upload, uploadToCloud } from "../firebase/cloud-storage";
 import {
-    createBlog,
-    deleteBlog,
-    findBlogById,
-    findBlogs,
-    updateBlog,
+  createBlog,
+  deleteBlog,
+  findBlogById,
+  findBlogs,
+  updateBlog,
 } from "../services/blog.service";
 import { BlogQuery, CreateBlogDto, UpdateBlogDto } from "../types/blog.type";
 const router = express.Router();
@@ -45,16 +45,25 @@ router.post(
   }
 );
 
-router.patch("/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const data: UpdateBlogDto = req.body;
-  try {
-    const updatedBlog = await updateBlog(id, data);
-    res.status(200).json(updatedBlog);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
+router.put(
+  "/:id",
+  upload.single("image"),
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const image = req.file;
+    const data: UpdateBlogDto = req.body;
+    try {
+      if (image) {
+        const imageUrl = await uploadToCloud("blogs", image);
+        data.image = imageUrl;
+      }
+      const updatedBlog = await updateBlog(id, data);
+      res.status(200).json(updatedBlog);
+    } catch (error) {
+      res.status(404).json({ message: error.message });
+    }
   }
-});
+);
 
 router.delete("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;

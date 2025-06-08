@@ -1,33 +1,32 @@
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import logger from "morgan";
-import path from "path";
 import connect from "./database/db";
-
 // Router
 import blogRouter from "./routes/blogs.route";
+import bloodRequestRouter from "./routes/bloodrequest.route";
 import categoryRouter from "./routes/category.route";
 import userRouter from "./routes/user.route";
-import bloodRequestRouter from "./routes/bloodrequest.route";
 
 // DB initialize
 connect();
 
 const app = express();
 
+app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/blogs", blogRouter);
 app.use("/categories", categoryRouter);
 app.use("/users", userRouter);
 app.use("/bloodrequests", bloodRequestRouter);
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(process.env.PORT ?? 3000, () => {
   console.log(`App listening on port ${process.env.PORT || 3000}`);
 });
 

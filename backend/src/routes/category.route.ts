@@ -1,15 +1,15 @@
 import express, { Request, Response } from "express";
 import {
-    createCategory,
-    deleteCategoryById,
-    findCategories,
-    findCategoryById,
-    updateCategoryById,
+  createCategory,
+  deleteCategoryById,
+  findCategories,
+  findCategoryById,
+  updateCategoryById,
 } from "../services/category.service";
 import {
-    CategoryQuery,
-    CreateCategoryDto,
-    UpdateCategoryDto,
+  CategoryQuery,
+  CreateCategoryDto,
+  UpdateCategoryDto,
 } from "../types/category.type";
 const router = express.Router();
 
@@ -39,7 +39,7 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.patch("/:id", async (req: Request, res: Response) => {
+router.put("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   const data: UpdateCategoryDto = req.body;
   try {

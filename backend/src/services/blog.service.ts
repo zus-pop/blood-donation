@@ -11,12 +11,14 @@ export async function findBlogs(query: BlogQuery) {
 
   if (slug) filter.slug = slug;
 
-  const blogs = Blog.find(filter);
+  const blogs = Blog.find(filter)
+    .populate("category")
+    .sort({ updatedAt: "desc" });
   return blogs;
 }
 
 export async function findBlogById(id: string) {
-  const blog = await Blog.findById(id);
+  const blog = await Blog.findById(id).populate("category");
   if (!blog) throw new Error("Blog not found");
   return blog;
 }
