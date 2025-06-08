@@ -15,8 +15,8 @@ export const ParticipationSchema = new Schema(
     status: {
       type: String,
       required: true,
-      enum: ["PENDING", "CONFIRMED", "CANCELLED"],
-      default: "PENDING",
+      enum: ["REGISTERED", "CANCELLED", "ATTENDED"],
+      default: "REGISTERED",
     },
   },
   { timestamps: true, collection: "participation" }
