@@ -8,6 +8,8 @@ import connect from "./database/db";
 import blogRouter from "./routes/blogs.route";
 import bloodRequestRouter from "./routes/bloodrequest.route";
 import categoryRouter from "./routes/category.route";
+import donationEventRouter from "./routes/donationevent.route";
+import participationRouter from "./routes/participation.route";
 import userRouter from "./routes/user.route";
 
 // DB initialize
@@ -23,6 +25,8 @@ app.use(cookieParser());
 
 app.use("/blogs", blogRouter);
 app.use("/categories", categoryRouter);
+app.use("/donationevents", donationEventRouter);
+app.use("/participations", participationRouter);
 app.use("/users", userRouter);
 app.use("/bloodrequests", bloodRequestRouter);
 
