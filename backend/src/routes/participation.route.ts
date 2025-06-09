@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { findParticipations, createParticipation, updateParticipation, deleteParticipation } from "../services/participation.service";
-import { ParticipationQuery } from "../types/participation.type";
+import { ParticipationQuery, CreateParticipationDto, UpdateParticipationDto } from "../types/participation.type";
 const router = express.Router();
 
 /* GET participations listing. */
@@ -12,7 +12,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const participation = await createParticipation(req.body);
+    const participation = await createParticipation(req.body as CreateParticipationDto);
     res.status(201).json(participation);
   } catch (err) {
     res.status(400).json({ error: "Cannot create participation", detail: err });
@@ -22,7 +22,7 @@ router.post("/", async (req: Request, res: Response) => {
 router.put("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const updatedParticipation = await updateParticipation(id, req.body);
+    const updatedParticipation = await updateParticipation(id, req.body as UpdateParticipationDto);
     if (!updatedParticipation) {
       return res.status(404).json({ error: "Participation not found" });
     }
