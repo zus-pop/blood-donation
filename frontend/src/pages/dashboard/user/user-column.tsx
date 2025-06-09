@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { UserProps } from "@/apis/user.api";
 import UpdateUserDialog from "./update-user-dialog";
+import { formatDate } from "@/lib/utils";
 
 interface ActionsProps {
     onDelete: (id: string) => void;
@@ -63,7 +64,25 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<UserProps>[] => [
     },
     {
         accessorKey: "createdAt",
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Created At" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Created Date" />,
+        cell: ({ row }) => {
+            const createdAt = row.original.createdAt;
+            const formatted = createdAt
+                ? formatDate(new Date(createdAt))
+                : "N/A";
+            return <div className="">{formatted}</div>;
+        },
+    },
+    {
+        accessorKey: "updatedAt",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Updated Date" />,
+        cell: ({ row }) => {
+            const updatedAt = row.original.updatedAt;
+            const formatted = updatedAt
+                ? formatDate(new Date(updatedAt))
+                : "N/A";
+            return <div className="">{formatted}</div>;
+        },
     },
     {
         id: "actions",

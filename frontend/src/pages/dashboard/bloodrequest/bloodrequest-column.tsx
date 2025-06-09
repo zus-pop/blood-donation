@@ -79,6 +79,14 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<BloodRequestProps
         },
     },
     {
+        accessorKey: "updatedAt",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Updated Date" />,
+        cell: ({ row }) => {
+            const formatted = formatDate(new Date(row.original.updatedAt));
+            return <div className="">{formatted}</div>;
+        },
+    },
+    {
         id: "actions",
         cell: ({ row }) => {
             const bloodrequest = row.original;
