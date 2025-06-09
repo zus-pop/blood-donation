@@ -30,7 +30,7 @@ export async function findBloodRequestById(id: string) {
     return bloodRequest;
 }
 export async function updateBloodRequest(id: string, data: Partial<BloodRequestInput>) {
-    const bloodRequest = await BloodRequest.findByIdAndUpdate(id, data, { new: true }).populate("user");
+    const bloodRequest = await BloodRequest.findByIdAndUpdate(id, data, { new: true, runValidators: true  }).populate("user");
     if (!bloodRequest) {
         throw new Error("Blood request not found");
     }
