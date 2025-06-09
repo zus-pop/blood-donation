@@ -11,9 +11,31 @@ export const createDonationEvent = async (data: any) => {
 };
 
 export const updateDonationEvent = async (id: string, data: any) => {
-  return await DonationEvent.findByIdAndUpdate(id, data, { new: true });
+  const event = await DonationEvent.findById(id);
+  if (!event) throw new Error("Donation event not found");
+  const {
+    title,
+    description,
+    registrationStartedAt,
+    registrationEndedAt,
+    eventStartedAt,
+    eventEndedAt,
+    status
+  } = data;
+  if (title) event.title = title;
+  if (description) event.description = description;
+  if (registrationStartedAt) event.registrationStartedAt = registrationStartedAt;
+  if (registrationEndedAt) event.registrationEndedAt = registrationEndedAt;
+  if (eventStartedAt) event.eventStartedAt = eventStartedAt;
+  if (eventEndedAt) event.eventEndedAt = eventEndedAt;
+  if (status) event.status = status;
+  return await event.save();
 };
 
 export const deleteDonationEvent = async (id: string) => {
-  return await DonationEvent.findByIdAndDelete(id);
+  const deletedEvent = await DonationEvent.findByIdAndDelete(id);
+
+  if (!deletedEvent) throw new Error("Donation event not found");
+  
+  return deletedEvent;
 };

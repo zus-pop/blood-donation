@@ -11,9 +11,19 @@ export const createParticipation = async (data: any) => {
 };
 
 export const updateParticipation = async (id: string, data: any) => {
-  return await Participation.findByIdAndUpdate(id, data, { new: true });
+  const participation = await Participation.findById(id);
+  if (!participation) throw new Error("Participation not found");
+  const { userId, eventId, status } = data;
+  if (userId) participation.userId = userId;
+  if (eventId) participation.eventId = eventId;
+  if (status) participation.status = status;
+  return await participation.save();
 };
 
 export const deleteParticipation = async (id: string) => {
-  return await Participation.findByIdAndDelete(id);
-}; 
+  const deletedParticipation = await Participation.findByIdAndDelete(id);
+
+  if (!deletedParticipation) throw new Error("Participation not found");
+  
+  return deletedParticipation;
+};
