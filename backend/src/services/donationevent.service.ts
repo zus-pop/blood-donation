@@ -1,13 +1,41 @@
 import { DonationEvent } from "../models";
-import { DonationEventQuery } from "../types/donationevent.type";
+import { CreateDonationEventDto, DonationEventQuery, UpdateDonationEventDto } from "../types/donationevent.type";
 
-export async function findDonationEvents(query: DonationEventQuery) {
-  const events = DonationEvent.find(query);
-  return events;
+export const findDonationEvents = async (query: DonationEventQuery) => {
+  return await DonationEvent.find(query);
+};
+
+export const createDonationEvent = async (data: CreateDonationEventDto) => {
+  const event = new DonationEvent(data);
+  return await event.save();
+};
+
+export const updateDonationEvent = async (id: string, data: UpdateDonationEventDto) => {
+  const event = await DonationEvent.findById(id);
+  if (!event) throw new Error("Donation event not found");
+  const {
+    title,
+    description,
+    registrationStartedAt,
+    registrationEndedAt,
+    eventStartedAt,
+    eventEndedAt,
+    status
+  } = data;
+  if (title) event.title = title;
+  if (description) event.description = description;
+  if (registrationStartedAt) event.registrationStartedAt = registrationStartedAt;
+  if (registrationEndedAt) event.registrationEndedAt = registrationEndedAt;
+  if (eventStartedAt) event.eventStartedAt = eventStartedAt;
+  if (eventEndedAt) event.eventEndedAt = eventEndedAt;
+  if (status) event.status = status;
+  return await event.save();
+};
+
+export const deleteDonationEvent = async (id: string) => {
+  const deletedEvent = await DonationEvent.findByIdAndDelete(id);
+
+  if (!deletedEvent) throw new Error("Donation event not found");
   
-} 
-export async function createDonationEvent(data:any) {
-  const donationEvent = new DonationEvent(data);
-  return await donationEvent.save();
-  
-}
+  return deletedEvent;
+};

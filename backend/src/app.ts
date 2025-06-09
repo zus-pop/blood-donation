@@ -11,6 +11,7 @@ import categoryRouter from "./routes/category.route";
 import donationEventRouter from "./routes/donationevent.route";
 import participationRouter from "./routes/participation.route";
 import userRouter from "./routes/user.route";
+import onsiteCheckRouter from "./routes/onsitecheck.route";
 
 // DB initialize
 connect();
@@ -29,6 +30,7 @@ app.use("/donationevents", donationEventRouter);
 app.use("/participations", participationRouter);
 app.use("/users", userRouter);
 app.use("/bloodrequests", bloodRequestRouter);
+app.use("/onsitechecks", onsiteCheckRouter);
 
 app.listen(process.env.PORT ?? 3000, () => {
   console.log(`App listening on port ${process.env.PORT || 3000}`);
