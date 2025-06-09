@@ -1,5 +1,5 @@
 import { OnSiteCheck } from "../models";
-import { OnSiteCheckQuery } from "../types/onsitecheck.type";
+import { CreateOnSiteCheckDto, OnSiteCheckQuery, UpdateOnSiteCheckDto } from "../types/onsitecheck.type";
 
 export async function findOnSiteChecks(query: OnSiteCheckQuery) {
   const checks = OnSiteCheck.find(query);
@@ -9,7 +9,7 @@ export async function findOnSiteChecks(query: OnSiteCheckQuery) {
 function checkCanDonate({ hemoglobinLevel, bloodPressure, pulseRate, bodyTemperature, weight }: {
   hemoglobinLevel?: number;
   bloodPressure?: string;
-  pulseRate?: number;
+  pulseRate?: number; 
   bodyTemperature?: number;
   weight?: number;
 }): boolean {
@@ -39,13 +39,13 @@ function checkCanDonate({ hemoglobinLevel, bloodPressure, pulseRate, bodyTempera
   return true;
 }
 
-export const createOnsiteCheck = async (data: any) => {
+export const createOnsiteCheck = async (data: CreateOnSiteCheckDto) => {
   const canDonate = checkCanDonate(data);
   const onsiteCheck = new OnSiteCheck({ ...data, canDonate });
   return await onsiteCheck.save();
 };
 
-export const updateOnsiteCheck = async (id: string, data: any) => {
+export const updateOnsiteCheck = async (id: string, data: UpdateOnSiteCheckDto) => {
   const onsiteCheck = await OnSiteCheck.findById(id);
   if (!onsiteCheck) throw new Error("Onsite check not found");
   const {
