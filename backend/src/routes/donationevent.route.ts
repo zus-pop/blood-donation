@@ -24,7 +24,7 @@ router.put("/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
     const updatedEvent = await updateDonationEvent(id, req.body as UpdateDonationEventDto);
     if (!updatedEvent) {
-      return res.status(404).json({ error: "Donation event not found" });
+      res.status(404).json({ error: "Donation event not found" });
     }
     res.json(updatedEvent);
   } catch (err) {
@@ -37,7 +37,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
     const deletedEvent = await deleteDonationEvent(id);
     if (!deletedEvent) {
-      return res.status(404).json({ error: "Donation event not found" });
+       res.status(404).json({ error: "Donation event not found" });
     }
     res.json({ message: "Donation event deleted successfully" });
   } catch (err) {

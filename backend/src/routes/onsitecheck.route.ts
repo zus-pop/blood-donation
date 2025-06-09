@@ -23,7 +23,7 @@ router.put("/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
     const updatedOnsiteCheck = await updateOnsiteCheck(id, req.body as UpdateOnSiteCheckDto);
     if (!updatedOnsiteCheck) {
-      return res.status(404).json({ error: "Onsite check not found" });
+       res.status(404).json({ error: "Onsite check not found" });
     }
     res.json(updatedOnsiteCheck);
   } catch (err) {

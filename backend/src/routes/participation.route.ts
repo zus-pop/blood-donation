@@ -24,7 +24,7 @@ router.put("/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
     const updatedParticipation = await updateParticipation(id, req.body as UpdateParticipationDto);
     if (!updatedParticipation) {
-      return res.status(404).json({ error: "Participation not found" });
+       res.status(404).json({ error: "Participation not found" });
     }
     res.json(updatedParticipation);
   } catch (err) {
@@ -37,7 +37,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
     const deletedParticipation = await deleteParticipation(id);
     if (!deletedParticipation) {
-      return res.status(404).json({ error: "Participation not found" });
+       res.status(404).json({ error: "Participation not found" });
     }
     res.json({ message: "Participation deleted successfully" });
   } catch (err) {
