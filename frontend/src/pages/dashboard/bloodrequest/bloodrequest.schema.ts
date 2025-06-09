@@ -1,16 +1,8 @@
 // bloodrequest.schema.ts
 import { z } from "zod";
+import { userSchema } from "../user/user.schema";
 
-export const userSchema = z.object({
-    _id: z.string().min(1, "User ID is required"),
-    email: z.string().email("Invalid email"),
-    firstName: z.string().optional(),
-    lastName: z.string().optional(),
-    phone: z.string().optional(),
-    role: z.string().optional(),
-    createdAt: z.string().optional(),
-    updatedAt: z.string().optional(),
-});
+
 
 export const bloodRequestSchema = z.object({
     user: userSchema,
