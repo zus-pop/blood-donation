@@ -1,11 +1,11 @@
 import myAxios from "../lib/custom-axios";
-import type { BloodInventorySchema } from "../pages/dashboard/blood-inventory/schema"; 
+// import type { BloodInventorySchema } from "../pages/dashboard/blood-inventory/schema"; 
 
-export interface InventoryProps extends BloodInventorySchema {
-  _id: string;
-  createdAt: string;
-  updatedAt: string;
-}
+// export interface InventoryProps extends BloodInventorySchema {
+//   _id: string;
+//   createdAt: string;
+//   updatedAt: string;
+// }
 export interface BloodSeedProps {
   blood_group: string;
   abo_type: string;
