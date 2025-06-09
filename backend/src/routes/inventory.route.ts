@@ -1,6 +1,6 @@
 import express from "express";
-import { InventoryQuery } from "@src/types/inventory.type";
-import { findInventory } from "@src/services/inventory.service";
+import { InventoryQuery } from "../types/inventory.type";
+import { findInventory } from "../services/inventory.service";
 
 const router = express.Router();
 
