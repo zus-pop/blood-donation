@@ -12,6 +12,8 @@ import {
   IconReport,
   IconSearch,
   IconSettings,
+  IconDropletMinus,
+  IconUser
 } from "@tabler/icons-react";
 import * as React from "react";
 
@@ -40,6 +42,16 @@ const data = {
       title: "Donation Event",
       url: "#",
       icon: IconDashboard,
+    },
+    {
+      title: "User Management",
+      url: "users",
+      icon: IconUser
+    },
+    {
+      title: "Blood Requests",
+      url: "bloodrequests",
+      icon: IconDropletMinus,
     },
     {
       title: "Blood Inventory",

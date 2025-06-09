@@ -17,7 +17,7 @@ export async function findUserById(id: string) {
     return user;
 }
 export async function updateUser(id: string, data: Partial<UserInput>) {
-    const user = await User.findByIdAndUpdate(id, data, { new: true }).select('-password');
+    const user = await User.findByIdAndUpdate(id, data, { runValidators: true, new: true }).select('-password');
     if (!user) {
         throw new Error('User not found');
     }

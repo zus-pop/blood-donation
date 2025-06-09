@@ -4,6 +4,8 @@ import BlogTable from "./pages/dashboard/blog/blog-table";
 import CategoryTable from "./pages/dashboard/category/category-table";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Home from "./pages/Home";
+import BloodRequests from "./pages/dashboard/bloodrequest/index";
+import UserPage from "./pages/dashboard/user";
 
 export default createBrowserRouter([
   {
@@ -26,6 +28,14 @@ export default createBrowserRouter([
         path: "category",
         element: <CategoryTable />,
       },
+      {
+        path: "bloodrequests",
+        element: <BloodRequests />,
+      },
+      {
+        path: "users",
+        element: <UserPage />,
+      }
     ],
   },
 ]);
