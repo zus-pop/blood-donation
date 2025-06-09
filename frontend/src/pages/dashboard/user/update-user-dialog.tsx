@@ -26,7 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { userSchema } from "./user.schema";
 
-const ROLE_OPTIONS = ["ADMIN", "MEMBER"];
+const ROLE_OPTIONS = ["ADMIN", "MEMBER","STAFF"];
 
 type UpdateUserDialogProps = {
     currentData: UserProps;

@@ -7,6 +7,7 @@ import { userSchema } from "./user.schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createUser } from "@/apis/user.api";
 import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function CreateUserDialog() {
     const [open, setOpen] = useState(false);
@@ -40,6 +41,7 @@ export default function CreateUserDialog() {
     function onSubmit(values: any) {
         mutate(values);
     }
+    const ROLE_OPTIONS = ["ADMIN", "MEMBER", "STAFF"];
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -50,12 +52,28 @@ export default function CreateUserDialog() {
                     <DialogTitle>Create User</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                    <Input placeholder="Email" {...form.register("email")} />
+                    
                     <Input placeholder="First Name" {...form.register("firstName")} />
                     <Input placeholder="Last Name" {...form.register("lastName")} />
                     <Input placeholder="Phone" {...form.register("phone")} />
-                    <Input placeholder="Role" {...form.register("role")} />
+                    <Input placeholder="Email" {...form.register("email")} />
                     <Input placeholder="Password" type="password" {...form.register("password")} />
+                    <div>
+                        <label className="block mb-1">Role</label>
+                        <Select value={form.watch("role")} onValueChange={val => form.setValue("role", val)}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {ROLE_OPTIONS.map((role) => (
+                                    <SelectItem key={role} value={role}>
+                                        {role}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                   
                     <Button type="submit" disabled={isPending} className="w-full">Create</Button>
                 </form>
             </DialogContent>
