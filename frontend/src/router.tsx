@@ -1,40 +1,50 @@
 import { createBrowserRouter } from "react-router";
-import WelcomeDashBoard from "./components/welcome-dashboard";
-import BlogTable from "./pages/dashboard/blog/blog-table";
-import CategoryTable from "./pages/dashboard/category/category-table";
-import Dashboard from "./pages/dashboard/Dashboard";
-import Home from "./pages/Home";
-import BloodRequests from "./pages/dashboard/bloodrequest/index";
-import UserPage from "./pages/dashboard/user";
+import { lazy, Suspense } from "react";
+
+const WelcomeDashBoard = lazy(() => import("./components/welcome-dashboard"));
+const BlogTable = lazy(() => import("./pages/dashboard/blog/blog-table"));
+const CategoryTable = lazy(() => import("./pages/dashboard/category/category-table"));
+const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
+const Home = lazy(() => import("./pages/clients/Home"));
+const BloodRequests = lazy(() => import("./pages/dashboard/bloodrequest/index"));
+const UserPage = lazy(() => import("./pages/dashboard/user"));
+
+function withSuspense(Component: React.ComponentType) {
+  return (
+    <Suspense >
+      <Component />
+    </Suspense>
+  );
+}
 
 export default createBrowserRouter([
   {
     path: "/",
-    Component: Home,
+    element: withSuspense(Home),
   },
   {
     path: "/dashboard",
-    Component: Dashboard,
+    element: withSuspense(Dashboard),
     children: [
       {
         index: true,
-        Component: WelcomeDashBoard,
+        element: withSuspense(WelcomeDashBoard),
       },
       {
         path: "blog",
-        element: <BlogTable />,
+        element: withSuspense(BlogTable),
       },
       {
         path: "category",
-        element: <CategoryTable />,
+        element: withSuspense(CategoryTable),
       },
       {
         path: "bloodrequests",
-        element: <BloodRequests />,
+        element: withSuspense(BloodRequests),
       },
       {
         path: "users",
-        element: <UserPage />,
+        element: withSuspense(UserPage),
       }
     ],
   },

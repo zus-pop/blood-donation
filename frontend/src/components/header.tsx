@@ -56,6 +56,10 @@ const Header = () => {
           <Button className="hidden md:flex bg-red-600 hover:bg-red-700">
             Donate Now
           </Button>
+          or
+          <Button className="hidden md:flex bg-red-600 hover:bg-red-700">
+            Request Blood Now
+          </Button>
 
           {/* Mobile Menu Button */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
