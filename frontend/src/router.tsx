@@ -36,7 +36,7 @@ export default createBrowserRouter([
       {
         path: "users",
         element: <UserPage />,
-      }
+      },
       {
         path: "blood-inventory",
         element: <BloodInventoryTable />,

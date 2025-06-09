@@ -27,14 +27,25 @@ export async function getBloodSeed() {
   return res.data;
 }
 
+export interface InventoryProps {
+  _id: string;
+  bloodType: string;
+  participation: string;
+  componentType: string;
+  quantity: number;
+  status: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export async function createInventory(inventory: Partial<InventoryProps>) {
+  const res = await myAxios.post(`/inventory`, inventory);
+  return res.data as InventoryProps;
+}
+
 // export async function getInventories() {
 //   const res = await myAxios.get(`/inventory`);
 //   return res.data as InventoryProps[];
-// }
-
-// export async function createInventory(inventory: Partial<InventoryProps>) {
-//   const res = await myAxios.post(`/inventory`, inventory);
-//   return res.data as InventoryProps;
 // }
 
 // export async function updateInventory(id: string, inventory: Partial<InventoryProps>) {
