@@ -16,13 +16,14 @@ export interface BloodRequestProps {
 }
 
 export interface BloodRequestInput {
-    user: UserProps;
+    user: string;
     bloodType: string;
     bloodComponent: string;
     quantity: number;
     status?: string;
     address: string;
 }
+
 
 export const getBloodRequests = async (): Promise<BloodRequestProps[]> => {
     const res = await axios.get("/bloodrequests");

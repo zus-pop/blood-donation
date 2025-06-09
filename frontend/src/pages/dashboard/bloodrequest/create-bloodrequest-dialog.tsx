@@ -59,7 +59,7 @@ const CreateBloodRequestDialog = () => {
     const form = useForm<BloodRequestSchema>({
         resolver: zodResolver(bloodRequestSchema),
         defaultValues: {
-            user: undefined,
+            user: "",
             bloodType: "",
             bloodComponent: "WHOLE_BLOOD",
             quantity: 1,
@@ -107,11 +107,8 @@ const CreateBloodRequestDialog = () => {
                                         <FormLabel>Email of User</FormLabel>
                                         <FormControl>
                                             <Select
-                                                value={field.value?._id || ""}
-                                                onValueChange={val => {
-                                                    const selected = users.find(u => u._id === val);
-                                                    field.onChange(selected);
-                                                }}
+                                                value={field.value}
+                                                onValueChange={val => field.onChange(val)}
                                             >
                                                 <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Select Email" />
@@ -184,7 +181,7 @@ const CreateBloodRequestDialog = () => {
                                     <FormItem>
                                         <FormLabel>Quantity (bags)</FormLabel>
                                         <FormControl>
-                                            <Input type="number" min={1} {...field} />
+                                            <Input type="number" min={1} {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
