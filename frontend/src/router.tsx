@@ -3,6 +3,7 @@ import WelcomeDashBoard from "./components/welcome-dashboard";
 import BlogTable from "./pages/dashboard/blog/blog-table";
 import CategoryTable from "./pages/dashboard/category/category-table";
 import Dashboard from "./pages/dashboard/Dashboard";
+import BloodInventoryTable from "./pages/dashboard/blood-inventory/blood-inventory-table";
 import Home from "./pages/Home";
 
 export default createBrowserRouter([
@@ -26,6 +27,10 @@ export default createBrowserRouter([
         path: "category",
         element: <CategoryTable />,
       },
+      {
+        path: "blood-inventory",
+        element: <BloodInventoryTable />,
+      }
     ],
   },
 ]);
