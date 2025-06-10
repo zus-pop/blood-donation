@@ -7,6 +7,7 @@ import BloodInventoryTable from "./pages/dashboard/blood-inventory/blood-invento
 import Home from "./pages/Home";
 import BloodRequests from "./pages/dashboard/bloodrequest/index";
 import UserPage from "./pages/dashboard/user";
+import EventTable from "./pages/dashboard/donationevent/event-table";
 
 export default createBrowserRouter([
   {
@@ -41,6 +42,11 @@ export default createBrowserRouter([
         path: "blood-inventory",
         element: <BloodInventoryTable />,
       }
+      },
+      {
+        path: "donationevent",
+        element: <EventTable />,
+      },
     ],
   },
 ]);

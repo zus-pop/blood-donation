@@ -40,7 +40,7 @@ const data = {
   navMain: [
     {
       title: "Donation Event",
-      url: "#",
+      url: "donationevent",
       icon: IconDashboard,
     },
     {
