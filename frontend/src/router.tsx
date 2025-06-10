@@ -41,7 +41,6 @@ export default createBrowserRouter([
       {
         path: "blood-inventory",
         element: <BloodInventoryTable />,
-      }
       },
       {
         path: "donationevent",
