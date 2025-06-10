@@ -1,8 +1,26 @@
 import { type ColumnDef } from "@tanstack/react-table";
-import type { BloodSeedProps } from "../../../apis/bloodInventory.api";
+import type { InventoryProps } from "../../../apis/bloodInventory.api";
 import { Checkbox } from "../../../components/ui/checkbox";
+import { Button } from "../../../components/ui/button";
+import { MoreHorizontal } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../../../components/ui/dropdown-menu";
+import UpdateBloodInventoryDialog from "./update-blood-inventory-dialog";
+import DeleteBloodInventoryDialog from "./delete-blood-inventory-dialog";
+import { DataTableColumnHeader } from "@/components/data-table-column-header";
+import { formatDate } from "@/lib/utils";
 
-export const columns: ColumnDef<BloodSeedProps>[] = [
+interface ActionsProps {
+  onDelete: (id: string) => void;
+}
+
+export const columns = ({ onDelete }: ActionsProps): ColumnDef<InventoryProps>[] => [
   {
     accessorKey: "_id",
     header: ({ table }) => (
@@ -25,56 +43,74 @@ export const columns: ColumnDef<BloodSeedProps>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-  {
-    accessorKey: "blood_group",
-    header: "Blood Group",
+  { accessorKey: "bloodType", 
+    header: "Blood Type" ,
+    cell: ({ row }) => {
+    const bloodType = row.original.bloodType;
+    if (typeof bloodType === "object" && bloodType !== null) {
+      return bloodType.bloodType; // or bloodType.blood_group if that's the property
+    }
+    return bloodType;
+  }
   },
   {
-    accessorKey: "frequency_global",
-    header: "Frequency",
+  accessorKey: "participation",
+  header: "Participation ID",
+  cell: ({ row }) => {
+    const p = row.original.participation;
+    if (typeof p === "object" && p !== null) {
+      return (p as { _id?: string; id?: string })._id || (p as { id?: string }).id || "";
+    }
+    return p;
+  }
+},
+  { accessorKey: "componentType", header: "Component" },
+  { accessorKey: "quantity", header: "Quantity" },
+  { accessorKey: "status", header: "Status" },
+  {
+      accessorKey: "createdAt",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Created Date" />
+      ),
+      cell: ({ row }) => {
+        const createdAt = row.original.createdAt ?? "";
+        const formatted = createdAt ? formatDate(new Date(createdAt)) : "";
+        return <div className="">{formatted}</div>;
+      },
+    },
+  {
+    accessorKey: "updatedAt",
+    header: "Updated At",
+    cell: ({ row }) => {
+      const updatedAt = row.original.updatedAt ?? "";
+      const formatted = formatDate(new Date(updatedAt));
+      return <div className="">{formatted}</div>;
+    },
   },
   {
-    accessorKey: "inventory.rbc.quantity_units",
-    header: "RBC Units",
-    cell: ({ row }) => row.original.inventory?.rbc?.quantity_units ?? "-",
+    id: "actions",
+    cell: ({ row }) => {
+      const inventory = row.original;
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="center">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem asChild>
+              <UpdateBloodInventoryDialog currentData={inventory} />
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild className="text-red-600 cursor-pointer">
+              <DeleteBloodInventoryDialog callback={() => onDelete(inventory._id)} />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
   },
-  {
-    accessorKey: "inventory.plasma.quantity_units",
-    header: "Plasma Units",
-    cell: ({ row }) => row.original.inventory?.plasma?.quantity_units ?? "-",
-  },
-  {
-    accessorKey: "inventory.platelets.quantity_units",
-    header: "Platelets Units",
-    cell: ({ row }) => row.original.inventory?.platelets?.quantity_units ?? "-",
-  },
-  {
-    accessorKey: "inventory.whole_blood.quantity_units",
-    header: "Whole Blood Units",
-    cell: ({ row }) => row.original.inventory?.whole_blood?.quantity_units ?? "-",
-  },
-  
-//   {
-//     id: "actions",
-//     cell: ({ row }) => {
-//       const inventory = row.original;
-//       return (
-//         <DropdownMenu>
-//           <DropdownMenuTrigger asChild>
-//             <Button variant="ghost" className="h-8 w-8 p-0">
-//               <span className="sr-only">Open menu</span>
-//               <MoreHorizontal className="h-4 w-4" />
-//             </Button>
-//           </DropdownMenuTrigger>
-//           <DropdownMenuContent align="center">
-//             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-//             {/* <DropdownMenuItem asChild>
-//               <UpdateBloodInventoryDialog currentData={inventory} />
-//             </DropdownMenuItem>
-//             <DropdownMenuSeparator /> */}
-//           </DropdownMenuContent>
-//         </DropdownMenu>
-//       );
-//     },
-//   },
 ];

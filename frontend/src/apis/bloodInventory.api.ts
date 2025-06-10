@@ -23,14 +23,14 @@ export interface BloodSeedProps {
   [key: string]: any;
 }
 export async function getBloodSeed() {
-  const res = await myAxios.get("/blood/seed");
+  const res = await myAxios.get("/inventory");
   return res.data;
 }
-
 export interface InventoryProps {
   _id: string;
-  bloodType: string;
-  participation: string;
+  bloodType: string | { _id: string; bloodType: string };
+  participation?: string;
+  participationId?: string;
   componentType: string;
   quantity: number;
   status: string;
@@ -38,22 +38,21 @@ export interface InventoryProps {
   updatedAt?: string;
 }
 
+export async function getInventories() {
+  const res = await myAxios.get(`/inventory`);
+  return res.data as InventoryProps[];
+}
+
 export async function createInventory(inventory: Partial<InventoryProps>) {
   const res = await myAxios.post(`/inventory`, inventory);
   return res.data as InventoryProps;
 }
+export async function updateInventory(id: string, inventory: Partial<InventoryProps>) {
+  const res = await myAxios.put(`/inventory/${id}`, inventory);
+  return res.data as InventoryProps;
+}
 
-// export async function getInventories() {
-//   const res = await myAxios.get(`/inventory`);
-//   return res.data as InventoryProps[];
-// }
-
-// export async function updateInventory(id: string, inventory: Partial<InventoryProps>) {
-//   const res = await myAxios.put(`/inventory/${id}`, inventory);
-//   return res.data as InventoryProps;
-// }
-
-// export async function deleteInventory(id: string) {
-//   const res = await myAxios.delete(`/inventory/${id}`);
-//   return res.data as InventoryProps;
-// }
+export async function deleteInventory(id: string) {
+  const res = await myAxios.delete(`/inventory/${id}`);
+  return res.data as InventoryProps;
+}
