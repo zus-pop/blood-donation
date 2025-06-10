@@ -3,6 +3,7 @@ export interface BloodRequestQuery {
     bloodType?: string;
     bloodComponent?: string;
     status?: string;
+    requestBy?: string;
 }
 export interface BloodRequestInput {
     user: string;
@@ -10,4 +11,5 @@ export interface BloodRequestInput {
     bloodComponent: string;
     status?: string;
     address: string;
+    requestBy?: string;
 }

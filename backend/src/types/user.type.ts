@@ -11,3 +11,9 @@ export interface UserInput {
     password: string;
     role?: string;
 }
+export interface UpdateUser {
+    firstName: string;
+    lastName: string;
+    email: string;
+    role?: string;
+}

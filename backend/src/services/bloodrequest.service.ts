@@ -18,8 +18,12 @@ export async function getBloodRequests(query: BloodRequestQuery) {
     if (query.bloodType) filter.bloodType = query.bloodType;
     if (query.bloodComponent) filter.bloodComponent = query.bloodComponent;
     if (query.status) filter.status = query.status;
+    if (query.requestBy) filter.requestBy = query.requestBy;
 
-    return BloodRequest.find(filter).populate("user");
+    return BloodRequest.find(filter).populate([
+        { path: "user", select: "-password" },
+        { path: "requestBy", select: "-password" },
+    ]);;
 }
 
 export async function findBloodRequestById(id: string) {
@@ -30,7 +34,7 @@ export async function findBloodRequestById(id: string) {
     return bloodRequest;
 }
 export async function updateBloodRequest(id: string, data: Partial<BloodRequestInput>) {
-    const bloodRequest = await BloodRequest.findByIdAndUpdate(id, data, { new: true, runValidators: true  }).populate("user");
+    const bloodRequest = await BloodRequest.findByIdAndUpdate(id, data, { new: true, runValidators: true }).populate("user");
     if (!bloodRequest) {
         throw new Error("Blood request not found");
     }

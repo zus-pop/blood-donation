@@ -29,6 +29,10 @@ export const BloodRequestSchema = new Schema(
             type: String,
             required: true,
         },
+        requestBy: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        }
     },
     { timestamps: true, collection: "bloodrequest" }
 );
