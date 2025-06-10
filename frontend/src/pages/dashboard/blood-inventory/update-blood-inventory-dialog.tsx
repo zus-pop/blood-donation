@@ -31,7 +31,7 @@ import type { BloodInventoryForm } from "./blood-inventory-schema";
 // Define BloodType type locally if not exported from the API module
 type BloodType = {
     _id: string;
-    name: string;
+    bloodType: string;
 };
 
 const COMPONENT_TYPES = ["WHOLE_BLOOD", "PLASMA", "PLATELETS", "RBC"];
@@ -52,7 +52,7 @@ const UpdateBloodInventoryDialog = ({ currentData }: { currentData: any }) => {
         },
     });
 
-    const { data: bloodTypes = [], isLoading: bloodTypesLoading } = useQuery({
+    const { data: bloodTypes = []} = useQuery({
         queryKey: ["bloodTypes"],
         queryFn: getBloodTypes,
     });
@@ -100,7 +100,7 @@ const UpdateBloodInventoryDialog = ({ currentData }: { currentData: any }) => {
                                             <SelectContent>
                                                 {bloodTypes.map((type: BloodType) => (
                                                     <SelectItem key={type._id} value={type._id}>
-                                                        {type.name}
+                                                        {type.bloodType}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
