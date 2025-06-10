@@ -16,6 +16,7 @@ export default function Home() {
         <DonationProcess />
         <DonationEvent />
         <Footer />
+
       </Suspense>
     </div>
   );

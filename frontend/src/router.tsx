@@ -6,9 +6,9 @@ const BlogTable = lazy(() => import("./pages/dashboard/blog/blog-table"));
 const CategoryTable = lazy(() => import("./pages/dashboard/category/category-table"));
 const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
 const Home = lazy(() => import("./pages/clients/Home"));
-const BloodRequests = lazy(() => import("./pages/dashboard/bloodrequest/index"));
+const BloodRequestsManage = lazy(() => import("./pages/dashboard/bloodrequest/index"));
 const UserPage = lazy(() => import("./pages/dashboard/user"));
-
+const BloodRequests = lazy(() => import("./pages/clients/bloodrequest/BloodRequest"));
 function withSuspense(Component: React.ComponentType) {
   return (
     <Suspense >
@@ -21,6 +21,10 @@ export default createBrowserRouter([
   {
     path: "/",
     element: withSuspense(Home),
+  },
+  {
+    path: "/bloodrequest",
+    element: withSuspense(BloodRequests),
   },
   {
     path: "/dashboard",
@@ -40,7 +44,7 @@ export default createBrowserRouter([
       },
       {
         path: "bloodrequests",
-        element: withSuspense(BloodRequests),
+        element: withSuspense(BloodRequestsManage),
       },
       {
         path: "users",

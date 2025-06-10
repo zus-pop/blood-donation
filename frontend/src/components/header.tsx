@@ -3,9 +3,10 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-
+import { useNavigate } from "react-router";
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
   return (
     <header className="sticky top-0 z-50 w-full px-5 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
@@ -19,6 +20,7 @@ const Header = () => {
           <a
             href="#"
             className="text-sm font-medium hover:text-red-600 transition-colors"
+            onClick={() => navigate("/")}
           >
             Home
           </a>
@@ -57,7 +59,7 @@ const Header = () => {
             Donate Now
           </Button>
           or
-          <Button className="hidden md:flex bg-red-600 hover:bg-red-700">
+          <Button className="hidden md:flex bg-red-600 hover:bg-red-700" onClick={() => navigate("/bloodrequest")}>
             Request Blood Now
           </Button>
 
