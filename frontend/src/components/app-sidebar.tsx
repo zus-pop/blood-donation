@@ -55,7 +55,7 @@ const data = {
     },
     {
       title: "Blood Inventory",
-      url: "#",
+      url: "blood-inventory",
       icon: IconListDetails,
     },
     {
