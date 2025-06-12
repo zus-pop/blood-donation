@@ -66,7 +66,7 @@ const CreateBlogDialog = () => {
     formData.append("category", blog.category);
     formData.append("summary", blog.summary);
     formData.append("content", blog.content);
-    formData.append("image", blog.image as File);
+    if (blog.image) formData.append("image", blog.image as File);
     mutate(formData);
   };
   return (
@@ -204,7 +204,7 @@ const CreateBlogDialog = () => {
               </FormItem>
 
               <div className="flex justify-center">
-                <Button className="text-xl" type="submit">
+                <Button disabled={isPending} className="text-xl" type="submit">
                   <span className="p-2">
                     {isPending ? <Loading></Loading> : <span>Submit</span>}
                   </span>
