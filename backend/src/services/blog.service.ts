@@ -14,6 +14,7 @@ export async function findBlogs(query: BlogQuery) {
   const blogs = Blog.find(filter)
     .populate("category")
     .sort({ updatedAt: "desc" });
+    
   return blogs;
 }
 

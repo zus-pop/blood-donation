@@ -19,7 +19,7 @@ export async function findCategories(query: CategoryQuery) {
 
 export async function findCategoryById(id: string) {
   const category = await Category.findById(id);
-  if (!category) throw new Error("Resource not found");
+  if (!category) throw new Error("Category not found");
   return category;
 }
 

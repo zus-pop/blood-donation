@@ -32,11 +32,11 @@ router.post(
   async (req: Request, res: Response) => {
     const image = req.file;
     const data: CreateBlogDto = req.body;
-    if (image) {
-      const imageUrl = await uploadToCloud("blogs", image);
-      data.image = imageUrl;
-    }
     try {
+      if (image) {
+        const imageUrl = await uploadToCloud("blogs", image);
+        data.image = imageUrl;
+      }
       const newBlog = await createBlog(data);
       res.status(201).json(newBlog);
     } catch (error) {

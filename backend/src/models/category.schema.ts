@@ -4,12 +4,12 @@ export const CategorySchema = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, "Category name is required"],
     },
     slug: {
       type: String,
-      required: true,
-      unique: true,
+      required: [true, "Slug is required"],
+      unique: [true, "Slug must be unique"],
     },
     description: {
       type: String,
