@@ -1,32 +1,35 @@
 import {
-    IconCamera,
-    IconDashboard,
-    IconDatabase,
-    IconFileAi,
-    IconFileDescription,
-    IconFileWord,
-    IconHelp,
-    IconInnerShadowTop,
-    IconListDetails,
-    IconReport,
-    IconSearch,
-    IconSettings
+  IconBrandBlogger,
+  IconCamera,
+  IconCategory,
+  IconDashboard,
+  IconDatabase,
+  IconFileAi,
+  IconFileDescription,
+  IconFileWord,
+  IconHelp,
+  IconListDetails,
+  IconReport,
+  IconSearch,
+  IconSettings,
+  IconDropletMinus,
+  IconUser
 } from "@tabler/icons-react";
 import * as React from "react";
 
-import { NavDocuments } from "@/components/nav-documents";
 import { NavMain } from "@/components/nav-main";
 import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Droplet } from "lucide-react";
 
 const data = {
   user: {
@@ -37,13 +40,33 @@ const data = {
   navMain: [
     {
       title: "Donation Event",
-      url: "#",
+      url: "donationevent",
       icon: IconDashboard,
     },
     {
+      title: "User Management",
+      url: "users",
+      icon: IconUser
+    },
+    {
+      title: "Blood Requests",
+      url: "bloodrequests",
+      icon: IconDropletMinus,
+    },
+    {
       title: "Blood Inventory",
-      url: "#",
+      url: "blood-inventory",
       icon: IconListDetails,
+    },
+    {
+      title: "Blog",
+      url: "blog",
+      icon: IconBrandBlogger,
+    },
+    {
+      title: "Category",
+      url: "category",
+      icon: IconCategory,
     },
   ],
   navClouds: [
@@ -141,7 +164,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="#">
-                <IconInnerShadowTop className="!size-5" />
+                <Droplet className="!size-5" />
                 <span className="text-base font-semibold">Bloody</span>
               </a>
             </SidebarMenuButton>
@@ -150,7 +173,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
+        {/* <NavDocuments items={data.documents} /> */}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
