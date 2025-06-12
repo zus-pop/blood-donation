@@ -40,7 +40,7 @@ const data = {
   navMain: [
     {
       title: "Donation Event",
-      url: "#",
+      url: "donationevent",
       icon: IconDashboard,
     },
     {
@@ -55,7 +55,7 @@ const data = {
     },
     {
       title: "Blood Inventory",
-      url: "#",
+      url: "blood-inventory",
       icon: IconListDetails,
     },
     {

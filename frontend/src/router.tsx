@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router";
+
 import { lazy, Suspense } from "react";
 
 const WelcomeDashBoard = lazy(() => import("./components/welcome-dashboard"));
@@ -9,6 +10,8 @@ const Home = lazy(() => import("./pages/clients/Home"));
 const BloodRequestsManage = lazy(() => import("./pages/dashboard/bloodrequest/index"));
 const UserPage = lazy(() => import("./pages/dashboard/user"));
 const BloodRequests = lazy(() => import("./pages/clients/bloodrequest/BloodRequest"));
+const BloodInventoryTable = lazy(() => import("./pages/dashboard/blood-inventory/blood-inventory-table"))
+const EventTable = lazy(() => import("./pages/dashboard/donationevent/event-table"))
 function withSuspense(Component: React.ComponentType) {
   return (
     <Suspense >
@@ -48,8 +51,17 @@ export default createBrowserRouter([
       },
       {
         path: "users",
-        element: withSuspense(UserPage),
-      }
-    ],
-  },
+        element: <UserPage />,
+      },
+      {
+        path: "blood-inventory",
+        element: <BloodInventoryTable />,
+      },
+      {
+        path: "donationevent",
+        element: <EventTable />,
+      },
+
+    ]
+  }
 ]);
