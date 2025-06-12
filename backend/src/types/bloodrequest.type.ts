@@ -1,15 +1,17 @@
 export interface BloodRequestQuery {
-    user?: string;
+    name?: string;
+    phone?: string;
     bloodType?: string;
     bloodComponent?: string;
     status?: string;
-    requestBy?: string;
+    requestedBy?: string;
 }
 export interface BloodRequestInput {
-    user: string;
+    name: string;
+    phone: string;
     bloodType: string;
     bloodComponent: string;
     status?: string;
     address: string;
-    requestBy?: string;
+    requestedBy: string;
 }

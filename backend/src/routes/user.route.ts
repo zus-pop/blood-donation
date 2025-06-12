@@ -13,7 +13,7 @@ router.post("/", async (req: Request, res: Response) => {
         const user = await createUser(req.body);
         res.status(201).json(user);
     } catch (err) {
-        res.status(400).json({ error: "Cannot create user", detail: err });
+        res.status(400).json({ error: "Cannot create user", detail: err.message });
     }
 });
 router.get("/:id", async (req: Request, res: Response) => {
@@ -22,7 +22,7 @@ router.get("/:id", async (req: Request, res: Response) => {
         const user = await findUserById(id);
         res.status(200).json(user);
     } catch (err) {
-        res.status(404).json({ error: "User not found", detail: err });
+        res.status(404).json({ error: "User not found", detail: err.message });
     }
 });
 router.patch("/:id", async (req: Request, res: Response) => {
@@ -31,7 +31,7 @@ router.patch("/:id", async (req: Request, res: Response) => {
         const updatedUser = await updateUser(id, req.body);
         res.status(200).json(updatedUser);
     } catch (err) {
-        res.status(400).json({ error: "Cannot update user", detail: err });
+        res.status(400).json({ error: "Cannot update user", detail: err.message });
     }
 });
 router.delete("/:id", async (req: Request, res: Response) => {
@@ -40,7 +40,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
         const deletedUser = await deleteUser(id);
         res.status(200).json(deletedUser);
     } catch (err) {
-        res.status(400).json({ error: "Cannot delete user", detail: err });
+        res.status(400).json({ error: "Cannot delete user", detail: err.message });
     }
 });
 export default router;

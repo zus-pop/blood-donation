@@ -24,7 +24,7 @@ export async function updateUser(id: string, data: UpdateUser) {
     return user;
 }
 export async function deleteUser(id: string) {
-    const user = await User.findByIdAndDelete(id);
+    const user = await User.findByIdAndDelete(id).select('-password');
     if (!user) {
         throw new Error('User not found');
     }
