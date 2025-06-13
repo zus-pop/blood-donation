@@ -1,4 +1,4 @@
-import { findBlood, createBlood, updateBlood, deleteBlood } from "../services/blood.service";
+import { findBlood, createBlood, updateBlood, deleteBlood, findBloodById } from "../services/blood.service";
 import { BloodQuery } from "../types/blood.type";
 import express from "express";
 import path from "path";
@@ -13,16 +13,16 @@ router.get("/", async (req, res) => {
   res.json(blood);
 });
 
-// Get all blood types from JSON file
-router.get("/seed", (req, res) => {
-  const filePath = path.join(__dirname, "../../data/blood_types_seed.json");
-  try {
-    const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to read blood types seed file" });
-  }
-});
+// // Get all blood types from JSON file
+// router.get("/seed", (req, res) => {
+//   const filePath = path.join(__dirname, "../../data/blood_types_seed.json");
+//   try {
+//     const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+//     res.json(data);
+//   } catch (err) {
+//     res.status(500).json({ error: "Failed to read blood types seed file" });
+//   }
+// });
 
 // Create a new blood type
 router.post("/", async (req, res) => {
@@ -31,6 +31,16 @@ router.post("/", async (req, res) => {
     res.status(201).json(blood);
   } catch (err) {
     res.status(400).json({ error: "Failed to create blood type" });
+  }
+});
+
+//Get blood by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const blood = await findBloodById(req.params.id);
+    res.status(200).json(blood);
+  } catch (err) {
+    res.status(404).json({ error: "Blood type not found" });
   }
 });
 
