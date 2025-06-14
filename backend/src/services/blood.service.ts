@@ -6,6 +6,7 @@ export async function findBlood(query: BloodQuery) {
   return Blood.find(query);
 }
 
+//Find a blood type by ID
 export async function findBloodById(id: string) {
   const blood = await Blood.findById(id);
   if (!blood) {

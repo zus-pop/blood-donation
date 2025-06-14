@@ -13,17 +13,6 @@ router.get("/", async (req, res) => {
   res.json(blood);
 });
 
-// // Get all blood types from JSON file
-// router.get("/seed", (req, res) => {
-//   const filePath = path.join(__dirname, "../../data/blood_types_seed.json");
-//   try {
-//     const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
-//     res.json(data);
-//   } catch (err) {
-//     res.status(500).json({ error: "Failed to read blood types seed file" });
-//   }
-// });
-
 // Create a new blood type
 router.post("/", async (req, res) => {
   try {
