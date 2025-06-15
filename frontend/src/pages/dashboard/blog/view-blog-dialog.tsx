@@ -1,3 +1,5 @@
+import { Calendar, Eye, Tag } from "lucide-react";
+import type { BlogProps } from "../../../apis/blog.api";
 import {
   Dialog,
   DialogContent,
@@ -6,11 +8,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../../components/ui/dialog";
-import { Calendar, Eye, Tag } from "lucide-react";
-import type { BlogProps } from "../../../apis/blog.api";
 import { Separator } from "../../../components/ui/separator";
 import { formatDate } from "../../../lib/utils";
-
 interface ViewBlogDialogProps {
   blog: BlogProps;
 }
@@ -38,6 +37,13 @@ const ViewBlogDialog = ({ blog }: ViewBlogDialogProps) => {
               {blog.category.name}
             </div>
           </DialogDescription>
+          <div className="mb-4">
+            <img
+              src={blog.image}
+              alt="Blog Image"
+              className="w-full h-48 object-cover rounded-lg"
+            />
+          </div>
         </DialogHeader>
         <Separator />
         <div className="prose prose-sm max-w-none">

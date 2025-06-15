@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Outlet } from "react-router";
 import WelcomeDashBoard from "./components/welcome-dashboard";
 import BlogTable from "./pages/dashboard/blog/blog-table";
 import CategoryTable from "./pages/dashboard/category/category-table";
@@ -8,15 +8,46 @@ import Home from "./pages/Home";
 import BloodRequests from "./pages/dashboard/bloodrequest/index";
 import UserPage from "./pages/dashboard/user";
 import EventTable from "./pages/dashboard/donationevent/event-table";
+import BlogSection from "./pages/BlogSection";
+import Header from "./components/header";
+import BlogDetail from "./pages/BlogDetail";
+import ScrollToTop from "./components/scroll-to-top";
+import { Toaster } from "./components/ui/sonner";
 
 export default createBrowserRouter([
   {
     path: "/",
-    Component: Home,
+    element: (
+      <>
+        <ScrollToTop />
+        <Header />
+        <Outlet />
+      </>
+    ),
+    children: [
+      {
+        index: true,
+        Component: Home,
+      },
+      {
+        path: "/blogs",
+        Component: BlogSection,
+      },
+      {
+        path: "/blogs/:id",
+        Component: BlogDetail,
+      },
+    ],
   },
   {
     path: "/dashboard",
-    Component: Dashboard,
+    element: (
+      <>
+        <ScrollToTop />
+        <Dashboard />
+        <Toaster richColors theme="system" />
+      </>
+    ),
     children: [
       {
         index: true,

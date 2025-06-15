@@ -1,10 +1,10 @@
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -15,16 +15,17 @@ import { updateCategory, type CategoryProps } from "../../../apis/category.api";
 import Loading from "../../../components/loading";
 import { Button } from "../../../components/ui/button";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "../../../components/ui/form";
 import { Input } from "../../../components/ui/input";
 import { Textarea } from "../../../components/ui/textarea";
 import { categorySchema, type CategorySchema } from "./category.schema";
+import { toast } from "sonner";
 
 const UpdateCategoryDialog = ({
   currentData,
@@ -50,6 +51,7 @@ const UpdateCategoryDialog = ({
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       setOpen(false);
       form.reset();
+      toast.success("Update category successfully");
     },
   });
 

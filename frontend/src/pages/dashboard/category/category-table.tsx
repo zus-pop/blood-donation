@@ -3,6 +3,7 @@ import { deleteCategory, getCategories } from "../../../apis/category.api";
 import { DataTable } from "../../../components/data-table";
 import { columns } from "./category-column";
 import CreateCategoryDialog from "./create-category-dialog";
+import { toast } from "sonner";
 
 const CategoryTable = () => {
   const { data: categories } = useQuery({
@@ -14,6 +15,7 @@ const CategoryTable = () => {
     mutationFn: deleteCategory,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+      toast.success("Delete category successfully");
     },
   });
 

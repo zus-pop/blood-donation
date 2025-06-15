@@ -57,6 +57,14 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<BlogProps>[] => [
   {
     accessorKey: "content",
     header: "Content",
+    cell: ({ row }) => {
+      const content = row.original.content;
+      return (
+        <div className="max-w-xs break-words whitespace-normal line-clamp-3">
+          {content}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "category",

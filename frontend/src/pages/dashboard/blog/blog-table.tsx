@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { deleteBlog, getBlogs } from "../../../apis/blog.api";
 import { DataTable } from "../../../components/data-table";
 import { columns } from "./blog-column";
@@ -7,13 +8,15 @@ import CreateBlogDialog from "./create-blog-dialog";
 const BlogTable = () => {
   const { data: blogs } = useQuery({
     queryKey: ["blogs"],
-    queryFn: getBlogs,
+    queryFn: () => getBlogs(),
   });
+
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: deleteBlog,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
+      toast.success("Delete blog successfully");
     },
   });
 
