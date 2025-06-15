@@ -33,7 +33,7 @@ app.use("/participations", participationRouter);
 app.use("/users", userRouter);
 app.use("/bloodrequests", bloodRequestRouter);
 app.use("/onsitechecks", onsiteCheckRouter);
-app.use("/blood", bloodRouter);
+app.use("/bloods", bloodRouter);
 app.use("/inventory", inventoryRouter);
 
 
