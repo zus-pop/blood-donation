@@ -20,12 +20,14 @@ export interface BlogQuery {
 }
 
 export async function getBlogs(query?: BlogQuery) {
+  const params: Record<string, string> = {};
+
+  if (query && query.title) params.title = query.title;
+  if (query && query.slug) params.slug = query.slug;
+  if (query && query.category) params.category = query.category;
+
   const res = await myAxios.get(`/blogs`, {
-    params: query && {
-      title: query.title ?? null,
-      slug: query.slug ?? null,
-      category: query.category ?? null,
-    },
+    params,
   });
   return res.data as BlogProps[];
 }

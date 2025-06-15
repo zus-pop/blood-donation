@@ -1,28 +1,28 @@
 "use client";
 import {
-    ArrowLeft,
-    ArrowRight,
-    Calendar,
-    ChevronRight,
-    Clock,
-    Droplets,
-    Facebook,
-    Heart,
-    Linkedin,
-    Share2,
-    Twitter,
-    User,
+  ArrowLeft,
+  ArrowRight,
+  Calendar,
+  ChevronRight,
+  Clock,
+  Droplets,
+  Facebook,
+  Heart,
+  Linkedin,
+  Share2,
+  Twitter,
+  User,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router";
@@ -75,6 +75,7 @@ export default function BlogDetail() {
   const { data: blog, isLoading } = useQuery({
     queryKey: ["blog", id],
     queryFn: () => getBlog(id!),
+    staleTime: 1000 * 60,
   });
 
   if (isLoading) {

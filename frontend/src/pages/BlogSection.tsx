@@ -30,7 +30,6 @@ export default function BlogSection() {
   const { data: categories = [] } = useQuery({
     queryKey: ["categories-group"],
     queryFn: getCategoriesGroupBy,
-    staleTime: 1000 * 60 * 30,
   });
 
   const { data: blogs = [], isPending } = useQuery({
@@ -40,6 +39,7 @@ export default function BlogSection() {
         category: selectedCategory === "all" ? undefined : selectedCategory,
         title: searchTitle,
       }),
+    staleTime: 1000 * 60,
   });
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
