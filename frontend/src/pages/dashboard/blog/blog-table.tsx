@@ -3,17 +3,19 @@ import { deleteBlog, getBlogs } from "../../../apis/blog.api";
 import { DataTable } from "../../../components/data-table";
 import { columns } from "./blog-column";
 import CreateBlogDialog from "./create-blog-dialog";
+import { toast } from "sonner";
 
 const BlogTable = () => {
   const { data: blogs } = useQuery({
     queryKey: ["blogs"],
-    queryFn: getBlogs,
+    queryFn: () => getBlogs(),
   });
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: deleteBlog,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
+      toast.success("Delete blog successfully");
     },
   });
 

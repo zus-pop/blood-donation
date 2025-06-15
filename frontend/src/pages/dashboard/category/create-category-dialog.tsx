@@ -25,6 +25,7 @@ import {
 import { Input } from "../../../components/ui/input";
 import { Textarea } from "../../../components/ui/textarea";
 import { categorySchema, type CategorySchema } from "./category.schema";
+import { toast } from "sonner";
 
 const CreateCategoryDialog = () => {
   const queryClient = useQueryClient();
@@ -45,6 +46,7 @@ const CreateCategoryDialog = () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       setOpen(false);
       form.reset();
+      toast.success("Create category successfully");
     },
   });
 

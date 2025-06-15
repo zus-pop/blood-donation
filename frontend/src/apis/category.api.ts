@@ -10,9 +10,21 @@ export interface CategoryProps {
   updatedAt: string;
 }
 
+export interface CategoryGroup {
+  _id: string;
+  name: string;
+  slug: string;
+  totalBlogs: number;
+}
+
 export async function getCategories() {
   const res = await myAxios.get(`/categories`);
   return res.data as CategoryProps[];
+}
+
+export async function getCategoriesGroupBy() {
+  const res = await myAxios.get(`/categories/group`);
+  return res.data as CategoryGroup[];
 }
 
 export async function createCategory(data: CategorySchema) {
