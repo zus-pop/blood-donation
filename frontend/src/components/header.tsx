@@ -4,10 +4,10 @@ import { NavLink } from "react-router";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-
+import { useNavigate } from "react-router";
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
+  const navigate = useNavigate();
   const navList = [
     {
       name: "Home",
@@ -45,8 +45,7 @@ const Header = () => {
               key={nav.name}
               to={nav.to}
               className={({ isActive }) =>
-                `text-lg font-medium ${
-                  isActive ? "text-red-600" : "text-muted-foreground"
+                `text-lg font-medium ${isActive ? "text-red-600" : "text-muted-foreground"
                 }`
               }
             >
@@ -62,6 +61,10 @@ const Header = () => {
           </Button>
           <Button className="hidden md:flex bg-red-600 hover:bg-red-700">
             Donate Now
+          </Button>
+          or
+          <Button className="hidden md:flex bg-red-600 hover:bg-red-700" onClick={() => navigate("/bloodrequest")}>
+            Request Blood Now
           </Button>
 
           {/* Mobile Menu Button */}
