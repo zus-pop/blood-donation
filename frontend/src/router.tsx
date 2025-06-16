@@ -1,18 +1,29 @@
 import { createBrowserRouter, Outlet } from "react-router";
-import WelcomeDashBoard from "./components/welcome-dashboard";
-import BlogTable from "./pages/dashboard/blog/blog-table";
-import CategoryTable from "./pages/dashboard/category/category-table";
-import Dashboard from "./pages/dashboard/Dashboard";
-import BloodInventoryTable from "./pages/dashboard/blood-inventory/blood-inventory-table";
-import Home from "./pages/Home";
-import BloodRequests from "./pages/dashboard/bloodrequest/index";
-import UserPage from "./pages/dashboard/user";
-import EventTable from "./pages/dashboard/donationevent/event-table";
-import BlogSection from "./pages/BlogSection";
-import Header from "./components/header";
-import BlogDetail from "./pages/BlogDetail";
 import ScrollToTop from "./components/scroll-to-top";
 import { Toaster } from "./components/ui/sonner";
+import { lazy, Suspense } from "react";
+
+const Header = lazy(() => import("./components/header"));
+const WelcomeDashBoard = lazy(() => import("./components/welcome-dashboard"));
+const BlogTable = lazy(() => import("./pages/dashboard/blog/blog-table"));
+const CategoryTable = lazy(() => import("./pages/dashboard/category/category-table"));
+const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
+const Home = lazy(() => import("./pages/clients/Home"));
+const BloodRequestsManage = lazy(() => import("./pages/dashboard/bloodrequest/index"));
+const UserPage = lazy(() => import("./pages/dashboard/user"));
+const BloodRequests = lazy(() => import("./pages/clients/bloodrequest/BloodRequest"));
+const BloodInventoryTable = lazy(() => import("./pages/dashboard/blood-inventory/blood-inventory-table"))
+const EventTable = lazy(() => import("./pages/dashboard/donationevent/event-table"))
+const BlogSection = lazy(() => import("./pages/clients/blogs/BlogSection"));
+const BlogDetail = lazy(() => import("./pages/clients/blogs/BlogDetail"));
+
+function withSuspense(Component: React.ComponentType) {
+  return (
+    <Suspense >
+      <Component />
+    </Suspense>
+  );
+}
 
 export default createBrowserRouter([
   {
@@ -27,15 +38,19 @@ export default createBrowserRouter([
     children: [
       {
         index: true,
-        Component: Home,
+        element: withSuspense(Home),
       },
       {
         path: "/blogs",
-        Component: BlogSection,
+        element: withSuspense(BlogSection),
       },
       {
         path: "/blogs/:id",
-        Component: BlogDetail,
+        element: withSuspense(BlogDetail),
+      },
+      {
+        path: "/bloodrequest",
+        element: withSuspense(BloodRequests),
       },
     ],
   },
@@ -51,19 +66,19 @@ export default createBrowserRouter([
     children: [
       {
         index: true,
-        Component: WelcomeDashBoard,
+        element: withSuspense(WelcomeDashBoard),
       },
       {
         path: "blog",
-        element: <BlogTable />,
+        element: withSuspense(BlogTable),
       },
       {
         path: "category",
-        element: <CategoryTable />,
+        element: withSuspense(CategoryTable),
       },
       {
         path: "bloodrequests",
-        element: <BloodRequests />,
+        element: withSuspense(BloodRequestsManage),
       },
       {
         path: "users",
@@ -77,6 +92,7 @@ export default createBrowserRouter([
         path: "donationevent",
         element: <EventTable />,
       },
-    ],
-  },
+
+    ]
+  }
 ]);

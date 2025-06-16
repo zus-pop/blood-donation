@@ -8,6 +8,7 @@ const UserTable = () => {
     const { data: users } = useQuery({
         queryKey: ["users"],
         queryFn: getUsers,
+        staleTime: 1000 * 60,
     });
     const queryClient = useQueryClient();
     const { mutate } = useMutation({

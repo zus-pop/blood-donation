@@ -2,9 +2,8 @@ import { Schema } from "mongoose";
 
 export const BloodRequestSchema = new Schema(
     {
-        user: {
-            type: Schema.Types.ObjectId,
-            ref: "User",
+        name: {
+            type: String,
             required: true,
         },
         bloodType: {
@@ -25,10 +24,19 @@ export const BloodRequestSchema = new Schema(
             default: "PENDING",
             enum: ["PENDING", "APPROVAL", "REJECTED", "CANCELLED", "MATCHED", "FULL_FILLED", "IN_PROGRESS"],
         },
+        phone:
+        {
+            type: String,
+            required: true,
+        },
         address: {
             type: String,
             required: true,
         },
+        requestedBy: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        }
     },
     { timestamps: true, collection: "bloodrequest" }
 );

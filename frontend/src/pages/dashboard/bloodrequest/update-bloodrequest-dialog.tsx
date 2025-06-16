@@ -55,12 +55,15 @@ const UpdateBloodRequestDialog = ({ currentData }: { currentData: BloodRequestPr
     const { data: users = [] } = useUserQuery({
         queryKey: ["users"],
         queryFn: getUsers,
+        staleTime: 1000 * 60,
     });
 
     const form = useForm<BloodRequestSchema>({
         resolver: zodResolver(bloodRequestSchema),
         defaultValues: {
-            user: currentData.user._id,
+            name: currentData.name,
+            phone: currentData.phone,
+            requestedBy: currentData.requestedBy._id,
             bloodType: currentData.bloodType,
             bloodComponent: currentData.bloodComponent,
             quantity: currentData.quantity,
@@ -101,7 +104,43 @@ const UpdateBloodRequestDialog = ({ currentData }: { currentData: BloodRequestPr
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                             <FormField
                                 control={form.control}
-                                name="user"
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Your Full Name</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="text"
+
+                                                placeholder="Enter your name"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="phone"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Phone Number</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="tel"
+                                                placeholder="Enter your phone number"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="requestedBy"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>User</FormLabel>

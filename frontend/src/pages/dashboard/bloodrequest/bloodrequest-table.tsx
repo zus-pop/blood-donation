@@ -10,6 +10,7 @@ const BloodRequestTable = () => {
     const { data: bloodrequests } = useQuery({
         queryKey: ["bloodrequests"],
         queryFn: getBloodRequests,
+        staleTime: 1000 * 60,
     });
     const queryClient = useQueryClient();
     const { mutate } = useMutation({
@@ -29,7 +30,7 @@ const BloodRequestTable = () => {
                 <CreateBloodRequestDialog />
             </div>
             <DataTable
-                filter="Email"
+                filter="Name"
                 columns={columns({ onDelete: mutate })}
                 data={bloodrequests ?? []}
             />

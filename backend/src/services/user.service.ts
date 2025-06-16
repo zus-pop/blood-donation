@@ -1,5 +1,5 @@
 import { User } from '../models';
-import { UserInput, UserQuery } from '../types/user.type';
+import { UpdateUser, UserInput, UserQuery } from '../types/user.type';
 
 export async function findUsers(query: UserQuery) {
     const users = await User.find(query).select('-password');
@@ -16,7 +16,7 @@ export async function findUserById(id: string) {
     }
     return user;
 }
-export async function updateUser(id: string, data: Partial<UserInput>) {
+export async function updateUser(id: string, data: UpdateUser) {
     const user = await User.findByIdAndUpdate(id, data, { runValidators: true, new: true }).select('-password');
     if (!user) {
         throw new Error('User not found');
@@ -24,7 +24,7 @@ export async function updateUser(id: string, data: Partial<UserInput>) {
     return user;
 }
 export async function deleteUser(id: string) {
-    const user = await User.findByIdAndDelete(id);
+    const user = await User.findByIdAndDelete(id).select('-password');
     if (!user) {
         throw new Error('User not found');
     }

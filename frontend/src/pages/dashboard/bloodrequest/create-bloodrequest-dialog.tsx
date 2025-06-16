@@ -54,18 +54,22 @@ const CreateBloodRequestDialog = () => {
     const { data: users = [] } = useUserQuery({
         queryKey: ["users"],
         queryFn: getUsers,
+        staleTime: 1000 * 60,
     });
 
     const form = useForm<BloodRequestSchema>({
         resolver: zodResolver(bloodRequestSchema),
         defaultValues: {
-            user: "",
+            name: "",
+            phone: "",
             bloodType: "",
             bloodComponent: "WHOLE_BLOOD",
-            quantity: 1,
+            quantity: 100,
             status: "PENDING",
             address: "",
+            requestedBy: ""
         },
+        mode: "onChange",
     });
 
     const { mutate, isPending } = useMutation({
@@ -101,31 +105,40 @@ const CreateBloodRequestDialog = () => {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                             <FormField
                                 control={form.control}
-                                name="user"
+                                name="name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Email of User</FormLabel>
+                                        <FormLabel>Your Full Name</FormLabel>
                                         <FormControl>
-                                            <Select
-                                                value={field.value}
-                                                onValueChange={val => field.onChange(val)}
-                                            >
-                                                <SelectTrigger className="w-full">
-                                                    <SelectValue placeholder="Select Email" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {users.map(user => (
-                                                        <SelectItem key={user._id} value={user._id}>
-                                                            {user.email} ({user.firstName} {user.lastName})
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
+                                            <Input
+                                                type="text"
+
+                                                placeholder="Enter your name"
+                                                {...field}
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
+                            <FormField
+                                control={form.control}
+                                name="phone"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Phone Number</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="tel"
+                                                placeholder="Enter your phone number"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
                             <FormField
                                 control={form.control}
                                 name="bloodType"
@@ -181,7 +194,7 @@ const CreateBloodRequestDialog = () => {
                                     <FormItem>
                                         <FormLabel>Quantity (bags)</FormLabel>
                                         <FormControl>
-                                            <Input type="number" min={1} {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
+                                            <Input type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -219,6 +232,33 @@ const CreateBloodRequestDialog = () => {
                                         <FormLabel>Address</FormLabel>
                                         <FormControl>
                                             <Textarea placeholder="Address..." {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="requestedBy"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Email of User</FormLabel>
+                                        <FormControl>
+                                            <Select
+                                                value={field.value}
+                                                onValueChange={val => field.onChange(val)}
+                                            >
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select Email" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {users.map(user => (
+                                                        <SelectItem key={user._id} value={user._id}>
+                                                            {user.email} ({user.firstName} {user.lastName})
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

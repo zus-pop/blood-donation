@@ -4,19 +4,23 @@ import type { UserProps } from "./user.api";
 
 export interface BloodRequestProps {
     _id: string;
-    user: UserProps;
+    name: string;
+    phone: string;
     bloodType: string;
     bloodComponent: string;
     quantity: number;
     status: string;
     address: string;
+    requestedBy: UserProps;
     createdAt: string;
     updatedAt: string;
     __v: number;
 }
 
 export interface BloodRequestInput {
-    user: string;
+    name: string;
+    phone: string;
+    requestedBy: string;
     bloodType: string;
     bloodComponent: string;
     quantity: number;
@@ -32,6 +36,7 @@ export const getBloodRequests = async (): Promise<BloodRequestProps[]> => {
 
 export const createBloodRequest = async (data: BloodRequestInput): Promise<BloodRequestProps> => {
     const res = await axios.post("/bloodrequests", data);
+    console.log(res.data);
     return res.data;
 };
 

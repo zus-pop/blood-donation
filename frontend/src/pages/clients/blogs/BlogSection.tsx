@@ -18,10 +18,10 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, Droplets, Filter, Search } from "lucide-react";
 import { useState } from "react";
-import { getBlogs } from "../apis/blog.api";
-import { getCategoriesGroupBy } from "../apis/category.api";
-import Loading from "../components/loading";
-import { formatDate } from "../lib/utils";
+import { getBlogs } from "../../../apis/blog.api";
+import { getCategoriesGroupBy } from "../../../apis/category.api";
+import Loading from "../../../components/loading";
+import { formatDate } from "../../../lib/utils";
 import { Link } from "react-router";
 
 export default function BlogSection() {
@@ -80,11 +80,10 @@ export default function BlogSection() {
                       variant={
                         selectedCategory === category._id ? "default" : "ghost"
                       }
-                      className={`w-full justify-start ${
-                        selectedCategory === category._id
+                      className={`w-full justify-start ${selectedCategory === category._id
                           ? "bg-red-600 hover:bg-red-700"
                           : ""
-                      }`}
+                        }`}
                       onClick={() => handleCategoryChange(category.slug)}
                     >
                       <span>{category.name}</span>
@@ -138,11 +137,10 @@ export default function BlogSection() {
                                 ? "default"
                                 : "ghost"
                             }
-                            className={`w-full justify-start ${
-                              selectedCategory === category._id
+                            className={`w-full justify-start ${selectedCategory === category._id
                                 ? "bg-red-600 hover:bg-red-700"
                                 : ""
-                            }`}
+                              }`}
                             onClick={() => handleCategoryChange(category.slug)}
                           >
                             <span>{category.name}</span>
