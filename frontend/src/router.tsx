@@ -2,6 +2,7 @@ import { createBrowserRouter, Outlet } from "react-router";
 import ScrollToTop from "./components/scroll-to-top";
 import { Toaster } from "./components/ui/sonner";
 import { lazy, Suspense } from "react";
+import DonationEvents from "./pages/clients/DonationEvents";
 
 const Header = lazy(() => import("./components/header"));
 const WelcomeDashBoard = lazy(() => import("./components/welcome-dashboard"));
@@ -51,6 +52,10 @@ export default createBrowserRouter([
       {
         path: "/bloodrequest",
         element: withSuspense(BloodRequests),
+      },
+      {
+        path: "/donationevents",
+        element: <DonationEvents />,
       },
     ],
   },

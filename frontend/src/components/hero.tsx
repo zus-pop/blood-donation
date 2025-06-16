@@ -27,7 +27,7 @@ const Hero = () => {
   const next = () => setCurrent((prev) => (prev + 1) % slides.length);
 
   return (
-    <section className="relative min-h-[600px] md:min-h-[650px] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[600px] md:min-h-[610px] flex items-center justify-center overflow-hidden">
       {slides.map((slide, idx) => (
         <img
           key={idx}
