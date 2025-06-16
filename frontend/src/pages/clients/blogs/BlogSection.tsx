@@ -1,28 +1,28 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
 } from "@/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, Droplets, Filter, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Link } from "react-router";
 import { getBlogs } from "../../../apis/blog.api";
 import { getCategoriesGroupBy } from "../../../apis/category.api";
 import Loading from "../../../components/loading";
 import { formatDate } from "../../../lib/utils";
-import { Link } from "react-router";
 
 export default function BlogSection() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
