@@ -19,16 +19,16 @@ import Loading from '@/components/loading';
 
 import { z } from "zod";
 import Footer from '@/components/footer';
+import { toast } from 'sonner';
 
 export const clientBloodRequestSchema = z.object({
-    name: z.string().min(1, "Name is required"),
-    phone: z.string().min(1, "Phone number is required"),
+    name: z.string().trim().min(1, "Name is required"),
+    phone: z.string().min(1, "Phone number is required").regex(/^\+?[0-9]{9,11}$/, "Phone number must be valid (9-11 digits)"),
     bloodType: z.string().min(1, "Blood type is required"),
     bloodComponent: z.string().min(1, "Blood component is required"),
     quantity: z.number().min(100, "Quantity must be at least 100ml"),
-    address: z.string().min(1, "Address is required"),
+    address: z.string().trim().min(1, "Address is required"),
     requestedBy: z.string().min(1, "User Request ID is required"),
-    // No status field for client form (let backend handle default)
 });
 
 export type ClientBloodRequestSchema = z.infer<typeof clientBloodRequestSchema>;
@@ -72,9 +72,11 @@ export default function BloodRequest() {
                 quantity: 100,
                 address: "",
             });
+            toast.success("Blood request submitted successfully!");
         },
         onError: () => {
             setIsSubmitting(false);
+            toast.error("Failed to submit blood request. Please try again.");
         }
     });
 
@@ -88,7 +90,7 @@ export default function BloodRequest() {
         <div className='bg-muted/50'>
             <div className="container mx-auto py-12 px-4 max-w-3xl ">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold">Request Blood Donation</h1>
+                    <h1 className="text-3xl font-bold">Request Blood</h1>
                     <p className="text-muted-foreground mt-2">
                         Fill out the form below with your blood needs and location details
                     </p>
@@ -190,7 +192,7 @@ export default function BloodRequest() {
                                 name="quantity"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Quantity (units)</FormLabel>
+                                        <FormLabel>Quantity (ml)</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"

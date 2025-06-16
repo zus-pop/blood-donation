@@ -30,9 +30,11 @@ export default createBrowserRouter([
     path: "/",
     element: (
       <>
+
         <ScrollToTop />
         <Header />
         <Outlet />
+        <Toaster richColors theme="system" />
       </>
     ),
     children: [
@@ -82,15 +84,15 @@ export default createBrowserRouter([
       },
       {
         path: "users",
-        element: <UserPage />,
+        element: withSuspense(UserPage),
       },
       {
         path: "blood-inventory",
-        element: <BloodInventoryTable />,
+        element: withSuspense(BloodInventoryTable),
       },
       {
         path: "donationevent",
-        element: <EventTable />,
+        element: withSuspense(EventTable),
       },
 
     ]
