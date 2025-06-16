@@ -9,7 +9,8 @@ export interface UserInput {
     lastName: string;
     email: string;
     password: string;
-    role?: string;
+    phone?: string;
+    role?: "MEMBER" | "STAFF" | "ADMIN";
 }
 export interface UpdateUser {
     firstName: string;
