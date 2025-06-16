@@ -33,6 +33,7 @@ import {
 } from "../../../components/ui/select";
 import { Textarea } from "../../../components/ui/textarea";
 import { blogSchema, type BlogSchema } from "./blog.schema";
+import { toast } from "sonner";
 
 const CreateBlogDialog = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -56,6 +57,7 @@ const CreateBlogDialog = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
       setOpen(false);
+      toast.success("Create blog successfully");
     },
   });
   const imageFile = form.watch("image");
@@ -66,7 +68,7 @@ const CreateBlogDialog = () => {
     formData.append("category", blog.category);
     formData.append("summary", blog.summary);
     formData.append("content", blog.content);
-    formData.append("image", blog.image as File);
+    if (blog.image) formData.append("image", blog.image as File);
     mutate(formData);
   };
   return (
@@ -204,7 +206,7 @@ const CreateBlogDialog = () => {
               </FormItem>
 
               <div className="flex justify-center">
-                <Button className="text-xl" type="submit">
+                <Button disabled={isPending} className="text-xl" type="submit">
                   <span className="p-2">
                     {isPending ? <Loading></Loading> : <span>Submit</span>}
                   </span>

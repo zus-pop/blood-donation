@@ -16,10 +16,22 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import Loading from '@/components/loading';
-import Header from '@/components/header';
-import Footer from '@/components/footer';
-import { bloodRequestSchema, type BloodRequestSchema } from '@/pages/dashboard/bloodrequest/bloodrequest.schema';
 
+import { z } from "zod";
+import Footer from '@/components/footer';
+
+export const clientBloodRequestSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    phone: z.string().min(1, "Phone number is required"),
+    bloodType: z.string().min(1, "Blood type is required"),
+    bloodComponent: z.string().min(1, "Blood component is required"),
+    quantity: z.number().min(100, "Quantity must be at least 100ml"),
+    address: z.string().min(1, "Address is required"),
+    requestedBy: z.string().min(1, "User Request ID is required"),
+    // No status field for client form (let backend handle default)
+});
+
+export type ClientBloodRequestSchema = z.infer<typeof clientBloodRequestSchema>;
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 const BLOOD_COMPONENTS = [
     "WHOLE_BLOOD",
@@ -35,12 +47,15 @@ export default function BloodRequest() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const form = useForm({
-        resolver: zodResolver(bloodRequestSchema),
+        resolver: zodResolver(clientBloodRequestSchema),
         defaultValues: {
+            name: "",
+            phone: "",
             bloodType: "",
             bloodComponent: "",
             quantity: 100,
             address: "",
+            requestedBy: "6841160d511a3b66920c0a80",
         },
         mode: "onChange",
     });
@@ -50,6 +65,8 @@ export default function BloodRequest() {
         onSuccess: () => {
             setIsSubmitting(false);
             form.reset({
+                name: "",
+                phone: "",
                 bloodType: "",
                 bloodComponent: "",
                 quantity: 100,
@@ -61,19 +78,14 @@ export default function BloodRequest() {
         }
     });
 
-    function onSubmit(data: BloodRequestSchema) {
+    function onSubmit(data: ClientBloodRequestSchema) {
         setIsSubmitting(true);
-
-        const completeData = {
-            ...data,
-            user: "6841160d511a3b66920c0a80",
-        };
-        mutate(completeData);
+        console.log(data);
+        mutate(data);
     }
 
     return (
         <div className='bg-muted/50'>
-            <Header />
             <div className="container mx-auto py-12 px-4 max-w-3xl ">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold">Request Blood Donation</h1>
@@ -83,9 +95,45 @@ export default function BloodRequest() {
                 </div>
 
                 <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
+
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                             <div className="grid md:grid-cols-2 gap-6">
+                                <FormField
+                                    control={form.control}
+                                    name="name"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Your Full Name</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="text"
+
+                                                    placeholder="Enter your name"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="phone"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Phone Number</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="tel"
+                                                    placeholder="Enter your phone number"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                                 <FormField
                                     control={form.control}
                                     name="bloodType"

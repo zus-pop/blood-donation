@@ -1,7 +1,9 @@
-import { createBrowserRouter } from "react-router";
-
+import { createBrowserRouter, Outlet } from "react-router";
+import ScrollToTop from "./components/scroll-to-top";
+import { Toaster } from "./components/ui/sonner";
 import { lazy, Suspense } from "react";
 
+const Header = lazy(() => import("./components/header"));
 const WelcomeDashBoard = lazy(() => import("./components/welcome-dashboard"));
 const BlogTable = lazy(() => import("./pages/dashboard/blog/blog-table"));
 const CategoryTable = lazy(() => import("./pages/dashboard/category/category-table"));
@@ -12,6 +14,9 @@ const UserPage = lazy(() => import("./pages/dashboard/user"));
 const BloodRequests = lazy(() => import("./pages/clients/bloodrequest/BloodRequest"));
 const BloodInventoryTable = lazy(() => import("./pages/dashboard/blood-inventory/blood-inventory-table"))
 const EventTable = lazy(() => import("./pages/dashboard/donationevent/event-table"))
+const BlogSection = lazy(() => import("./pages/clients/blogs/BlogSection"));
+const BlogDetail = lazy(() => import("./pages/clients/blogs/BlogDetail"));
+
 function withSuspense(Component: React.ComponentType) {
   return (
     <Suspense >
@@ -23,15 +28,41 @@ function withSuspense(Component: React.ComponentType) {
 export default createBrowserRouter([
   {
     path: "/",
-    element: withSuspense(Home),
-  },
-  {
-    path: "/bloodrequest",
-    element: withSuspense(BloodRequests),
+    element: (
+      <>
+        <ScrollToTop />
+        <Header />
+        <Outlet />
+      </>
+    ),
+    children: [
+      {
+        index: true,
+        element: withSuspense(Home),
+      },
+      {
+        path: "/blogs",
+        element: withSuspense(BlogSection),
+      },
+      {
+        path: "/blogs/:id",
+        element: withSuspense(BlogDetail),
+      },
+      {
+        path: "/bloodrequest",
+        element: withSuspense(BloodRequests),
+      },
+    ],
   },
   {
     path: "/dashboard",
-    element: withSuspense(Dashboard),
+    element: (
+      <>
+        <ScrollToTop />
+        <Dashboard />
+        <Toaster richColors theme="system" />
+      </>
+    ),
     children: [
       {
         index: true,

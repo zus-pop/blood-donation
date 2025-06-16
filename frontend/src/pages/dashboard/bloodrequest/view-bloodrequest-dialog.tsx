@@ -47,8 +47,8 @@ const ViewBloodRequestDialog = ({ bloodrequest }: ViewBloodRequestDialogProps) =
                             <span className="font-semibold">Requested By:</span>
                         </div>
                         <div className="ml-7 text-gray-700">
-                            {bloodrequest.user.email}<br/>
-                            <span className="text-xs text-gray-500">{bloodrequest.user.firstName} {bloodrequest.user.lastName}</span>
+                            {bloodrequest.requestedBy.email}<br />
+                            <span className="text-xs text-gray-500">{bloodrequest.requestedBy.firstName} {bloodrequest.requestedBy.lastName}</span>
                         </div>
                         <div className="flex items-center gap-2 text-base mt-2">
                             <Calendar className="h-5 w-5 text-primary" />
@@ -90,7 +90,7 @@ const ViewBloodRequestDialog = ({ bloodrequest }: ViewBloodRequestDialogProps) =
                         </div>
                     </div>
                 </div>
-               
+
             </DialogContent>
         </Dialog>
     );
