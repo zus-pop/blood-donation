@@ -1,6 +1,6 @@
 import { Droplets, Menu, User } from "lucide-react";
 import { useState } from "react";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
@@ -9,10 +9,6 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const navList = [
-    {
-      name: "Home",
-      to: "/",
-    },
     {
       name: "Blogs",
       to: "/blogs",
@@ -33,10 +29,10 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full px-5 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-2">
+        <Link to={"/"} className="flex items-center gap-2">
           <Droplets className="h-6 w-6 text-red-600" />
-          <span className="text-xl font-bold">LifeStream</span>
-        </div>
+          <span className="text-xl font-bold">Bloody</span>
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
@@ -45,7 +41,8 @@ const Header = () => {
               key={nav.name}
               to={nav.to}
               className={({ isActive }) =>
-                `text-lg font-medium ${isActive ? "text-red-600" : "text-muted-foreground"
+                `text-lg font-medium ${
+                  isActive ? "text-red-600" : "text-muted-foreground"
                 }`
               }
             >
@@ -63,10 +60,12 @@ const Header = () => {
             Donate Now
           </Button>
           or
-          <Button className="hidden md:flex bg-red-600 hover:bg-red-700" onClick={() => navigate("/bloodrequest")}>
+          <Button
+            className="hidden md:flex bg-red-600 hover:bg-red-700"
+            onClick={() => navigate("/bloodrequest")}
+          >
             Request Blood Now
           </Button>
-
           {/* Mobile Menu Button */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
