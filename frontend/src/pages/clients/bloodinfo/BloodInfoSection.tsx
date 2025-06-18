@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "react-router";
 import { getBloodTypes } from "../../../apis/bloodType.api";
 import type { BloodType } from "../../../apis/bloodType.api";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
@@ -28,6 +29,7 @@ const BLOOD_TYPE_OPTIONS = [
 ];
 
 export default function BloodInfoSection() {
+  const location = useLocation();
   const [selectedBloodType, setSelectedBloodType] = useState<string>("all");
   const [selectedComponent, setSelectedComponent] = useState<string>("all");
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
@@ -36,6 +38,13 @@ export default function BloodInfoSection() {
     queryKey: ["bloodTypes"],
     queryFn: getBloodTypes,
   });
+
+  // Handle state from navigation
+  useEffect(() => {
+    if (location.state?.selectedBloodType) {
+      setSelectedBloodType(location.state.selectedBloodType);
+    }
+  }, [location.state]);
 
   // Filter blood types based on selected filters
   const filteredBloodTypes = bloodTypes.filter((blood: BloodType) => {
