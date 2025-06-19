@@ -1,7 +1,7 @@
+import { lazy, Suspense } from "react";
 import { createBrowserRouter, Outlet } from "react-router";
 import ScrollToTop from "./components/scroll-to-top";
 import { Toaster } from "./components/ui/sonner";
-import { lazy, Suspense } from "react";
 
 const Header = lazy(() => import("./components/header"));
 const WelcomeDashBoard = lazy(() => import("./components/welcome-dashboard"));
@@ -18,7 +18,7 @@ const BlogSection = lazy(() => import("./pages/clients/blogs/BlogSection"));
 const BlogDetail = lazy(() => import("./pages/clients/blogs/BlogDetail"));
 const BloodInfoSection = lazy(() => import("./pages/clients/bloodinfo/BloodInfoSection"));
 const BloodRequestSection = lazy(() => import("./pages/clients/bloodrequest/BloodRequestSection"));
-
+const DonationEvents = lazy(() => import("./pages/clients/DonationEvents"));
 function withSuspense(Component: React.ComponentType) {
   return (
     <Suspense >
@@ -63,6 +63,10 @@ export default createBrowserRouter([
       {
         path: "/blrqsection",
         element: withSuspense(BloodRequestSection),
+      },
+      {
+        path: "/donationevents",
+        element: withSuspense(DonationEvents),
       }
     ],
   },

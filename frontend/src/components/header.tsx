@@ -15,7 +15,7 @@ const Header = () => {
     },
     {
       name: "Donation Events",
-      to: "/donationevent",
+      to: "/donationevents",
     },
     {
       name: "Blood Requests",
@@ -56,7 +56,7 @@ const Header = () => {
             <User className="mr-2 h-4 w-4" />
             Sign In
           </Button>
-          <Button className="hidden md:flex bg-red-600 hover:bg-red-700">
+          <Button className="hidden md:flex bg-red-600 hover:bg-red-700" onClick={() => navigate("/donationevents")}>
             Donate Now
           </Button>
           or
