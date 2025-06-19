@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
@@ -12,6 +13,7 @@ const BloodInfo = () => {
     { type: "AB-", status: "Stable", color: "bg-green-500" },
     { type: "AB+", status: "Stable", color: "bg-green-500" },
   ];
+
   return (
     <section className="py-12 bg-muted/50">
       <div className="container mx-auto px-4">
@@ -26,25 +28,32 @@ const BloodInfo = () => {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {bloodTypeNeeds.map((blood) => (
-            <Card key={blood.type} className="text-center">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-3xl font-bold">
-                  {blood.type}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div
-                  className={`inline-block w-3 h-3 rounded-full ${blood.color} mb-2`}
-                ></div>
-                <p className="text-sm font-medium">{blood.status}</p>
-              </CardContent>
-            </Card>
+            <Link
+              key={blood.type}
+              to="/blood-infos"
+              state={{ selectedBloodType: blood.type }}
+              className="block transition-transform hover:scale-105"
+            >
+              <Card className="text-center cursor-pointer hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-3xl font-bold">
+                    {blood.type}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div
+                    className={`inline-block w-3 h-3 rounded-full ${blood.color} mb-2`}
+                  ></div>
+                  <p className="text-sm font-medium">{blood.status}</p>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
 
         <div className="mt-8 text-center">
           <Button className="bg-red-600 hover:bg-red-700">
-            Find Your Blood Type
+            <Link to="blood-infos">Find Your Blood Type</Link>
           </Button>
         </div>
       </div>

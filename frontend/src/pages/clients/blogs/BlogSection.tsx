@@ -1,16 +1,16 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
 } from "@/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -18,11 +18,11 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, Droplets, Filter, Search } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router";
 import { getBlogs } from "../../../apis/blog.api";
 import { getCategoriesGroupBy } from "../../../apis/category.api";
 import Loading from "../../../components/loading";
 import { formatDate } from "../../../lib/utils";
-import { Link } from "react-router";
 
 export default function BlogSection() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -55,7 +55,7 @@ export default function BlogSection() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center text-center">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              LifeStream Blogs
+              Bloody Blogs
             </h1>
             <p className="text-lg text-red-100 max-w-2xl">
               Stay informed with the latest news, stories, and tips about blood
@@ -80,14 +80,22 @@ export default function BlogSection() {
                       variant={
                         selectedCategory === category._id ? "default" : "ghost"
                       }
-                      className={`w-full justify-start ${selectedCategory === category._id
-                          ? "bg-red-600 hover:bg-red-700"
+                      className={`w-full justify-start ${
+                        selectedCategory === category.slug
+                          ? "bg-red-600 hover:bg-red-700 text-white"
                           : ""
-                        }`}
+                      }`}
                       onClick={() => handleCategoryChange(category.slug)}
                     >
                       <span>{category.name}</span>
-                      <Badge variant="outline" className="ml-auto">
+                      <Badge
+                        variant="outline"
+                        className={`ml-auto ${
+                          selectedCategory === category.slug
+                            ? "text-white border-black bg-black"
+                            : ""
+                        }`}
+                      >
                         {category.totalBlogs}
                       </Badge>
                     </Button>
@@ -137,10 +145,11 @@ export default function BlogSection() {
                                 ? "default"
                                 : "ghost"
                             }
-                            className={`w-full justify-start ${selectedCategory === category._id
+                            className={`w-full justify-start ${
+                              selectedCategory === category._id
                                 ? "bg-red-600 hover:bg-red-700"
                                 : ""
-                              }`}
+                            }`}
                             onClick={() => handleCategoryChange(category.slug)}
                           >
                             <span>{category.name}</span>
