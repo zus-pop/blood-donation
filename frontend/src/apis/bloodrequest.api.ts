@@ -16,7 +16,18 @@ export interface BloodRequestProps {
     updatedAt: string;
     __v: number;
 }
+export interface BloodRequestQuery {
+    _id: string;
+    name: string;
+    phone: string;
+    bloodType: string;
+    bloodComponent: string;
+    quantity: number;
+    status: string;
+    address: string;
+    requestedBy: string;
 
+}
 export interface BloodRequestInput {
     name: string;
     phone: string;
@@ -29,8 +40,10 @@ export interface BloodRequestInput {
 }
 
 
-export const getBloodRequests = async (): Promise<BloodRequestProps[]> => {
-    const res = await axios.get("/bloodrequests");
+export const getBloodRequests = async (query: Partial<BloodRequestQuery>): Promise<BloodRequestProps[]> => {
+    const res = await axios.get("/bloodrequests", {
+        params: query,
+    });
     return res.data;
 };
 

@@ -5,7 +5,7 @@ import { deleteBloodRequest, getBloodRequests } from "../../../apis/bloodrequest
 import { DataTable } from "../../../components/data-table";
 import { columns } from "./bloodrequest-column";
 import CreateBloodRequestDialog from "./create-bloodrequest-dialog";
-
+import { toast } from "sonner";
 const BloodRequestTable = () => {
     const { data: bloodrequests } = useQuery({
         queryKey: ["bloodrequests"],
@@ -17,6 +17,7 @@ const BloodRequestTable = () => {
         mutationFn: deleteBloodRequest,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["bloodrequests"] });
+            toast.success("Blood request deleted successfully");
         },
     });
 
