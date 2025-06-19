@@ -6,22 +6,22 @@ import myAxios from "../lib/custom-axios";
 //   createdAt: string;
 //   updatedAt: string;
 // }
-export interface BloodSeedProps {
-  blood_group: string;
-  abo_type: string;
-  rh_type: string;
-  frequency_global: string;
-  notes?: string;
-  compatibility?: any;
-  inventory?: {
-    rbc?: { quantity_units?: number };
-    plasma?: { quantity_units?: number };
-    platelets?: { quantity_units?: number };
-    whole_blood?: { quantity_units?: number };
-    [key: string]: any;
-  };
-  [key: string]: any;
-}
+// export interface BloodSeedProps {
+//   blood_group: string;
+//   abo_type: string;
+//   rh_type: string;
+//   frequency_global: string;
+//   notes?: string;
+//   compatibility?: any;
+//   inventory?: {
+//     rbc?: { quantity_units?: number };
+//     plasma?: { quantity_units?: number };
+//     platelets?: { quantity_units?: number };
+//     whole_blood?: { quantity_units?: number };
+//     [key: string]: any;
+//   };
+//   [key: string]: any;
+// }
 export async function getBloodSeed() {
   const res = await myAxios.get("/inventory");
   return res.data;

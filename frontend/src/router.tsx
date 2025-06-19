@@ -16,7 +16,7 @@ const BloodInventoryTable = lazy(() => import("./pages/dashboard/blood-inventory
 const EventTable = lazy(() => import("./pages/dashboard/donationevent/event-table"))
 const BlogSection = lazy(() => import("./pages/clients/blogs/BlogSection"));
 const BlogDetail = lazy(() => import("./pages/clients/blogs/BlogDetail"));
-
+const BloodInfoSection = lazy(() => import("./pages/clients/bloodinfo/BloodInfoSection"));
 function withSuspense(Component: React.ComponentType) {
   return (
     <Suspense >
@@ -52,6 +52,10 @@ export default createBrowserRouter([
         path: "/bloodrequest",
         element: withSuspense(BloodRequests),
       },
+      {
+        path: "/blood-infos",
+        element: withSuspense(BloodInfoSection),
+      }
     ],
   },
   {
