@@ -19,7 +19,7 @@ const Header = () => {
     },
     {
       name: "Blood Requests",
-      to: "/requests",
+      to: "/blrqsection",
     },
     {
       name: "Blood Infos",

@@ -1,5 +1,4 @@
 import { ChevronRight } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 const testimonials = [
@@ -46,15 +45,6 @@ const Testimonials = () => {
             <Card key={testimonial.id} className="overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-center mb-4">
-                  <Avatar className="h-10 w-10 mr-4">
-                    <AvatarImage
-                      src={testimonial.image || "/placeholder.svg"}
-                      alt={testimonial.name}
-                    />
-                    <AvatarFallback>
-                      {testimonial.name.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
                   <div>
                     <p className="font-medium">{testimonial.name}</p>
                     <p className="text-sm text-muted-foreground">
