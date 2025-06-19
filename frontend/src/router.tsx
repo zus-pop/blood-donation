@@ -1,8 +1,7 @@
+import { lazy, Suspense } from "react";
 import { createBrowserRouter, Outlet } from "react-router";
 import ScrollToTop from "./components/scroll-to-top";
 import { Toaster } from "./components/ui/sonner";
-import { lazy, Suspense } from "react";
-import DonationEvents from "./pages/clients/DonationEvents";
 
 const Header = lazy(() => import("./components/header"));
 const WelcomeDashBoard = lazy(() => import("./components/welcome-dashboard"));
@@ -17,7 +16,9 @@ const BloodInventoryTable = lazy(() => import("./pages/dashboard/blood-inventory
 const EventTable = lazy(() => import("./pages/dashboard/donationevent/event-table"))
 const BlogSection = lazy(() => import("./pages/clients/blogs/BlogSection"));
 const BlogDetail = lazy(() => import("./pages/clients/blogs/BlogDetail"));
-
+const BloodInfoSection = lazy(() => import("./pages/clients/bloodinfo/BloodInfoSection"));
+const BloodRequestSection = lazy(() => import("./pages/clients/bloodrequest/BloodRequestSection"));
+const DonationEvents = lazy(() => import("./pages/clients/DonationEvents"));
 function withSuspense(Component: React.ComponentType) {
   return (
     <Suspense >
@@ -31,9 +32,11 @@ export default createBrowserRouter([
     path: "/",
     element: (
       <>
+
         <ScrollToTop />
         <Header />
         <Outlet />
+        <Toaster richColors theme="system" />
       </>
     ),
     children: [
@@ -54,9 +57,17 @@ export default createBrowserRouter([
         element: withSuspense(BloodRequests),
       },
       {
-        path: "/donationevents",
-        element: <DonationEvents />,
+        path: "/blood-infos",
+        element: withSuspense(BloodInfoSection),
       },
+      {
+        path: "/blrqsection",
+        element: withSuspense(BloodRequestSection),
+      },
+      {
+        path: "/donationevents",
+        element: withSuspense(DonationEvents),
+      }
     ],
   },
   {
@@ -87,15 +98,15 @@ export default createBrowserRouter([
       },
       {
         path: "users",
-        element: <UserPage />,
+        element: withSuspense(UserPage),
       },
       {
         path: "blood-inventory",
-        element: <BloodInventoryTable />,
+        element: withSuspense(BloodInventoryTable),
       },
       {
         path: "donationevent",
-        element: <EventTable />,
+        element: withSuspense(EventTable),
       },
 
     ]

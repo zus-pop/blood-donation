@@ -1,22 +1,23 @@
 // BloodRequestTable.tsx
 // UI table for blood requests, similar to BlogTable and CategoryTable
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteBloodRequest, getBloodRequests } from "../../../apis/bloodrequest.api";
+import { deleteBloodRequest, getBloodRequests, type BloodRequestProps } from "../../../apis/bloodrequest.api";
 import { DataTable } from "../../../components/data-table";
 import { columns } from "./bloodrequest-column";
 import CreateBloodRequestDialog from "./create-bloodrequest-dialog";
-
+import { toast } from "sonner";
 const BloodRequestTable = () => {
-    const { data: bloodrequests } = useQuery({
+    const { data: bloodrequests = [] } = useQuery<BloodRequestProps[]>({
         queryKey: ["bloodrequests"],
-        queryFn: getBloodRequests,
-        staleTime: 1000 * 60,
+        queryFn: () => getBloodRequests({}),
+        staleTime: 1000 * 60
     });
     const queryClient = useQueryClient();
     const { mutate } = useMutation({
         mutationFn: deleteBloodRequest,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["bloodrequests"] });
+            toast.success("Blood request deleted successfully");
         },
     });
 

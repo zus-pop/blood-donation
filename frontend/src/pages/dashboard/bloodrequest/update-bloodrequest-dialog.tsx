@@ -29,6 +29,7 @@ import { Textarea } from "../../../components/ui/textarea";
 import { bloodRequestSchema, type BloodRequestSchema } from "./bloodrequest.schema"
 import { getUsers } from "../../../apis/user.api";
 import { Select } from "../../../components/ui/select";
+import { toast } from "sonner";
 
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 const BLOOD_COMPONENTS = [
@@ -79,6 +80,7 @@ const UpdateBloodRequestDialog = ({ currentData }: { currentData: BloodRequestPr
             queryClient.invalidateQueries({ queryKey: ["bloodrequests"] });
             setOpen(false);
             form.reset();
+            toast.success("Blood request updated successfully");
         },
     });
 

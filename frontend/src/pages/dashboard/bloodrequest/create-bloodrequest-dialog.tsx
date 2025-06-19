@@ -28,7 +28,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Textarea } from "../../../components/ui/textarea";
 import { bloodRequestSchema, type BloodRequestSchema } from "./bloodrequest.schema";
 import { getUsers } from "../../../apis/user.api";
-
+import { toast } from "sonner";
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 const BLOOD_COMPONENTS = [
     "WHOLE_BLOOD",
@@ -78,6 +78,7 @@ const CreateBloodRequestDialog = () => {
             queryClient.invalidateQueries({ queryKey: ["bloodrequests"] });
             setOpen(false);
             form.reset();
+            toast.success("Blood request created successfully!")
         },
     });
 

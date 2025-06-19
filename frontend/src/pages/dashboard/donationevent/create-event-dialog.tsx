@@ -66,23 +66,23 @@ const CreateEventDialog = () => {
           New Event
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="rounded-2xl shadow-2xl p-8 max-w-lg w-full">
         <DialogHeader>
-          <DialogTitle>Create New Event</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-2xl font-bold text-center mb-2">Create New Event</DialogTitle>
+          <DialogDescription className="text-center mb-4">
             Create a new donation event. Fill in the details below.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel className="font-semibold">Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Event Title" {...field} />
+                    <Input placeholder="Event Title" {...field} className="h-12 text-base rounded-lg" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -93,74 +93,78 @@ const CreateEventDialog = () => {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel className="font-semibold">Description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Event Description" {...field} />
+                    <Textarea placeholder="Event Description" {...field} className="h-20 text-base rounded-lg" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="registrationStartedAt"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Registration Start</FormLabel>
-                  <FormControl>
-                    <Input type="datetime-local" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="registrationEndedAt"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Registration End</FormLabel>
-                  <FormControl>
-                    <Input type="datetime-local" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="eventStartedAt"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Event Start</FormLabel>
-                  <FormControl>
-                    <Input type="datetime-local" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="eventEndedAt"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Event End</FormLabel>
-                  <FormControl>
-                    <Input type="datetime-local" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="registrationStartedAt"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-semibold">Registration Start</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} className="h-12 text-base rounded-lg" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="registrationEndedAt"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-semibold">Registration End</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} className="h-12 text-base rounded-lg" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="eventStartedAt"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-semibold">Event Start</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} className="h-12 text-base rounded-lg" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="eventEndedAt"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-semibold">Event End</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} className="h-12 text-base rounded-lg" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Status</FormLabel>
+                  <FormLabel className="font-semibold">Status</FormLabel>
                   <FormControl>
-                    <select {...field} className="w-full border rounded px-2 py-1">
+                    <select {...field} className="w-full border rounded-lg px-2 py-3 text-base">
                       {statusOptions.map((status) => (
                         <option key={status} value={status}>
                           {status}
@@ -172,7 +176,7 @@ const CreateEventDialog = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" disabled={isPending} className="w-full h-12 text-lg font-bold rounded-lg bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800">
               Create
             </Button>
           </form>

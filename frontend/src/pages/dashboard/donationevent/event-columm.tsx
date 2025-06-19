@@ -62,12 +62,12 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<EventProps>[] => 
   {
     accessorKey: "registrationStartedAt",
     header: "Registration Start",
-    cell: ({ row }) => formatDate(row.original.registrationStartedAt, true),
+    cell: ({ row }) => formatDate(new Date(row.original.registrationStartedAt as string), true),
   },
   {
     accessorKey: "registrationEndedAt",
     header: "Registration End",
-    cell: ({ row }) => formatDate(row.original.registrationEndedAt, true),
+    cell: ({ row }) => formatDate(new Date(row.original.registrationEndedAt as string), true),
   },
   {
     accessorKey: "status",

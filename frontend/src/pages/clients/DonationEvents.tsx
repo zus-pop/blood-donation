@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import ContactModal from "../../components/ContactModal";
+import ContactModal from "../../components/contact-modal";
+import { createUser } from "@/apis/user.api";
+import { toast } from "sonner";
 
 const events = [
   {
@@ -66,15 +68,27 @@ export default function DonationEvents() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const errs = validate(form);
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
-    alert("Thank you for registering to donate blood!");
-    setSelected(null);
-    setForm({ firstName: "", lastName: "", email: "", phone: "", password: "" });
-    setErrors({});
+    try {
+      await createUser({
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        phone: form.phone,
+        password: form.password,
+        role: "MEMBER",
+      });
+      toast.success("Thank you for registering to donate blood!");
+      setSelected(null);
+      setForm({ firstName: "", lastName: "", email: "", phone: "", password: "" });
+      setErrors({});
+    } catch {
+      toast.error("Registration failed. Please try again.");
+    }
   };
   return (
     <div className="container mx-auto px-4 py-12">
