@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { getEvents } from "@/apis/event.api";
 import type { EventProps } from "@/apis/event.api";
 import { useAuth } from "@/context/AuthContext";
-import { createParticipation } from "@/apis/participation.api";
+import { createParticipation, getParticipations } from "@/apis/participation.api";
 import { toast } from "sonner";
 
 export default function DonationEvents() {
@@ -12,6 +12,7 @@ export default function DonationEvents() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { openModal, isAuthenticated, user } = useAuth();
+  const [registeredEventIds, setRegisteredEventIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -29,6 +30,22 @@ export default function DonationEvents() {
     fetchEvents();
   }, []);
 
+  useEffect(() => {
+    const fetchUserParticipations = async () => {
+      if (isAuthenticated && user) {
+        try {
+          const participations = await getParticipations(user._id);
+          const eventIds = new Set(participations.map(p => p.event));
+          setRegisteredEventIds(eventIds);
+        } catch {
+          // Handle error silently, don't block user from seeing events
+          console.error("Failed to fetch user participations");
+        }
+      }
+    };
+    fetchUserParticipations();
+  }, [isAuthenticated, user]);
+
   const handleRegisterClick = async (eventId: string) => {
     if (!isAuthenticated || !user) {
       openModal();
@@ -40,6 +57,7 @@ export default function DonationEvents() {
           status: "REGISTERED",
         });
         toast.success("Successfully registered for the event!");
+        setRegisteredEventIds(prev => new Set(prev).add(eventId));
       } catch {
         toast.error("Failed to register for the event. You may have already registered.");
       }
@@ -74,12 +92,21 @@ export default function DonationEvents() {
                   End date: <span className="font-medium">{event.eventEndedAt?.slice(0, 10)}</span>
                 </div>
                 <div className="mb-4 text-sm">Location: <span className="font-medium">Thu Duc City</span></div>
-                <Button 
-                  className="bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-semibold shadow-lg px-6 py-2 rounded transition-all duration-200" 
-                  onClick={() => handleRegisterClick(event._id)}
-                >
-                  Register to Donate
-                </Button>
+                {registeredEventIds.has(event._id) ? (
+                  <Button
+                    disabled
+                    className="bg-gray-400 text-white font-semibold shadow-lg px-6 py-2 rounded transition-all duration-200"
+                  >
+                    Registered
+                  </Button>
+                ) : (
+                  <Button 
+                    className="bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-semibold shadow-lg px-6 py-2 rounded transition-all duration-200" 
+                    onClick={() => handleRegisterClick(event._id)}
+                  >
+                    Register to Donate
+                  </Button>
+                )}
               </CardContent>
             </Card>
           ))}
