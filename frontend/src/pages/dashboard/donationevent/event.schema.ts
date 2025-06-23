@@ -7,7 +7,9 @@ export const eventSchema = z.object({
   registrationEndedAt: z.string().min(1, "Registration end is required"),
   eventStartedAt: z.string().min(1, "Event start is required"),
   eventEndedAt: z.string().min(1, "Event end is required"),
-  status: z.enum(["UPCOMING", "REGISTRATION", "ONGOING", "ENDED", "CANCELLED"]),
+  slot: z.coerce.number().min(1, "Slot is required"),
+  location: z.string().min(1, "Location is required"),
+  image: z.union([z.instanceof(File), z.string().url()]).optional(),
 });
 
-export type EventSchema = z.infer<typeof eventSchema>;
+export type EventSchema = z.infer<typeof eventSchema> & { status?: string };

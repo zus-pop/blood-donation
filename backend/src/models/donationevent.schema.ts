@@ -32,6 +32,19 @@ export const DonationEventSchema = new Schema(
       enum: ["UPCOMING", "REGISTRATION", "ONGOING", "ENDED", "CANCELLED"],
       default: "UPCOMING",
     },
+    slot: {
+      type: Number,
+      required: true,
+    },
+    location: {
+      type: String,
+      required: true,
+      default: "Thu Duc City",
+    },
+    image: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true, collection: "donationevent" }
 ); 

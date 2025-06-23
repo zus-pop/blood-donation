@@ -24,6 +24,8 @@ export interface EventProps {
   registrationEndedAt: string;
   eventStartedAt: string;
   eventEndedAt: string;
+  slot: number;
+  location: string;
   status: "UPCOMING" | "REGISTRATION" | "ONGOING" | "ENDED" | "CANCELLED";
   createdAt: string;
 }
