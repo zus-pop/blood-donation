@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createUser } from "@/apis/user.api";
 import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
 
 export default function CreateUserDialog() {
     const [open, setOpen] = useState(false);
@@ -36,6 +37,7 @@ export default function CreateUserDialog() {
             queryClient.invalidateQueries({ queryKey: ["users"] });
             setOpen(false);
             form.reset();
+            toast.success("User created successfully");
         },
     });
     function onSubmit(values: any) {
@@ -52,7 +54,7 @@ export default function CreateUserDialog() {
                     <DialogTitle>Create User</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                    
+
                     <Input placeholder="First Name" {...form.register("firstName")} />
                     <Input placeholder="Last Name" {...form.register("lastName")} />
                     <Input placeholder="Phone" {...form.register("phone")} />
@@ -73,7 +75,7 @@ export default function CreateUserDialog() {
                             </SelectContent>
                         </Select>
                     </div>
-                   
+
                     <Button type="submit" disabled={isPending} className="w-full">Create</Button>
                 </form>
             </DialogContent>

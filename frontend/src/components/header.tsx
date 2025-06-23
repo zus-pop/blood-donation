@@ -5,9 +5,20 @@ import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { useNavigate } from "react-router";
+import { useAuth } from "@/context/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { openModal, isAuthenticated, user, logout } = useAuth();
   const navList = [
     {
       name: "Blogs",
@@ -15,11 +26,11 @@ const Header = () => {
     },
     {
       name: "Donation Events",
-      to: "/donationevent",
+      to: "/donationevents",
     },
     {
       name: "Blood Requests",
-      to: "/requests",
+      to: "/blrqsection",
     },
     {
       name: "Blood Infos",
@@ -40,7 +51,7 @@ const Header = () => {
             <NavLink
               key={nav.name}
               to={nav.to}
-              className={({ isActive }) =>
+              className={({ isActive }: { isActive: boolean }) =>
                 `text-lg font-medium ${
                   isActive ? "text-red-600" : "text-muted-foreground"
                 }`
@@ -52,20 +63,29 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-4">
-          <Button variant="outline" className="hidden md:flex">
-            <User className="mr-2 h-4 w-4" />
-            Sign In
-          </Button>
-          <Button className="hidden md:flex bg-red-600 hover:bg-red-700">
-            Donate Now
-          </Button>
+          <Button className="hidden md:flex bg-red-600 hover:bg-red-700" onClick={() => navigate("/donationevents")}>Donate Now</Button>
           or
-          <Button
-            className="hidden md:flex bg-red-600 hover:bg-red-700"
-            onClick={() => navigate("/bloodrequest")}
-          >
-            Request Blood Now
-          </Button>
+          <Button className="hidden md:flex bg-red-600 hover:bg-red-700" onClick={() => navigate("/bloodrequest")}>Request Blood Now</Button>
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  <User className="mr-2 h-4 w-4" />
+                  {user?.firstName} {user?.lastName}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button variant="outline" className="hidden md:flex" onClick={openModal}>
+              <User className="mr-2 h-4 w-4" />
+              Sign In
+            </Button>
+          )}
           {/* Mobile Menu Button */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
@@ -114,10 +134,17 @@ const Header = () => {
                 <Button className="w-full bg-red-600 hover:bg-red-700">
                   Donate Now
                 </Button>
-                <Button variant="outline" className="w-full">
-                  <User className="mr-2 h-4 w-4" />
-                  Sign In
-                </Button>
+                {isAuthenticated ? (
+                  <Button variant="outline" className="w-full" onClick={logout}>
+                    <User className="mr-2 h-4 w-4" />
+                    Logout
+                  </Button>
+                ) : (
+                  <Button variant="outline" className="w-full" onClick={openModal}>
+                    <User className="mr-2 h-4 w-4" />
+                    Sign In
+                  </Button>
+                )}
               </div>
             </SheetContent>
           </Sheet>

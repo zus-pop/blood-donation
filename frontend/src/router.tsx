@@ -1,8 +1,11 @@
+import { lazy, Suspense } from "react";
 import { createBrowserRouter, Outlet } from "react-router";
 import ScrollToTop from "./components/scroll-to-top";
 import { Toaster } from "./components/ui/sonner";
-import { lazy, Suspense } from "react";
+import GlobalModal from "./components/GlobalModal";
+import ProtectedRoute from "@/ProtectedRoute";
 
+const Login = lazy(() => import("./pages/dashboard/Login"));
 const Header = lazy(() => import("./components/header"));
 const WelcomeDashBoard = lazy(() => import("./components/welcome-dashboard"));
 const BlogTable = lazy(() => import("./pages/dashboard/blog/blog-table"));
@@ -17,6 +20,8 @@ const EventTable = lazy(() => import("./pages/dashboard/donationevent/event-tabl
 const BlogSection = lazy(() => import("./pages/clients/blogs/BlogSection"));
 const BlogDetail = lazy(() => import("./pages/clients/blogs/BlogDetail"));
 const BloodInfoSection = lazy(() => import("./pages/clients/bloodinfo/BloodInfoSection"));
+const BloodRequestSection = lazy(() => import("./pages/clients/bloodrequest/BloodRequestSection"));
+const DonationEvents = lazy(() => import("./pages/clients/DonationEvents"));
 function withSuspense(Component: React.ComponentType) {
   return (
     <Suspense >
@@ -30,9 +35,12 @@ export default createBrowserRouter([
     path: "/",
     element: (
       <>
+
         <ScrollToTop />
         <Header />
         <Outlet />
+        <GlobalModal />
+        <Toaster richColors theme="system" />
       </>
     ),
     children: [
@@ -55,17 +63,31 @@ export default createBrowserRouter([
       {
         path: "/blood-infos",
         element: withSuspense(BloodInfoSection),
+      },
+      {
+        path: "/blrqsection",
+        element: withSuspense(BloodRequestSection),
+      },
+      {
+        path: "/donationevents",
+        element: withSuspense(DonationEvents),
       }
     ],
   },
   {
+    path: "/login",
+    element: withSuspense(Login),
+  },
+  {
     path: "/dashboard",
     element: (
-      <>
-        <ScrollToTop />
-        <Dashboard />
-        <Toaster richColors theme="system" />
-      </>
+      <ProtectedRoute>
+        <>
+          <ScrollToTop />
+          <Dashboard />
+          <Toaster richColors theme="system" />
+        </>
+      </ProtectedRoute>
     ),
     children: [
       {
@@ -86,15 +108,15 @@ export default createBrowserRouter([
       },
       {
         path: "users",
-        element: <UserPage />,
+        element: withSuspense(UserPage),
       },
       {
         path: "blood-inventory",
-        element: <BloodInventoryTable />,
+        element: withSuspense(BloodInventoryTable),
       },
       {
         path: "donationevent",
-        element: <EventTable />,
+        element: withSuspense(EventTable),
       },
 
     ]

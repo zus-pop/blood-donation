@@ -14,6 +14,7 @@ import {
 import DeleteEventDialog from "./delete-event-dialog";
 import UpdateEventDialog from "./update-event-dialog";
 import ViewEventDialog from "./view-event-dialog";
+import { formatDate } from "@/lib/utils";
 
 export interface EventProps {
   _id: string;
@@ -23,6 +24,8 @@ export interface EventProps {
   registrationEndedAt: string;
   eventStartedAt: string;
   eventEndedAt: string;
+  slot: number;
+  location: string;
   status: "UPCOMING" | "REGISTRATION" | "ONGOING" | "ENDED" | "CANCELLED";
   createdAt: string;
 }
@@ -54,14 +57,24 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<EventProps>[] => 
     enableSorting: false,
     enableHiding: false,
   },
-  { accessorKey: "title", header: ({ column }) => <DataTableColumnHeader column={column} title="Title" /> },
-  { accessorKey: "description", header: "Description" },
-  { accessorKey: "registrationStartedAt", header: "Registration Start" },
-  { accessorKey: "registrationEndedAt", header: "Registration End" },
-  { accessorKey: "eventStartedAt", header: "Event Start" },
-  { accessorKey: "eventEndedAt", header: "Event End" },
-  { accessorKey: "status", header: "Status" },
-  { accessorKey: "createdAt", header: "Created At" },
+  {
+    accessorKey: "title",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Title" />,
+  },
+  {
+    accessorKey: "registrationStartedAt",
+    header: "Registration Start",
+    cell: ({ row }) => formatDate(new Date(row.original.registrationStartedAt as string), true),
+  },
+  {
+    accessorKey: "registrationEndedAt",
+    header: "Registration End",
+    cell: ({ row }) => formatDate(new Date(row.original.registrationEndedAt as string), true),
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+  },
   {
     id: "actions",
     cell: ({ row }) => {
