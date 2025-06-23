@@ -9,7 +9,7 @@ export interface BloodQuery {
     _id?: Types.ObjectId;
     bloodType: string;
     compatibility: {
-        wholeBlood: BloodCompatibility;
+        whole_blood: BloodCompatibility;
         rbc: BloodCompatibility;
         plasma: BloodCompatibility;
         platelets: BloodCompatibility;
