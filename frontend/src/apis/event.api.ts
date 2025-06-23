@@ -8,9 +8,12 @@ export interface EventProps {
   registrationEndedAt: string;
   eventStartedAt: string;
   eventEndedAt: string;
+  slot: number;
+  location: string;
   status: "UPCOMING" | "REGISTRATION" | "ONGOING" | "ENDED" | "CANCELLED";
   createdAt: string;
   updatedAt: string;
+  image?: string;
 }
 
 export interface EventInput {
@@ -28,16 +31,24 @@ export const getEvents = async (): Promise<EventProps[]> => {
   return res.data;
 };
 
-export const createEvent = async (data: EventInput): Promise<EventProps> => {
-  const res = await axios.post("/donationevents", data);
+export const createEvent = async (data: FormData): Promise<EventProps> => {
+  const res = await axios.post("/donationevents", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res.data;
 };
 
 export const updateEvent = async (
   id: string,
-  data: Partial<EventInput>
+  data: FormData
 ): Promise<EventProps> => {
-  const res = await axios.put(`/donationevents/${id}`, data);
+  const res = await axios.put(`/donationevents/${id}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res.data;
 };
 

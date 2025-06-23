@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
-import React from "react";
+import React, { useState } from "react";
 
 interface ContactModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onRegister: (e: React.FormEvent) => void;
+  onLogin: (e: React.FormEvent) => void;
   form: {
     firstName: string;
     lastName: string;
@@ -16,50 +17,66 @@ interface ContactModalProps {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const ContactModal: React.FC<ContactModalProps> = ({ open, onClose, onSubmit, form, errors, handleChange }) => {
+const ContactModal: React.FC<ContactModalProps> = ({ open, onClose, onRegister, onLogin, form, errors, handleChange }) => {
+  const [isLoginView, setIsLoginView] = useState(true);
+
   if (!open) return null;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isLoginView) {
+      onLogin(e);
+    } else {
+      onRegister(e);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
         <button className="absolute top-2 right-2 text-xl" onClick={onClose}>&times;</button>
-        <h2 className="text-2xl font-bold mb-4 text-center">Contact Information</h2>
-        <form onSubmit={onSubmit} className="space-y-4">
-          <div>
-            <input
-              type="text"
-              name="firstName"
-              placeholder="First Name"
-              value={form.firstName}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              required
-            />
-            {errors.firstName && <div className="text-red-600 text-sm mt-1">{errors.firstName}</div>}
-          </div>
-          <div>
-            <input
-              type="text"
-              name="lastName"
-              placeholder="Last Name"
-              value={form.lastName}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              required
-            />
-            {errors.lastName && <div className="text-red-600 text-sm mt-1">{errors.lastName}</div>}
-          </div>
-          <div>
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Phone Number"
-              value={form.phone}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              required
-            />
-            {errors.phone && <div className="text-red-600 text-sm mt-1">{errors.phone}</div>}
-          </div>
+        <h2 className="text-2xl font-bold mb-4 text-center">{isLoginView ? "Login" : "Contact Information"}</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {!isLoginView && (
+            <>
+              <div>
+                <input
+                  type="text"
+                  name="firstName"
+                  placeholder="First Name"
+                  value={form.firstName}
+                  onChange={handleChange}
+                  className="w-full border rounded px-3 py-2"
+                  required
+                />
+                {errors.firstName && <div className="text-red-600 text-sm mt-1">{errors.firstName}</div>}
+              </div>
+              <div>
+                <input
+                  type="text"
+                  name="lastName"
+                  placeholder="Last Name"
+                  value={form.lastName}
+                  onChange={handleChange}
+                  className="w-full border rounded px-3 py-2"
+                  required
+                />
+                {errors.lastName && <div className="text-red-600 text-sm mt-1">{errors.lastName}</div>}
+              </div>
+              <div>
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="Phone Number"
+                  value={form.phone}
+                  onChange={handleChange}
+                  className="w-full border rounded px-3 py-2"
+                  required
+                />
+                {errors.phone && <div className="text-red-600 text-sm mt-1">{errors.phone}</div>}
+              </div>
+            </>
+          )}
           <div>
             <input
               type="email"
@@ -85,7 +102,10 @@ const ContactModal: React.FC<ContactModalProps> = ({ open, onClose, onSubmit, fo
             {errors.password && <div className="text-red-600 text-sm mt-1">{errors.password}</div>}
           </div>
           <Button type="submit" className="w-full bg-red-600 hover:bg-red-700">
-            Confirm Registration
+            {isLoginView ? "Login" : "Confirm Registration"}
+          </Button>
+          <Button type="button" variant="link" onClick={() => setIsLoginView(!isLoginView)} className="w-full">
+            {isLoginView ? "Don't have an account? Register" : "Already have an account? Login"}
           </Button>
         </form>
       </div>

@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { createBrowserRouter, Outlet } from "react-router";
 import ScrollToTop from "./components/scroll-to-top";
 import { Toaster } from "./components/ui/sonner";
+import GlobalModal from "./components/GlobalModal";
 
 const Header = lazy(() => import("./components/header"));
 const WelcomeDashBoard = lazy(() => import("./components/welcome-dashboard"));
@@ -36,6 +37,7 @@ export default createBrowserRouter([
         <ScrollToTop />
         <Header />
         <Outlet />
+        <GlobalModal />
         <Toaster richColors theme="system" />
       </>
     ),
