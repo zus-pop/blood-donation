@@ -8,6 +8,8 @@ import { Button } from "../../../components/ui/button";
 import { Filter, Search } from "lucide-react";
 import { Separator } from "../../../components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "../../../components/ui/sheet";
+import BloodDetailsModal from '../../../components/BloodDetailsModal';
+
 type ComponentKey = "rbc" | "plasma" | "platelets" | "whole_blood";
 const COMPONENTS: { key: ComponentKey; label: string }[] = [
   { key: "rbc", label: "RBC" },
@@ -77,9 +79,6 @@ export default function BloodInfoSection() {
         </div>
       </section>
       <div className="container mx-auto px-4 py-12">
-        {/* Header */}
-        
-
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="hidden lg:block w-64 flex-shrink-0">
             <div className="sticky top-24">
@@ -274,6 +273,15 @@ export default function BloodInfoSection() {
                           </div>
                         );
                       })}
+                      
+                      {/* Add the detailed modal button */}
+                      <div className="pt-2 border-t">
+                        <BloodDetailsModal bloodType={blood}>
+                          <Button variant="outline" className="w-full" size="sm">
+                            View Detailed Information
+                          </Button>
+                        </BloodDetailsModal>
+                      </div>
                     </CardContent>
                   </Card>
                 ))}

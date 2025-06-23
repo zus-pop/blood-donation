@@ -9,6 +9,12 @@ export interface BloodType {
     platelets?: { donateTo: BloodType[]; receiveFrom: BloodType[] };
     whole_blood?: { donateTo: BloodType[]; receiveFrom: BloodType[] };
   };
+  inventory : {
+    rbc?: { quantity_units?: number };
+    plasma?: { quantity_units?: number };
+    platelets?: { quantity_units?: number };
+    whole_blood?: { quantity_units?: number };
+  }
 }
 
 export async function getBloodTypes() {

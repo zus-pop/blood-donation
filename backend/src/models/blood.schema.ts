@@ -14,7 +14,7 @@ export const BloodSchema = new Schema(
             required: true,
         },
         compatibility: {
-            wholeBlood: BloodCompatibilitySchema,
+            whole_blood: BloodCompatibilitySchema,
             rbc: BloodCompatibilitySchema,
             plasma: BloodCompatibilitySchema,
             platelets: BloodCompatibilitySchema,
