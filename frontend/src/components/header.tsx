@@ -63,6 +63,9 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-4">
+          <Button className="hidden md:flex bg-red-600 hover:bg-red-700" onClick={() => navigate("/donationevents")}>Donate Now</Button>
+          or
+          <Button className="hidden md:flex bg-red-600 hover:bg-red-700" onClick={() => navigate("/bloodrequest")}>Request Blood Now</Button>
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -74,7 +77,6 @@ const Header = () => {
               <DropdownMenuContent>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/dashboard')}>Dashboard</DropdownMenuItem>
                 <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -84,16 +86,6 @@ const Header = () => {
               Sign In
             </Button>
           )}
-          <Button className="hidden md:flex bg-red-600 hover:bg-red-700" onClick={() => navigate("/donationevents")}>
-            Donate Now
-          </Button>
-          or
-          <Button
-            className="hidden md:flex bg-red-600 hover:bg-red-700"
-            onClick={() => navigate("/bloodrequest")}
-          >
-            Request Blood Now
-          </Button>
           {/* Mobile Menu Button */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
