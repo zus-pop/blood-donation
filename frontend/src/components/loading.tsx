@@ -1,23 +1,16 @@
-import { Loader } from "lucide-react";
+import { Droplets } from "lucide-react";
+
 interface LoadingProps {
   message?: string;
   fullscreen?: boolean;
 }
 
-const Loading = ({ message, fullscreen = true }: LoadingProps) => {
+const Loading = ({ message }: LoadingProps) => {
   return (
-    <div
-      className={`flex items-center justify-center ${
-        fullscreen ? "h-screen" : "py-10"
-      }`}
-    >
-      <div className="flex flex-col items-center space-y-3">
-        <Loader className="size-7 text-white-600 animate-spin" />
-        {message && (
-          <p className="text-gray-700 dark:text-gray-200 text-sm font-medium text-center">
-            {message}
-          </p>
-        )}
+    <div className={`min-h-screen flex items-center justify-center`}>
+      <div className="text-center">
+        <Droplets className="h-10 w-10 text-red-600 mx-auto animate-pulse" />
+        <p className="mt-4">{message || "Loading article..."}</p>
       </div>
     </div>
   );

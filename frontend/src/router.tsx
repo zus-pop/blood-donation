@@ -3,7 +3,9 @@ import { createBrowserRouter, Outlet } from "react-router";
 import ScrollToTop from "./components/scroll-to-top";
 import { Toaster } from "./components/ui/sonner";
 import GlobalModal from "./components/GlobalModal";
+import ProtectedRoute from "@/ProtectedRoute";
 
+const Login = lazy(() => import("./pages/dashboard/Login"));
 const Header = lazy(() => import("./components/header"));
 const WelcomeDashBoard = lazy(() => import("./components/welcome-dashboard"));
 const BlogTable = lazy(() => import("./pages/dashboard/blog/blog-table"));
@@ -73,13 +75,19 @@ export default createBrowserRouter([
     ],
   },
   {
+    path: "/login",
+    element: withSuspense(Login),
+  },
+  {
     path: "/dashboard",
     element: (
-      <>
-        <ScrollToTop />
-        <Dashboard />
-        <Toaster richColors theme="system" />
-      </>
+      <ProtectedRoute>
+        <>
+          <ScrollToTop />
+          <Dashboard />
+          <Toaster richColors theme="system" />
+        </>
+      </ProtectedRoute>
     ),
     children: [
       {
