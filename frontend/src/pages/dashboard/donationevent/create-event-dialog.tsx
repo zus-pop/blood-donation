@@ -22,21 +22,19 @@ import {
 } from "../../../components/ui/form";
 import { Input } from "../../../components/ui/input";
 import { Textarea } from "../../../components/ui/textarea";
-import { eventSchema, type EventSchema } from "./event.schema";
+import { createEventSchema, type EventSchema } from "./event.schema";
 import { createEvent } from "../../../apis/event.api";
+import { DateTimePicker } from "@/components/ui/date-time-picker";
 
 const CreateEventDialog = () => {
   const [open, setOpen] = useState(false);
   const form = useForm<EventSchema>({
-    resolver: zodResolver(eventSchema),
+    resolver: zodResolver(createEventSchema),
     defaultValues: {
       title: "",
       description: "",
-      registrationStartedAt: "",
-      registrationEndedAt: "",
-      eventStartedAt: "",
-      eventEndedAt: "",
       status: "UPCOMING",
+      location: "Thu Duc City",
     },
   });
   const queryClient = useQueryClient();
@@ -45,6 +43,7 @@ const CreateEventDialog = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["events"] });
       setOpen(false);
+      form.reset();
     },
   });
   const imageFile = form.watch("image");
@@ -52,10 +51,10 @@ const CreateEventDialog = () => {
     const formData = new FormData();
     formData.append("title", event.title);
     formData.append("description", event.description);
-    formData.append("registrationStartedAt", event.registrationStartedAt);
-    formData.append("registrationEndedAt", event.registrationEndedAt);
-    formData.append("eventStartedAt", event.eventStartedAt);
-    formData.append("eventEndedAt", event.eventEndedAt);
+    formData.append("registrationStartedAt", event.registrationStartedAt.toISOString());
+    formData.append("registrationEndedAt", event.registrationEndedAt.toISOString());
+    formData.append("eventStartedAt", event.eventStartedAt.toISOString());
+    formData.append("eventEndedAt", event.eventEndedAt.toISOString());
     formData.append("slot", event.slot.toString());
     formData.append("location", event.location || "Thu Duc City");
     if (event.image) formData.append("image", event.image as File);
@@ -112,7 +111,7 @@ const CreateEventDialog = () => {
                   <FormItem>
                     <FormLabel className="font-semibold">Registration Start</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} className="h-12 text-base rounded-lg" />
+                      <DateTimePicker date={field.value} setDate={field.onChange} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -125,7 +124,7 @@ const CreateEventDialog = () => {
                   <FormItem>
                     <FormLabel className="font-semibold">Registration End</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} className="h-12 text-base rounded-lg" />
+                      <DateTimePicker date={field.value} setDate={field.onChange} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -140,7 +139,7 @@ const CreateEventDialog = () => {
                   <FormItem>
                     <FormLabel className="font-semibold">Event Start</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} className="h-12 text-base rounded-lg" />
+                      <DateTimePicker date={field.value} setDate={field.onChange} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -153,7 +152,7 @@ const CreateEventDialog = () => {
                   <FormItem>
                     <FormLabel className="font-semibold">Event End</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} className="h-12 text-base rounded-lg" />
+                      <DateTimePicker date={field.value} setDate={field.onChange} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -206,11 +205,9 @@ const CreateEventDialog = () => {
                       }}
                     />
                   </FormControl>
-                  {form.formState.errors.image && (
-                    <p className="text-sm font-medium text-destructive">
-                      {form.formState.errors.image.message}
-                    </p>
-                  )}
+                  {typeof form.formState.errors.image === 'object' && form.formState.errors.image && 'message' in form.formState.errors.image
+                    ? form.formState.errors.image.message
+                    : null}
                   {imageFile && (
                     <img
                       src={

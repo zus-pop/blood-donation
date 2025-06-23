@@ -7,7 +7,15 @@ const router = express.Router();
 router.get("/", async (req: Request, res: Response) => {
   const query = req.query as any as ParticipationQuery;
   const participations = await findParticipations(query);
-  res.json(participations);
+  const transformedParticipations = participations.map(p => ({
+    _id: p._id,
+    user: p.userId,
+    event: p.eventId,
+    status: p.status,
+    createdAt: p.createdAt,
+    updatedAt: p.updatedAt,
+  }));
+  res.json(transformedParticipations);
 });
 
 router.post("/", async (req: Request, res: Response) => {

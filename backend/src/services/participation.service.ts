@@ -2,7 +2,17 @@ import { Participation } from "../models";
 import { CreateParticipationDto, ParticipationQuery, UpdateParticipationDto } from "../types/participation.type";
 
 export const findParticipations = async (query: ParticipationQuery) => {
-  return await Participation.find(query);
+  const filter: { userId?: string; eventId?: string; status?: string } = {};
+  if (query.user) {
+    filter.userId = query.user;
+  }
+  if (query.event) {
+    filter.eventId = query.event;
+  }
+  if (query.status) {
+    filter.status = query.status;
+  }
+  return await Participation.find(filter);
 };
 
 export const createParticipation = async (data: CreateParticipationDto) => {
