@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "sonner";
 import { createUser, loginUser, getProfile } from "@/apis/user.api";
+import { useProfileStore } from "@/store/profileStore";
 import type { UserProps } from "@/apis/user.api";
 
 // Validation functions
@@ -48,6 +49,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", phone: "", password: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const { setProfile, clearProfile } = useProfileStore();
+
   useEffect(() => {
     const checkUser = async () => {
       const token = localStorage.getItem("accessToken");
@@ -56,15 +59,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const profile = await getProfile();
           setUser(profile);
           setIsAuthenticated(true);
+          setProfile(profile); // Lưu profile vào zustand
         } catch (error) {
           localStorage.removeItem("accessToken");
           setUser(null);
           setIsAuthenticated(false);
+          clearProfile(); // Xóa profile khỏi zustand nếu lỗi
         }
+      } else {
+        clearProfile();
       }
     };
     checkUser();
-  }, []);
+  }, [setProfile, clearProfile]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
@@ -109,6 +116,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const profile = await getProfile();
       setUser(profile);
       setIsAuthenticated(true);
+      setProfile(profile); // Lưu profile vào zustand khi đăng nhập
       toast.success("Login successful!");
       closeModal();
     } catch {
@@ -120,9 +128,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.removeItem("accessToken");
     setUser(null);
     setIsAuthenticated(false);
+    clearProfile(); // Xóa profile khỏi zustand khi logout
     toast.info("You have been logged out.");
   };
-  
+
   return (
     <AuthContext.Provider value={{ user, isAuthenticated, isModalOpen, openModal, closeModal, form, errors, handleChange, handleRegister, handleLogin, logout }}>
       {children}
@@ -136,4 +145,4 @@ export const useAuth = () => {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
-}; 
+};
