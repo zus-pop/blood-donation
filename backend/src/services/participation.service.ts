@@ -6,7 +6,21 @@ export const findParticipations = async (query: ParticipationQuery) => {
 };
 
 export const createParticipation = async (data: CreateParticipationDto) => {
-  const participation = new Participation(data);
+  const { user, event, status } = data;
+  const existingParticipation = await Participation.findOne({
+    userId: user,
+    eventId: event,
+  });
+
+  if (existingParticipation) {
+    throw new Error("User has already registered for this event.");
+  }
+
+  const participation = new Participation({
+    userId: user,
+    eventId: event,
+    status,
+  });
   return await participation.save();
 };
 

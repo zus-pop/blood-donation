@@ -30,4 +30,14 @@ export const updateUser = async (id: string, data: Partial<UserProps>): Promise<
 export const createUser = async (data: Omit<UserProps, "_id">): Promise<UserProps> => {
     const res = await axios.post("/users", data);
     return res.data;
+};
+
+export const loginUser = async (data: Pick<UserProps, "email" | "password">): Promise<{ access_token: string }> => {
+    const res = await axios.post("/auth/login", data);
+    return res.data;
+};
+
+export const getProfile = async (): Promise<UserProps> => {
+    const res = await axios.get("/auth/profile");
+    return res.data;
 }; 
