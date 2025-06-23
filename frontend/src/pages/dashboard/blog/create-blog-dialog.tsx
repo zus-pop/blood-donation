@@ -33,6 +33,7 @@ import {
 } from "../../../components/ui/select";
 import { Textarea } from "../../../components/ui/textarea";
 import { blogSchema, type BlogSchema } from "./blog.schema";
+import { toast } from "sonner";
 
 const CreateBlogDialog = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -56,6 +57,7 @@ const CreateBlogDialog = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
       setOpen(false);
+      toast.success("Create blog successfully");
     },
   });
   const imageFile = form.watch("image");

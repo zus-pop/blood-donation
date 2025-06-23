@@ -47,8 +47,12 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<BloodRequestProps
     },
     {
         header: ({ column }) => <DataTableColumnHeader column={column} title="User" />,
-        accessorKey: "user.email",
-        id: "Email",
+        accessorKey: "name",
+        id: "Name",
+    },
+    {
+        accessorKey: "phone",
+        header: "Phone"
     },
     {
         accessorKey: "bloodType",
@@ -85,6 +89,11 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<BloodRequestProps
             const formatted = formatDate(new Date(row.original.updatedAt));
             return <div className="">{formatted}</div>;
         },
+    },
+    {
+        accessorKey: "requestedBy.email",
+        id: "Requested By",
+        header: "Requested By",
     },
     {
         id: "actions",

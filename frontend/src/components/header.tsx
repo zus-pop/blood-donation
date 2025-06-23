@@ -1,62 +1,91 @@
 import { Droplets, Menu, User } from "lucide-react";
 import { useState } from "react";
+import { Link, NavLink } from "react-router";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { useNavigate } from "react-router";
+import { useAuth } from "@/context/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const { openModal, isAuthenticated, user, logout } = useAuth();
+  const navList = [
+    {
+      name: "Blogs",
+      to: "/blogs",
+    },
+    {
+      name: "Donation Events",
+      to: "/donationevents",
+    },
+    {
+      name: "Blood Requests",
+      to: "/blrqsection",
+    },
+    {
+      name: "Blood Infos",
+      to: "/blood-infos",
+    },
+  ];
   return (
     <header className="sticky top-0 z-50 w-full px-5 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-2">
+        <Link to={"/"} className="flex items-center gap-2">
           <Droplets className="h-6 w-6 text-red-600" />
-          <span className="text-xl font-bold">LifeStream</span>
-        </div>
+          <span className="text-xl font-bold">Bloody</span>
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
-          <a
-            href="#"
-            className="text-sm font-medium hover:text-red-600 transition-colors"
-          >
-            Home
-          </a>
-          <a
-            href="#"
-            className="text-sm font-medium text-muted-foreground hover:text-red-600 transition-colors"
-          >
-            Donate
-          </a>
-          <a
-            href="#"
-            className="text-sm font-medium text-muted-foreground hover:text-red-600 transition-colors"
-          >
-            Find Drives
-          </a>
-          <a
-            href="#"
-            className="text-sm font-medium text-muted-foreground hover:text-red-600 transition-colors"
-          >
-            About
-          </a>
-          <a
-            href="#"
-            className="text-sm font-medium text-muted-foreground hover:text-red-600 transition-colors"
-          >
-            Contact
-          </a>
+          {navList.map((nav) => (
+            <NavLink
+              key={nav.name}
+              to={nav.to}
+              className={({ isActive }: { isActive: boolean }) =>
+                `text-lg font-medium ${
+                  isActive ? "text-red-600" : "text-muted-foreground"
+                }`
+              }
+            >
+              {nav.name}
+            </NavLink>
+          ))}
         </nav>
 
         <div className="flex items-center gap-4">
-          <Button variant="outline" className="hidden md:flex">
-            <User className="mr-2 h-4 w-4" />
-            Sign In
-          </Button>
-          <Button className="hidden md:flex bg-red-600 hover:bg-red-700">
-            Donate Now
-          </Button>
-
+          <Button className="hidden md:flex bg-red-600 hover:bg-red-700" onClick={() => navigate("/donationevents")}>Donate Now</Button>
+          or
+          <Button className="hidden md:flex bg-red-600 hover:bg-red-700" onClick={() => navigate("/bloodrequest")}>Request Blood Now</Button>
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  <User className="mr-2 h-4 w-4" />
+                  {user?.firstName} {user?.lastName}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button variant="outline" className="hidden md:flex" onClick={openModal}>
+              <User className="mr-2 h-4 w-4" />
+              Sign In
+            </Button>
+          )}
           {/* Mobile Menu Button */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
@@ -105,10 +134,17 @@ const Header = () => {
                 <Button className="w-full bg-red-600 hover:bg-red-700">
                   Donate Now
                 </Button>
-                <Button variant="outline" className="w-full">
-                  <User className="mr-2 h-4 w-4" />
-                  Sign In
-                </Button>
+                {isAuthenticated ? (
+                  <Button variant="outline" className="w-full" onClick={logout}>
+                    <User className="mr-2 h-4 w-4" />
+                    Logout
+                  </Button>
+                ) : (
+                  <Button variant="outline" className="w-full" onClick={openModal}>
+                    <User className="mr-2 h-4 w-4" />
+                    Sign In
+                  </Button>
+                )}
               </div>
             </SheetContent>
           </Sheet>

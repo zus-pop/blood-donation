@@ -13,9 +13,28 @@ export interface BlogProps {
   updatedAt: string;
 }
 
-export async function getBlogs() {
-  const res = await myAxios.get(`/blogs`);
+export interface BlogQuery {
+  title?: string;
+  slug?: string;
+  category?: string;
+}
+
+export async function getBlogs(query?: BlogQuery) {
+  const params: Record<string, string> = {};
+
+  if (query && query.title) params.title = query.title;
+  if (query && query.slug) params.slug = query.slug;
+  if (query && query.category) params.category = query.category;
+
+  const res = await myAxios.get(`/blogs`, {
+    params,
+  });
   return res.data as BlogProps[];
+}
+
+export async function getBlog(id: string) {
+  const res = await myAxios.get(`/blogs/${id}`);
+  return res.data as BlogProps;
 }
 
 export async function createBlog(blog: FormData) {

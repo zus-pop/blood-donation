@@ -25,8 +25,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { userSchema } from "./user.schema";
+import { toast } from "sonner";
 
-const ROLE_OPTIONS = ["ADMIN", "MEMBER","STAFF"];
+const ROLE_OPTIONS = ["ADMIN", "MEMBER", "STAFF"];
 
 type UpdateUserDialogProps = {
     currentData: UserProps;
@@ -59,6 +60,7 @@ const UpdateUserDialog = ({ currentData }: UpdateUserDialogProps) => {
             queryClient.invalidateQueries({ queryKey: ["users"] });
             setOpen(false);
             form.reset();
+            toast.success("User updated successfully");
         },
     });
 

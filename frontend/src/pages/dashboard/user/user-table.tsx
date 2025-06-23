@@ -3,17 +3,20 @@ import { getUsers, deleteUser } from "../../../apis/user.api";
 import { DataTable } from "@/components/data-table";
 import { columns } from "./user-column";
 import CreateUserDialog from "./create-user-dialog";
+import { toast } from "sonner";
 
 const UserTable = () => {
     const { data: users } = useQuery({
         queryKey: ["users"],
         queryFn: getUsers,
+        staleTime: 1000 * 60,
     });
     const queryClient = useQueryClient();
     const { mutate } = useMutation({
         mutationFn: deleteUser,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["users"] });
+            toast.success("User deleted successfully");
         },
     });
 

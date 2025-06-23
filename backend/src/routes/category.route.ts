@@ -1,15 +1,17 @@
 import express, { Request, Response } from "express";
+import { findBlogsByCategoryId } from "../services/blog.service";
 import {
-    createCategory,
-    deleteCategoryById,
-    findCategories,
-    findCategoryById,
-    updateCategoryById,
+  countBlogsGroupByCategory,
+  createCategory,
+  deleteCategoryById,
+  findCategories,
+  findCategoryById,
+  updateCategoryById,
 } from "../services/category.service";
 import {
-    CategoryQuery,
-    CreateCategoryDto,
-    UpdateCategoryDto,
+  CategoryQuery,
+  CreateCategoryDto,
+  UpdateCategoryDto,
 } from "../types/category.type";
 const router = express.Router();
 
@@ -17,6 +19,25 @@ router.get("/", async (req: Request, res: Response) => {
   const query = req.query as any as CategoryQuery;
   const categories = await findCategories(query);
   res.json(categories);
+});
+
+router.get("/group", async (req: Request, res: Response) => {
+  try {
+    const categories = await countBlogsGroupByCategory();
+    res.status(200).json(categories);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+});
+
+router.get("/:id/blogs", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const blogs = await findBlogsByCategoryId(id);
+    res.status(200).json(blogs);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
 });
 
 router.get("/:id", async (req: Request, res: Response) => {

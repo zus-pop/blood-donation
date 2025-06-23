@@ -11,9 +11,13 @@ import { BlogQuery, CreateBlogDto, UpdateBlogDto } from "../types/blog.type";
 const router = express.Router();
 
 router.get("/", async (req: Request, res: Response) => {
-  const query = req.query as any as BlogQuery;
-  const blogs = await findBlogs(query);
-  res.json(blogs);
+  try {
+    const query = req.query as any as BlogQuery;
+    const blogs = await findBlogs(query);
+    res.status(200).json(blogs);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
 });
 
 router.get("/:id", async (req: Request, res: Response) => {

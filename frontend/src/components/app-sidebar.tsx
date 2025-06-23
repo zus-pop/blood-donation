@@ -2,7 +2,6 @@ import {
   IconBrandBlogger,
   IconCamera,
   IconCategory,
-  IconDashboard,
   IconDatabase,
   IconFileAi,
   IconFileDescription,
@@ -13,6 +12,7 @@ import {
   IconSearch,
   IconSettings,
   IconDropletMinus,
+  IconDropletPlus,
   IconUser
 } from "@tabler/icons-react";
 import * as React from "react";
@@ -39,14 +39,14 @@ const data = {
   },
   navMain: [
     {
-      title: "Donation Event",
-      url: "donationevent",
-      icon: IconDashboard,
-    },
-    {
       title: "User Management",
       url: "users",
       icon: IconUser
+    },
+    {
+      title: "Donation Event",
+      url: "donationevent",
+      icon: IconDropletPlus,
     },
     {
       title: "Blood Requests",

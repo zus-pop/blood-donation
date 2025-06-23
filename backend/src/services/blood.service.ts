@@ -3,9 +3,18 @@ import { BloodQuery } from "../types/blood.type";
 
 // Find blood types based on query
 export async function findBlood(query: BloodQuery) {
-  return Blood.find(query);
+  return Blood.find(query)
+   .populate("compatibility.rbc.donateTo")
+    .populate("compatibility.rbc.receiveFrom")
+    .populate("compatibility.plasma.donateTo")
+    .populate("compatibility.plasma.receiveFrom")
+    .populate("compatibility.platelets.donateTo")
+    .populate("compatibility.platelets.receiveFrom")
+    .populate("compatibility.whole_blood.donateTo")
+    .populate("compatibility.whole_blood.receiveFrom");
 }
 
+//Find a blood type by ID
 export async function findBloodById(id: string) {
   const blood = await Blood.findById(id);
   if (!blood) {
