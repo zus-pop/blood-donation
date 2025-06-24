@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { Button } from "./ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardHeader, CardTitle } from "./ui/card";
 
 const BloodInfo = () => {
   const bloodTypeNeeds = [
@@ -40,12 +40,6 @@ const BloodInfo = () => {
                     {blood.type}
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div
-                    className={`inline-block w-3 h-3 rounded-full ${blood.color} mb-2`}
-                  ></div>
-                  <p className="text-sm font-medium">{blood.status}</p>
-                </CardContent>
               </Card>
             </Link>
           ))}

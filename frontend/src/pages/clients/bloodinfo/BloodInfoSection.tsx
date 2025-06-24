@@ -5,7 +5,8 @@ import { getBloodTypes } from "../../../apis/bloodType.api";
 import type { BloodType } from "../../../apis/bloodType.api";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
-import { Filter, Search } from "lucide-react";
+import { Badge } from "../../../components/ui/badge";
+import { Filter, Search, Info } from "lucide-react";
 import { Separator } from "../../../components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "../../../components/ui/sheet";
 import BloodDetailsModal from '../../../components/BloodDetailsModal';
@@ -247,37 +248,61 @@ export default function BloodInfoSection() {
 
                         return (
                           <div key={comp.key} className="space-y-2">
-                            <h4 className="font-semibold text-sm text-gray-700">
+                            <h4 className="font-semibold text-sm text-blue-600 border-b border-blue-200 pb-1">
                               {comp.label}
                             </h4>
-                            <div className="text-sm space-y-1">
-                              <div>
-                                <span className="text-gray-600">Donates to: </span>
-                                <span className="font-medium">
-                                  {donatesToList.length > 0
-                                    ? donatesToList.map((b: any) => b.bloodType || b._id).join(", ")
-                                    : "None"
-                                  }
-                                </span>
+                            <div className="text-sm space-y-2 pl-2">
+                              <div className="flex items-start gap-2">
+                                <span className="text-green-600 font-medium min-w-[80px]">Donates to:</span>
+                                <div className="flex-1">
+                                  {donatesToList.length > 0 ? (
+                                    <div className="flex flex-wrap gap-1">
+                                      {donatesToList.slice(0, 3).map((b: any, idx) => (
+                                        <Badge key={idx} variant="outline" className="text-xs text-green-700 border-green-300">
+                                          {b.bloodType || b._id}
+                                        </Badge>
+                                      ))}
+                                      {donatesToList.length > 3 && (
+                                        <Badge variant="outline" className="text-xs text-gray-500">
+                                          +{donatesToList.length - 3} more
+                                        </Badge>
+                                      )}
+                                    </div>
+                                  ) : (
+                                    <span className="text-gray-500 text-xs">None</span>
+                                  )}
+                                </div>
                               </div>
-                              <div>
-                                <span className="text-gray-600">Receives from: </span>
-                                <span className="font-medium">
-                                  {receivesFromList.length > 0
-                                    ? receivesFromList.map((b: any) => b.bloodType || b._id).join(", ")
-                                    : "None"
-                                  }
-                                </span>
+                              <div className="flex items-start gap-2">
+                                <span className="text-orange-600 font-medium min-w-[80px]">Receives from:</span>
+                                <div className="flex-1">
+                                  {receivesFromList.length > 0 ? (
+                                    <div className="flex flex-wrap gap-1">
+                                      {receivesFromList.slice(0, 3).map((b: any, idx) => (
+                                        <Badge key={idx} variant="outline" className="text-xs text-orange-700 border-orange-300">
+                                          {b.bloodType || b._id}
+                                        </Badge>
+                                      ))}
+                                      {receivesFromList.length > 3 && (
+                                        <Badge variant="outline" className="text-xs text-gray-500">
+                                          +{receivesFromList.length - 3} more
+                                        </Badge>
+                                      )}
+                                    </div>
+                                  ) : (
+                                    <span className="text-gray-500 text-xs">None</span>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </div>
                         );
-                      })}
-                      
+                      })}            
                       {/* Add the detailed modal button */}
                       <div className="pt-2 border-t">
                         <BloodDetailsModal bloodType={blood}>
                           <Button variant="outline" className="w-full" size="sm">
+                            <Info className="h-4 w-4 mr-2" />
                             View Detailed Information
                           </Button>
                         </BloodDetailsModal>
