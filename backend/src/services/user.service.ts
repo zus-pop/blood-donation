@@ -1,16 +1,11 @@
 import { User } from "../models";
 import { UpdateUser, UserInput, UserQuery } from "../types/user.type";
-import bcrypt from "bcrypt";
 
 export async function findUsers(query: UserQuery) {
   const users = await User.find(query).select("-password");
   return users;
 }
 export async function createUser(data: UserInput) {
-  if (data.password) {
-    const salt = await bcrypt.genSalt(10);
-    data.password = await bcrypt.hash(data.password, salt);
-  }
   const user = new User(data);
   return await user.save();
 }

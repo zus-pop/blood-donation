@@ -10,7 +10,7 @@ export async function login(authLoginDto: AuthLoginDto) {
   const user = await findUserByEmail(authLoginDto.email);
 
   const isMatched = await comparePassword(authLoginDto.password, user.password);
-  console.log(isMatched);
+  
   //  compare hashed password with input password with bcrypt
   if (!isMatched) {
     throw new Error("Password not match!");
