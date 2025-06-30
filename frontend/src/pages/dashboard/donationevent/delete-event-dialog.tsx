@@ -1,5 +1,5 @@
 import { Trash } from "lucide-react";
-import { Button } from "../../../components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../../components/ui/dialog";
+} from "@/components/ui/dialog";
 
 interface DeleteEventProps {
   callback: () => void;
@@ -28,8 +28,8 @@ const DeleteEventDialog = ({ callback }: DeleteEventProps) => {
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete this event
-            and remove your data from our servers.
+            This action cannot be undone. This will permanently delete this
+            event and remove your data from our servers.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

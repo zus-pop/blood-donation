@@ -1,5 +1,5 @@
 import { Calendar, Eye, Tag } from "lucide-react";
-import type { BlogProps } from "../../../apis/blog.api";
+import type { BlogProps } from "@/apis/blog.api";
 import {
   Dialog,
   DialogContent,
@@ -7,9 +7,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../../components/ui/dialog";
-import { Separator } from "../../../components/ui/separator";
-import { formatDate } from "../../../lib/utils";
+} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { formatDate } from "@/lib/utils";
 interface ViewBlogDialogProps {
   blog: BlogProps;
 }

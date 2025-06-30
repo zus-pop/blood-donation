@@ -1,20 +1,53 @@
+import { DataTableColumnHeader } from "@/components/data-table-column-header";
+import { formatDate } from "@/lib/utils";
 import { type ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import { DataTableColumnHeader } from "@/components/data-table-column-header";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import DeleteEventDialog from "./delete-event-dialog";
-import UpdateEventDialog from "./update-event-dialog";
-import ViewEventDialog from "./view-event-dialog";
-import { formatDate } from "@/lib/utils";
+import { lazy } from "react";
+
+const Button = lazy(() =>
+  import("@/components/ui/button").then((module) => ({
+    default: module.Button,
+  }))
+);
+const Checkbox = lazy(() =>
+  import("@/components/ui/checkbox").then((module) => ({
+    default: module.Checkbox,
+  }))
+);
+const DropdownMenu = lazy(() =>
+  import("@/components/ui/dropdown-menu").then((module) => ({
+    default: module.DropdownMenu,
+  }))
+);
+const DropdownMenuContent = lazy(() =>
+  import("@/components/ui/dropdown-menu").then((module) => ({
+    default: module.DropdownMenuContent,
+  }))
+);
+const DropdownMenuItem = lazy(() =>
+  import("@/components/ui/dropdown-menu").then((module) => ({
+    default: module.DropdownMenuItem,
+  }))
+);
+const DropdownMenuLabel = lazy(() =>
+  import("@/components/ui/dropdown-menu").then((module) => ({
+    default: module.DropdownMenuLabel,
+  }))
+);
+const DropdownMenuSeparator = lazy(() =>
+  import("@/components/ui/dropdown-menu").then((module) => ({
+    default: module.DropdownMenuSeparator,
+  }))
+);
+const DropdownMenuTrigger = lazy(() =>
+  import("@/components/ui/dropdown-menu").then((module) => ({
+    default: module.DropdownMenuTrigger,
+  }))
+);
+
+const DeleteEventDialog = lazy(() => import("./delete-event-dialog"));
+const UpdateEventDialog = lazy(() => import("./update-event-dialog"));
+const ViewEventDialog = lazy(() => import("./view-event-dialog"));
 
 export interface EventProps {
   _id: string;

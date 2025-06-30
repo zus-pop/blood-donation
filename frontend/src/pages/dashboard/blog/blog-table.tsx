@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { deleteBlog, getBlogs } from "../../../apis/blog.api";
-import { DataTable } from "../../../components/data-table";
+import { deleteBlog, getBlogs } from "@/apis/blog.api";
+import { DataTable } from "@/components/data-table";
 import { columns } from "./blog-column";
 import CreateBlogDialog from "./create-blog-dialog";
 

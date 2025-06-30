@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router";
-import { getBloodTypes } from "../../../apis/bloodType.api";
-import type { BloodType } from "../../../apis/bloodType.api";
-import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
-import { Button } from "../../../components/ui/button";
+import { getBloodTypes } from "@/apis/bloodType.api";
+import type { BloodType } from "@/apis/bloodType.api";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Filter, Search } from "lucide-react";
-import { Separator } from "../../../components/ui/separator";
-import { Sheet, SheetContent, SheetTrigger } from "../../../components/ui/sheet";
-import BloodDetailsModal from '../../../components/BloodDetailsModal';
+import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import BloodDetailsModal from "@/components/BloodDetailsModal";
 
 type ComponentKey = "rbc" | "plasma" | "platelets" | "whole_blood";
 const COMPONENTS: { key: ComponentKey; label: string }[] = [
@@ -69,9 +69,7 @@ export default function BloodInfoSection() {
       <section className="bg-red-600 text-white py-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              Blood Infos
-            </h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">Blood Infos</h1>
             <p className="text-lg text-red-100 max-w-2xl">
               Explore compatibility for each blood type and component.
             </p>
@@ -141,7 +139,10 @@ export default function BloodInfoSection() {
             <div className="flex items-center justify-between mb-6 lg:hidden">
               <h2 className="text-2xl font-bold">Blood Types</h2>
               <div className="flex gap-2">
-                <Sheet open={mobileFilterOpen} onOpenChange={setMobileFilterOpen}>
+                <Sheet
+                  open={mobileFilterOpen}
+                  onOpenChange={setMobileFilterOpen}
+                >
                   <SheetTrigger asChild>
                     <Button variant="outline" size="sm">
                       <Filter className="h-4 w-4 mr-2" />
@@ -155,7 +156,9 @@ export default function BloodInfoSection() {
                         <Button
                           key={option.value}
                           variant={
-                            selectedBloodType === option.value ? "default" : "ghost"
+                            selectedBloodType === option.value
+                              ? "default"
+                              : "ghost"
                           }
                           className={`w-full justify-start ${
                             selectedBloodType === option.value
@@ -214,9 +217,7 @@ export default function BloodInfoSection() {
               </h2>
               <p className="text-muted-foreground">
                 {filteredBloodTypes.length}{" "}
-                {filteredBloodTypes.length === 1
-                  ? "blood type"
-                  : "blood types"}{" "}
+                {filteredBloodTypes.length === 1 ? "blood type" : "blood types"}{" "}
                 found
               </p>
             </div>
@@ -235,7 +236,10 @@ export default function BloodInfoSection() {
                     <CardContent className="space-y-4">
                       {COMPONENTS.map((comp) => {
                         // Show all components or filter by selected component
-                        if (selectedComponent !== "all" && selectedComponent !== comp.key) {
+                        if (
+                          selectedComponent !== "all" &&
+                          selectedComponent !== comp.key
+                        ) {
                           return null;
                         }
 
@@ -243,7 +247,8 @@ export default function BloodInfoSection() {
                         if (!compatibility) return null;
 
                         const donatesToList = compatibility.donateTo || [];
-                        const receivesFromList = compatibility.receiveFrom || [];
+                        const receivesFromList =
+                          compatibility.receiveFrom || [];
 
                         return (
                           <div key={comp.key} className="space-y-2">
@@ -252,32 +257,42 @@ export default function BloodInfoSection() {
                             </h4>
                             <div className="text-sm space-y-1">
                               <div>
-                                <span className="text-gray-600">Donates to: </span>
+                                <span className="text-gray-600">
+                                  Donates to:{" "}
+                                </span>
                                 <span className="font-medium">
                                   {donatesToList.length > 0
-                                    ? donatesToList.map((b: any) => b.bloodType || b._id).join(", ")
-                                    : "None"
-                                  }
+                                    ? donatesToList
+                                        .map((b: any) => b.bloodType || b._id)
+                                        .join(", ")
+                                    : "None"}
                                 </span>
                               </div>
                               <div>
-                                <span className="text-gray-600">Receives from: </span>
+                                <span className="text-gray-600">
+                                  Receives from:{" "}
+                                </span>
                                 <span className="font-medium">
                                   {receivesFromList.length > 0
-                                    ? receivesFromList.map((b: any) => b.bloodType || b._id).join(", ")
-                                    : "None"
-                                  }
+                                    ? receivesFromList
+                                        .map((b: any) => b.bloodType || b._id)
+                                        .join(", ")
+                                    : "None"}
                                 </span>
                               </div>
                             </div>
                           </div>
                         );
                       })}
-                      
+
                       {/* Add the detailed modal button */}
                       <div className="pt-2 border-t">
                         <BloodDetailsModal bloodType={blood}>
-                          <Button variant="outline" className="w-full" size="sm">
+                          <Button
+                            variant="outline"
+                            className="w-full"
+                            size="sm"
+                          >
                             View Detailed Information
                           </Button>
                         </BloodDetailsModal>
@@ -291,9 +306,12 @@ export default function BloodInfoSection() {
                 <div className="mx-auto h-12 w-12 text-muted-foreground">
                   <Search className="h-12 w-12" />
                 </div>
-                <h3 className="mt-4 text-lg font-semibold">No blood types found</h3>
+                <h3 className="mt-4 text-lg font-semibold">
+                  No blood types found
+                </h3>
                 <p className="mt-2 text-muted-foreground">
-                  We couldn't find any blood types matching your filter criteria.
+                  We couldn't find any blood types matching your filter
+                  criteria.
                 </p>
                 <Button
                   className="mt-4"

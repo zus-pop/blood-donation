@@ -26,8 +26,8 @@ import {
 } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router";
-import { getBlog } from "../../../apis/blog.api";
-import { formatDate } from "../../../lib/utils";
+import { getBlog } from "@/apis/blog.api";
+import { formatDate } from "@/lib/utils";
 
 // Sample related posts
 const relatedPosts = [

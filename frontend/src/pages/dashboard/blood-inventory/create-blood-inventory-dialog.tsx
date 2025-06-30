@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createInventory } from "../../../apis/bloodInventory.api";
-import { getBloodTypes } from "../../../apis/bloodType.api";
-import { Button } from "../../../components/ui/button";
+import { createInventory } from "@/apis/bloodInventory.api";
+import { getBloodTypes } from "@/apis/bloodType.api";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,8 +12,8 @@ import {
   DialogFooter,
   DialogClose,
   DialogDescription,
-} from "../../../components/ui/dialog";
-import { Input } from "../../../components/ui/input";
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormField,
@@ -21,8 +21,14 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "../../../components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -163,7 +169,7 @@ const CreateBloodInventoryDialog = () => {
                       type="number"
                       min={1}
                       {...field}
-                      onChange={e => field.onChange(Number(e.target.value))}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>
                   <FormMessage />
