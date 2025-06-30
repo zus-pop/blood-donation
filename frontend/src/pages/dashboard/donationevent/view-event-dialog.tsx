@@ -5,9 +5,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../../components/ui/dialog";
+} from "@/components/ui/dialog";
 import { Calendar, Eye, MapPin, Users, Image as ImageIcon } from "lucide-react";
-import { Separator } from "../../../components/ui/separator";
+import { Separator } from "@/components/ui/separator";
 
 interface EventProps {
   _id: string;
@@ -52,14 +52,17 @@ const ViewEventDialog = ({ event }: ViewEventDialogProps) => {
           )}
           <div className="p-6 flex flex-col gap-4">
             <DialogHeader>
-              <DialogTitle className="text-2xl font-bold mb-1">{event.title}</DialogTitle>
+              <DialogTitle className="text-2xl font-bold mb-1">
+                {event.title}
+              </DialogTitle>
               <DialogDescription className="flex flex-wrap items-center gap-4 text-sm mb-2">
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
                   {new Date(event.createdAt).toLocaleString()}
                 </div>
                 <div className="flex items-center gap-1">
-                  Status: <span className="font-semibold ml-1">{event.status}</span>
+                  Status:{" "}
+                  <span className="font-semibold ml-1">{event.status}</span>
                 </div>
               </DialogDescription>
             </DialogHeader>
@@ -68,7 +71,9 @@ const ViewEventDialog = ({ event }: ViewEventDialogProps) => {
               <div className="space-y-2">
                 <div>
                   <span className="font-semibold">Description:</span>
-                  <div className="whitespace-pre-wrap text-gray-700">{event.description}</div>
+                  <div className="whitespace-pre-wrap text-gray-700">
+                    {event.description}
+                  </div>
                 </div>
                 <div className="flex items-center gap-1">
                   <MapPin className="h-4 w-4" />
@@ -84,15 +89,27 @@ const ViewEventDialog = ({ event }: ViewEventDialogProps) => {
               <div className="space-y-2">
                 <div>
                   <span className="font-semibold">Registration:</span>
-                  <span className="whitespace-nowrap block">{`${new Date(event.registrationStartedAt).toLocaleString()} – ${new Date(event.registrationEndedAt).toLocaleString()}`}</span>
+                  <span className="whitespace-nowrap block">{`${new Date(
+                    event.registrationStartedAt
+                  ).toLocaleString()} – ${new Date(
+                    event.registrationEndedAt
+                  ).toLocaleString()}`}</span>
                 </div>
                 <div>
                   <span className="font-semibold">Event:</span>
-                  <span className="whitespace-nowrap block">{`${new Date(event.eventStartedAt).toLocaleString()} – ${new Date(event.eventEndedAt).toLocaleString()}`}</span>
+                  <span className="whitespace-nowrap block">{`${new Date(
+                    event.eventStartedAt
+                  ).toLocaleString()} – ${new Date(
+                    event.eventEndedAt
+                  ).toLocaleString()}`}</span>
                 </div>
                 <div>
                   <span className="font-semibold">Last updated:</span>
-                  <div>{event.updatedAt ? new Date(event.updatedAt).toLocaleString() : '-'}</div>
+                  <div>
+                    {event.updatedAt
+                      ? new Date(event.updatedAt).toLocaleString()
+                      : "-"}
+                  </div>
                 </div>
               </div>
             </div>

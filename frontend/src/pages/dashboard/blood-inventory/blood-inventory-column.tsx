@@ -1,7 +1,7 @@
 import { type ColumnDef } from "@tanstack/react-table";
-import type { InventoryProps } from "../../../apis/bloodInventory.api";
-import { Checkbox } from "../../../components/ui/checkbox";
-import { Button } from "../../../components/ui/button";
+import type { InventoryProps } from "@/apis/bloodInventory.api";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
@@ -10,7 +10,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../../components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import UpdateBloodInventoryDialog from "./update-blood-inventory-dialog";
 import DeleteBloodInventoryDialog from "./delete-blood-inventory-dialog";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
@@ -20,7 +20,9 @@ interface ActionsProps {
   onDelete: (id: string) => void;
 }
 
-export const columns = ({ onDelete }: ActionsProps): ColumnDef<InventoryProps>[] => [
+export const columns = ({
+  onDelete,
+}: ActionsProps): ColumnDef<InventoryProps>[] => [
   {
     accessorKey: "_id",
     header: ({ table }) => (
@@ -43,41 +45,46 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<InventoryProps>[]
     enableSorting: false,
     enableHiding: false,
   },
-  { accessorKey: "bloodType", 
-    header: "Blood Type" ,
+  {
+    accessorKey: "bloodType",
+    header: "Blood Type",
     cell: ({ row }) => {
-    const bloodType = row.original.bloodType;
-    if (typeof bloodType === "object" && bloodType !== null) {
-      return bloodType.bloodType; // or bloodType.blood_group if that's the property
-    }
-    return bloodType;
-  }
+      const bloodType = row.original.bloodType;
+      if (typeof bloodType === "object" && bloodType !== null) {
+        return bloodType.bloodType; // or bloodType.blood_group if that's the property
+      }
+      return bloodType;
+    },
   },
   {
-  accessorKey: "participation",
-  header: "Participation ID",
-  cell: ({ row }) => {
-    const p = row.original.participation;
-    if (typeof p === "object" && p !== null) {
-      return (p as { _id?: string; id?: string })._id || (p as { id?: string }).id || "";
-    }
-    return p;
-  }
-},
+    accessorKey: "participation",
+    header: "Participation ID",
+    cell: ({ row }) => {
+      const p = row.original.participation;
+      if (typeof p === "object" && p !== null) {
+        return (
+          (p as { _id?: string; id?: string })._id ||
+          (p as { id?: string }).id ||
+          ""
+        );
+      }
+      return p;
+    },
+  },
   { accessorKey: "componentType", header: "Component" },
   { accessorKey: "quantity", header: "Quantity" },
   { accessorKey: "status", header: "Status" },
   {
-      accessorKey: "createdAt",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Created Date" />
-      ),
-      cell: ({ row }) => {
-        const createdAt = row.original.createdAt ?? "";
-        const formatted = createdAt ? formatDate(new Date(createdAt)) : "";
-        return <div className="">{formatted}</div>;
-      },
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Created Date" />
+    ),
+    cell: ({ row }) => {
+      const createdAt = row.original.createdAt ?? "";
+      const formatted = createdAt ? formatDate(new Date(createdAt)) : "";
+      return <div className="">{formatted}</div>;
     },
+  },
   {
     accessorKey: "updatedAt",
     header: "Updated At",
@@ -106,7 +113,9 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<InventoryProps>[]
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild className="text-red-600 cursor-pointer">
-              <DeleteBloodInventoryDialog callback={() => onDelete(inventory._id)} />
+              <DeleteBloodInventoryDialog
+                callback={() => onDelete(inventory._id)}
+              />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

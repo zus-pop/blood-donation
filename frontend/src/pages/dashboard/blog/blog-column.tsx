@@ -1,9 +1,9 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import { type BlogProps } from "../../../apis/blog.api";
-import { DataTableColumnHeader } from "../../../components/data-table-column-header";
-import { Button } from "../../../components/ui/button";
-import { Checkbox } from "../../../components/ui/checkbox";
+import { type BlogProps } from "@/apis/blog.api";
+import { DataTableColumnHeader } from "@/components/data-table-column-header";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,11 +11,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../../components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import DeleteBlogDialog from "./delete-blog-dialog";
 import UpdateBlogDialog from "./update-blog-dialog";
 import ViewBlogDialog from "./view-blog-dialog";
-import { formatDate } from "../../../lib/utils";
+import { formatDate } from "@/lib/utils";
 
 interface ActionsProps {
   onDelete: (id: string) => void;

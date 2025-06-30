@@ -5,13 +5,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../../components/ui/dialog";
+} from "@/components/ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Edit } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "../../../components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -19,11 +19,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../../components/ui/form";
-import { Input } from "../../../components/ui/input";
-import { Textarea } from "../../../components/ui/textarea";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { updateEventSchema, type UpdateEventSchema } from "./event.schema";
-import { updateEvent } from "../../../apis/event.api";
+import { updateEvent } from "@/apis/event.api";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import {
   Select,
@@ -33,12 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const statusOptions = [
-  "UPCOMING",
-  "ONGOING",
-  "ENDED",
-  "CANCELLED",
-];
+const statusOptions = ["UPCOMING", "ONGOING", "ENDED", "CANCELLED"];
 
 interface UpdateEventDialogProps {
   currentData: UpdateEventSchema & { _id: string };
@@ -77,18 +72,29 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
     const { dirtyFields } = form.formState;
 
     if (dirtyFields.title) formData.append("title", data.title!);
-    if (dirtyFields.description) formData.append("description", data.description!);
+    if (dirtyFields.description)
+      formData.append("description", data.description!);
     if (dirtyFields.slot) formData.append("slot", data.slot!.toString());
     if (dirtyFields.location) formData.append("location", data.location!);
     if (dirtyFields.status) formData.append("status", data.status!);
     if (dirtyFields.image && data.image instanceof File) {
       formData.append("image", data.image);
     }
-    if (dirtyFields.registrationStartedAt) formData.append("registrationStartedAt", data.registrationStartedAt!.toISOString());
-    if (dirtyFields.registrationEndedAt) formData.append("registrationEndedAt", data.registrationEndedAt!.toISOString());
-    if (dirtyFields.eventStartedAt) formData.append("eventStartedAt", data.eventStartedAt!.toISOString());
-    if (dirtyFields.eventEndedAt) formData.append("eventEndedAt", data.eventEndedAt!.toISOString());
-  
+    if (dirtyFields.registrationStartedAt)
+      formData.append(
+        "registrationStartedAt",
+        data.registrationStartedAt!.toISOString()
+      );
+    if (dirtyFields.registrationEndedAt)
+      formData.append(
+        "registrationEndedAt",
+        data.registrationEndedAt!.toISOString()
+      );
+    if (dirtyFields.eventStartedAt)
+      formData.append("eventStartedAt", data.eventStartedAt!.toISOString());
+    if (dirtyFields.eventEndedAt)
+      formData.append("eventEndedAt", data.eventEndedAt!.toISOString());
+
     if (Array.from(formData.keys()).length > 0) {
       mutate(formData);
     } else {
@@ -104,7 +110,9 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
       </DialogTrigger>
       <DialogContent className="rounded-2xl shadow-2xl p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center mb-2">Update Event</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-center mb-2">
+            Update Event
+          </DialogTitle>
           <DialogDescription className="text-center mb-4">
             Update the donation event. Edit the details below.
           </DialogDescription>
@@ -145,7 +153,10 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                   <FormItem>
                     <FormLabel>Registration Start</FormLabel>
                     <FormControl>
-                      <DateTimePicker date={field.value} setDate={field.onChange} />
+                      <DateTimePicker
+                        date={field.value}
+                        setDate={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -158,7 +169,10 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                   <FormItem>
                     <FormLabel>Registration End</FormLabel>
                     <FormControl>
-                      <DateTimePicker date={field.value} setDate={field.onChange} />
+                      <DateTimePicker
+                        date={field.value}
+                        setDate={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -173,7 +187,10 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                   <FormItem>
                     <FormLabel>Event Start</FormLabel>
                     <FormControl>
-                      <DateTimePicker date={field.value} setDate={field.onChange} />
+                      <DateTimePicker
+                        date={field.value}
+                        setDate={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -186,7 +203,10 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                   <FormItem>
                     <FormLabel>Event End</FormLabel>
                     <FormControl>
-                      <DateTimePicker date={field.value} setDate={field.onChange} />
+                      <DateTimePicker
+                        date={field.value}
+                        setDate={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -227,7 +247,10 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Status</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a status" />
@@ -258,7 +281,9 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) {
-                          form.setValue("image", file, { shouldValidate: true });
+                          form.setValue("image", file, {
+                            shouldValidate: true,
+                          });
                         }
                       }}
                     />
@@ -278,7 +303,11 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isPending} className="w-full h-12 text-lg font-bold rounded-lg">
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="w-full h-12 text-lg font-bold rounded-lg"
+            >
               Update
             </Button>
           </form>
