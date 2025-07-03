@@ -54,6 +54,16 @@ const data = {
       icon: IconDropletMinus,
     },
     {
+      title: "Participations",
+      url: "participation",
+      icon: IconListDetails,
+    },
+    {
+      title: "Onsite Check",
+      url: "onsitecheck",
+      icon: IconListDetails,
+    },
+    {
       title: "Blood Inventory",
       url: "blood-inventory",
       icon: IconListDetails,

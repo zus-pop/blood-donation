@@ -66,14 +66,19 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        <Input
-          placeholder={`Filter ${filter}...`}
-          value={(table.getColumn(filter)?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn(filter)?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <div className="relative max-w-sm w-full">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" /></svg>
+          </span>
+          <Input
+            placeholder="Search by name..."
+            value={(table.getColumn(filter)?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn(filter)?.setFilterValue(event.target.value)
+            }
+            className="pl-10 rounded-full border-2 border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary transition-all"
+          />
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
