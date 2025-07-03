@@ -11,23 +11,24 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import DeleteEventDialog from "./delete-event-dialog";
-import UpdateEventDialog from "./update-event-dialog";
-import ViewEventDialog from "./view-event-dialog";
-import { formatDate } from "@/lib/utils";
+import DeleteOnsiteCheckDialog from "./delete-onsitecheck-dialog";
+import UpdateOnsiteCheckDialog from "./update-onsitecheck-dialog";
+import ViewOnsiteCheckDialog from "./view-onsitecheck-dialog";
+import { format } from "date-fns";
 
-export interface EventProps {
+export interface OnsiteCheckProps {
   _id: string;
-  title: string;
-  description: string;
-  registrationStartedAt: string;
-  registrationEndedAt: string;
-  eventStartedAt: string;
-  eventEndedAt: string;
-  slot: number;
-  location: string;
-  status: "UPCOMING" | "REGISTRATION" | "ONGOING" | "ENDED" | "CANCELLED";
-  createdAt: string;
+  participationId: string;
+  pulseRate?: number;
+  bloodPressure?: string;
+  hemoglobinLevel?: number;
+  bodyTemperature?: number;
+  weight?: number;
+  canDonate?: boolean;
+  checkedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  userName?: string;
 }
 
 interface ActionsProps {
@@ -36,7 +37,7 @@ interface ActionsProps {
 
 export const columns = ({
   onDelete,
-}: ActionsProps): ColumnDef<EventProps>[] => [
+}: ActionsProps): ColumnDef<OnsiteCheckProps>[] => [
   {
     accessorKey: "_id",
     header: ({ table }) => (
@@ -60,31 +61,54 @@ export const columns = ({
     enableHiding: false,
   },
   {
-    accessorKey: "title",
+    accessorKey: "userName",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
+      <DataTableColumnHeader column={column} title="User" />
     ),
+    cell: ({ row }) => row.original.userName || "",
   },
   {
-    accessorKey: "registrationStartedAt",
-    header: "Registration Start",
-    cell: ({ row }) =>
-      formatDate(new Date(row.original.registrationStartedAt as string), true),
+    accessorKey: "pulseRate",
+    header: "Pulse Rate",
   },
   {
-    accessorKey: "registrationEndedAt",
-    header: "Registration End",
-    cell: ({ row }) =>
-      formatDate(new Date(row.original.registrationEndedAt as string), true),
+    accessorKey: "bloodPressure",
+    header: "Blood Pressure",
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "hemoglobinLevel",
+    header: "Hemoglobin Level",
+  },
+  {
+    accessorKey: "bodyTemperature",
+    header: "Body Temperature",
+  },
+  {
+    accessorKey: "weight",
+    header: "Weight",
+  },
+  {
+    accessorKey: "canDonate",
+    header: "Can Donate",
+    cell: ({ row }) => (row.original.canDonate ? "Yes" : "No"),
+  },
+  {
+    accessorKey: "checkedAt",
+    header: "Checked At",
+    cell: ({ row }) => {
+      const value = row.original.checkedAt;
+      if (!value) return "";
+      try {
+        return format(new Date(value), "dd/MM/yyyy HH:mm");
+      } catch {
+        return value;
+      }
+    },
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const event = row.original;
+      const onsiteCheck = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -96,18 +120,18 @@ export const columns = ({
           <DropdownMenuContent align="center">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem asChild>
-              <ViewEventDialog event={event} />
+              <ViewOnsiteCheckDialog onsiteCheck={onsiteCheck} />
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <UpdateEventDialog currentData={event} />
+              <UpdateOnsiteCheckDialog currentData={onsiteCheck} />
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild className="text-red-600 cursor-pointer">
-              <DeleteEventDialog callback={() => onDelete(event._id)} />
+              <DeleteOnsiteCheckDialog callback={() => onDelete(onsiteCheck._id)} />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
     },
   },
-];
+]; 

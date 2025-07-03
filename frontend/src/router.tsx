@@ -22,6 +22,9 @@ const BlogDetail = lazy(() => import("./pages/clients/blogs/BlogDetail"));
 const BloodInfoSection = lazy(() => import("./pages/clients/bloodinfo/BloodInfoSection"));
 const BloodRequestSection = lazy(() => import("./pages/clients/bloodrequest/BloodRequestSection"));
 const DonationEvents = lazy(() => import("./pages/clients/DonationEvents"));
+const ParticipationTable = lazy(() => import("./pages/dashboard/participation/participation-table"));
+const OnsiteCheckTable = lazy(() => import("./pages/dashboard/onsitecheck/onsitecheck-table"));
+
 function withSuspense(Component: React.ComponentType) {
   return (
     <Suspense >
@@ -118,7 +121,14 @@ export default createBrowserRouter([
         path: "donationevent",
         element: withSuspense(EventTable),
       },
-
+      {
+        path: "participation",
+        element: withSuspense(ParticipationTable),
+      },
+      {
+        path: "onsitecheck",
+        element: withSuspense(OnsiteCheckTable),
+      },
     ]
   }
 ]);

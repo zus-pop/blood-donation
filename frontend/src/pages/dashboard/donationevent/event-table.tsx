@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 // import các hàm API event phù hợp
 import { deleteEvent, getEvents } from "@/apis/event.api";
 import { DataTable } from "@/components/data-table";
-import { columns } from "./event-columm";
+import { columns } from "./event-column";
 import CreateEventDialog from "./create-event-dialog";
 
 const EventTable = () => {
