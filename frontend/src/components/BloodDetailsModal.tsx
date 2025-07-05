@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Info, Droplets, Users, ArrowRight, ArrowLeft, Package } from "lucide-react";
+import { Info, Droplets, Users, ArrowRight, ArrowLeft } from "lucide-react";
 
 interface BloodType {
   _id: string;
@@ -21,12 +21,6 @@ interface BloodType {
       receiveFrom?: any[];
     };
   };
-  inventory?: {
-    rbc?: { quantity_units?: number };
-    plasma?: { quantity_units?: number };
-    platelets?: { quantity_units?: number };
-    whole_blood?: { quantity_units?: number };
-  };
 }
 
 interface BloodDetailsModalProps {
@@ -35,10 +29,10 @@ interface BloodDetailsModalProps {
 }
 
 const COMPONENTS = [
-  { key: "rbc", label: "Red Blood Cells (RBC)", inventoryKey: "rbc" },
-  { key: "plasma", label: "Plasma", inventoryKey: "plasma" },
-  { key: "platelets", label: "Platelets", inventoryKey: "platelets" },
-  { key: "whole_blood", label: "Whole Blood", inventoryKey: "whole_blood" },
+  { key: "rbc", label: "Red Blood Cells (RBC)" },
+  { key: "plasma", label: "Plasma" },
+  { key: "platelets", label: "Platelets" },
+  { key: "whole_blood", label: "Whole Blood" },
 ];
 
 const BloodDetailsModal = ({ bloodType, children }: BloodDetailsModalProps) => {
@@ -58,7 +52,7 @@ const BloodDetailsModal = ({ bloodType, children }: BloodDetailsModalProps) => {
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-red-600 flex items-center gap-2">
             <Droplets className="h-6 w-6" />
-            Blood Type {bloodType.bloodType} - Detailed Information
+            Blood Type {bloodType.bloodType} - Compatibility Information
           </DialogTitle>
         </DialogHeader>
 
@@ -72,86 +66,35 @@ const BloodDetailsModal = ({ bloodType, children }: BloodDetailsModalProps) => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h4 className="font-semibold text-gray-700 mb-2">Blood Type</h4>
-                  <Badge variant="secondary" className="text-lg px-3 py-1">
-                    {bloodType.bloodType}
-                  </Badge>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-700 mb-2">Total Inventory</h4>
-                  <div className="flex items-center gap-2">
-                    <Package className="h-4 w-4 text-blue-600" />
-                    <span className="font-medium">
-                      {COMPONENTS.reduce((total, comp) => {
-                        const quantity = bloodType.inventory?.[comp.inventoryKey as keyof typeof bloodType.inventory]?.quantity_units || 0;
-                        return total + quantity;
-                      }, 0)} units available
-                    </span>
-                  </div>
-                </div>
+              <div className="text-center">
+                <h4 className="font-semibold text-gray-700 mb-2">Blood Type</h4>
+                <Badge variant="secondary" className="text-2xl px-4 py-2">
+                  {bloodType.bloodType}
+                </Badge>
+                <p className="text-sm text-gray-600 mt-2">
+                  View compatibility information for different blood components
+                </p>
               </div>
             </CardContent>
           </Card>
 
-          {/* Component Details */}
+          {/* Component Compatibility Details */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {COMPONENTS.map((comp) => {
               const compatibility = bloodType.compatibility?.[comp.key];
-              const inventoryData = bloodType.inventory?.[comp.inventoryKey as keyof typeof bloodType.inventory];
-              const quantity = inventoryData?.quantity_units || 0;
-              
               const donatesToList = compatibility?.donateTo || [];
               const receivesFromList = compatibility?.receiveFrom || [];
 
               return (
                 <Card key={comp.key} className="border-t-4 border-t-blue-500">
                   <CardHeader>
-                    <CardTitle className="text-lg text-blue-700 flex items-center justify-between">
-                      <span>{comp.label}</span>
-                      <Badge 
-                        variant={quantity > 0 ? "default" : "secondary"} 
-                        className={quantity > 0 ? "bg-green-600" : "bg-gray-400"}
-                      >
-                        {quantity} units
-                      </Badge>
+                    <CardTitle className="text-lg text-blue-700">
+                      {comp.label}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {/* Inventory Information */}
-                    <div className={`p-3 rounded-lg ${quantity > 0 ? 'bg-green-50 border border-green-200' : 'bg-gray-50 border border-gray-200'}`}>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Package className={`h-4 w-4 ${quantity > 0 ? 'text-green-600' : 'text-gray-500'}`} />
-                          <span className={`font-medium ${quantity > 0 ? 'text-green-800' : 'text-gray-600'}`}>
-                            Current Stock
-                          </span>
-                        </div>
-                        <div className="text-right">
-                          <div className={`text-2xl font-bold ${quantity > 0 ? 'text-green-700' : 'text-gray-500'}`}>
-                            {quantity}
-                          </div>
-                          <div className="text-xs text-gray-500">units</div>
-                        </div>
-                      </div>
-                      <div className="mt-2">
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div 
-                            className={`h-2 rounded-full ${quantity > 0 ? 'bg-green-500' : 'bg-gray-400'}`}
-                            style={{ width: `${Math.min((quantity / 100) * 100, 100)}%` }}
-                          ></div>
-                        </div>
-                        <div className="text-xs text-gray-500 mt-1">
-                          {quantity > 50 ? 'Good supply' : quantity > 20 ? 'Moderate supply' : quantity > 0 ? 'Low supply' : 'Out of stock'}
-                        </div>
-                      </div>
-                    </div>
-
-                    {compatibility && (
+                    {compatibility ? (
                       <>
-                        <Separator />
-
                         {/* Donation Compatibility */}
                         <div className="space-y-2">
                           <div className="flex items-center gap-2 text-green-700">
@@ -196,11 +139,9 @@ const BloodDetailsModal = ({ bloodType, children }: BloodDetailsModalProps) => {
                           </div>
                         </div>
                       </>
-                    )}
-
-                    {!compatibility && (
+                    ) : (
                       <div className="text-center py-4 text-gray-500">
-                        <p className="text-sm">No compatibility data available</p>
+                        <p className="text-sm">No compatibility data available for this component</p>
                       </div>
                     )}
                   </CardContent>
@@ -209,29 +150,6 @@ const BloodDetailsModal = ({ bloodType, children }: BloodDetailsModalProps) => {
             })}
           </div>
 
-          {/* Summary Statistics */}
-          <Card className="bg-blue-50 border-blue-200">
-            <CardHeader>
-              <CardTitle className="text-lg text-blue-800 flex items-center gap-2">
-                <Package className="h-5 w-5" />
-                Inventory Summary
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {COMPONENTS.map((comp) => {
-                  const quantity = bloodType.inventory?.[comp.inventoryKey as keyof typeof bloodType.inventory]?.quantity_units || 0;
-                  return (
-                    <div key={comp.key} className="text-center">
-                      <div className="text-2xl font-bold text-blue-700">{quantity}</div>
-                      <div className="text-sm text-blue-600">{comp.label}</div>
-                      <div className="text-xs text-gray-500">units</div>
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </DialogContent>
     </Dialog>
