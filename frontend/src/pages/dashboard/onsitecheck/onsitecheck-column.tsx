@@ -1,7 +1,5 @@
-// bloodrequest-column.tsx
 import { type ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import type { BloodRequestProps } from "@/apis/bloodrequest.api";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -13,10 +11,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import UpdateBloodRequestDialog from "./update-bloodrequest-dialog";
-import DeleteBloodRequestDialog from "./delete-bloodrequest-dialog";
-import ViewBloodRequestDialog from "./view-bloodrequest-dialog";
-import { formatDate } from "@/lib/utils";
+import DeleteOnsiteCheckDialog from "./delete-onsitecheck-dialog";
+import UpdateOnsiteCheckDialog from "./update-onsitecheck-dialog";
+import ViewOnsiteCheckDialog from "./view-onsitecheck-dialog";
+import { format } from "date-fns";
+
+export interface OnsiteCheckProps {
+  _id: string;
+  participationId: string;
+  pulseRate?: number;
+  bloodPressure?: string;
+  hemoglobinLevel?: number;
+  bodyTemperature?: number;
+  weight?: number;
+  canDonate?: boolean;
+  checkedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  userName?: string;
+}
 
 interface ActionsProps {
   onDelete: (id: string) => void;
@@ -24,7 +37,7 @@ interface ActionsProps {
 
 export const columns = ({
   onDelete,
-}: ActionsProps): ColumnDef<BloodRequestProps>[] => [
+}: ActionsProps): ColumnDef<OnsiteCheckProps>[] => [
   {
     accessorKey: "_id",
     header: ({ table }) => (
@@ -48,65 +61,54 @@ export const columns = ({
     enableHiding: false,
   },
   {
+    accessorKey: "userName",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="User" />
     ),
-    accessorKey: "name",
-    id: "Name",
+    cell: ({ row }) => row.original.userName || "",
   },
   {
-    accessorKey: "phone",
-    header: "Phone",
+    accessorKey: "pulseRate",
+    header: "Pulse Rate",
   },
   {
-    accessorKey: "bloodType",
-    header: "Blood Type",
+    accessorKey: "bloodPressure",
+    header: "Blood Pressure",
   },
   {
-    accessorKey: "bloodComponent",
-    header: "Blood Component",
+    accessorKey: "hemoglobinLevel",
+    header: "Hemoglobin Level",
   },
   {
-    accessorKey: "quantity",
-    header: "Quantity",
+    accessorKey: "bodyTemperature",
+    header: "Body Temperature",
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "weight",
+    header: "Weight",
   },
   {
-    accessorKey: "address",
-    header: "Address",
+    accessorKey: "canDonate",
+    header: "Can Donate",
+    cell: ({ row }) => (row.original.canDonate ? "Yes" : "No"),
   },
   {
-    accessorKey: "createdAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Requested Date" />
-    ),
+    accessorKey: "checkedAt",
+    header: "Checked At",
     cell: ({ row }) => {
-      const formatted = formatDate(new Date(row.original.createdAt));
-      return <div className="">{formatted}</div>;
+      const value = row.original.checkedAt;
+      if (!value) return "";
+      try {
+        return format(new Date(value), "dd/MM/yyyy HH:mm");
+      } catch {
+        return value;
+      }
     },
-  },
-  {
-    accessorKey: "updatedAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated Date" />
-    ),
-    cell: ({ row }) => {
-      const formatted = formatDate(new Date(row.original.updatedAt));
-      return <div className="">{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "requestedBy.email",
-    id: "Requested By",
-    header: "Requested By",
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const bloodrequest = row.original;
+      const onsiteCheck = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -118,20 +120,18 @@ export const columns = ({
           <DropdownMenuContent align="center">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem asChild>
-              <ViewBloodRequestDialog bloodrequest={bloodrequest} />
+              <ViewOnsiteCheckDialog onsiteCheck={onsiteCheck} />
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <UpdateBloodRequestDialog currentData={bloodrequest} />
+              <UpdateOnsiteCheckDialog currentData={onsiteCheck} />
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild className="text-red-600 cursor-pointer">
-              <DeleteBloodRequestDialog
-                callback={() => onDelete(bloodrequest._id)}
-              />
+              <DeleteOnsiteCheckDialog callback={() => onDelete(onsiteCheck._id)} />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
     },
   },
-];
+]; 

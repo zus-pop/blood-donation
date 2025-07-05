@@ -1,8 +1,8 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import { DataTableColumnHeader } from "../../../components/data-table-column-header";
-import { Button } from "../../../components/ui/button";
-import { Checkbox } from "../../../components/ui/checkbox";
+import { DataTableColumnHeader } from "@/components/data-table-column-header";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,31 +10,29 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../../components/ui/dropdown-menu";
-import DeleteEventDialog from "./delete-event-dialog";
-import UpdateEventDialog from "./update-event-dialog";
-import ViewEventDialog from "./view-event-dialog";
-import { formatDate } from "@/lib/utils";
+} from "@/components/ui/dropdown-menu";
+import DeleteParticipationDialog from "./delete-participation-dialog";
+import UpdateParticipationDialog from "./update-participation-dialog";
+import ViewParticipationDialog from "./view-participation-dialog";
 
-export interface EventProps {
+export interface ParticipationProps {
   _id: string;
-  title: string;
-  description: string;
-  registrationStartedAt: string;
-  registrationEndedAt: string;
-  eventStartedAt: string;
-  eventEndedAt: string;
-  slot: number;
-  location: string;
-  status: "UPCOMING" | "REGISTRATION" | "ONGOING" | "ENDED" | "CANCELLED";
-  createdAt: string;
+  user: string;
+  event: string;
+  status: "REGISTERED" | "CANCELLED" | "ATTENDED";
+  createdAt?: string;
+  updatedAt?: string;
+  userName?: string;
+  eventName?: string;
 }
 
 interface ActionsProps {
   onDelete: (id: string) => void;
 }
 
-export const columns = ({ onDelete }: ActionsProps): ColumnDef<EventProps>[] => [
+export const columns = ({
+  onDelete,
+}: ActionsProps): ColumnDef<ParticipationProps>[] => [
   {
     accessorKey: "_id",
     header: ({ table }) => (
@@ -58,18 +56,18 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<EventProps>[] => 
     enableHiding: false,
   },
   {
-    accessorKey: "title",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Title" />,
+    accessorKey: "userName",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="User" />
+    ),
+    cell: ({ row }) => row.original.userName || "",
   },
   {
-    accessorKey: "registrationStartedAt",
-    header: "Registration Start",
-    cell: ({ row }) => formatDate(new Date(row.original.registrationStartedAt as string), true),
-  },
-  {
-    accessorKey: "registrationEndedAt",
-    header: "Registration End",
-    cell: ({ row }) => formatDate(new Date(row.original.registrationEndedAt as string), true),
+    accessorKey: "eventName",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Event" />
+    ),
+    cell: ({ row }) => row.original.eventName || "",
   },
   {
     accessorKey: "status",
@@ -78,7 +76,7 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<EventProps>[] => 
   {
     id: "actions",
     cell: ({ row }) => {
-      const event = row.original;
+      const participation = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -90,18 +88,22 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<EventProps>[] => 
           <DropdownMenuContent align="center">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem asChild>
-              <ViewEventDialog event={event} />
+              <ViewParticipationDialog participation={participation} />
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <UpdateEventDialog currentData={event} />
+              <UpdateParticipationDialog currentData={{
+                ...participation,
+                userId: participation.user,
+                eventId: participation.event
+              }} />
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild className="text-red-600 cursor-pointer">
-              <DeleteEventDialog callback={() => onDelete(event._id)} />
+              <DeleteParticipationDialog callback={() => onDelete(participation._id!)} />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
     },
   },
-];
+]; 

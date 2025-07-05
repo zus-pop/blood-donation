@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { findOnSiteChecks, createOnsiteCheck, updateOnsiteCheck } from "../services/onsitecheck.service";
+import { findOnSiteChecks, createOnsiteCheck, updateOnsiteCheck, deleteOnsiteCheck } from "../services/onsitecheck.service";
 import { OnSiteCheckQuery, CreateOnSiteCheckDto, UpdateOnSiteCheckDto } from "../types/onsitecheck.type";
 const router = express.Router();
 
@@ -28,6 +28,19 @@ router.put("/:id", async (req: Request, res: Response) => {
     res.json(updatedOnsiteCheck);
   } catch (err) {
     res.status(400).json({ error: "Cannot update onsite check", detail: err });
+  }
+});
+
+router.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const deletedOnsiteCheck = await deleteOnsiteCheck(id);
+    if (!deletedOnsiteCheck) {
+      res.status(404).json({ error: "Onsite check not found" });
+    }
+    res.json({ message: "Onsite check deleted successfully" });
+  } catch (err) {
+    res.status(400).json({ error: "Cannot delete onsite check", detail: err });
   }
 });
 

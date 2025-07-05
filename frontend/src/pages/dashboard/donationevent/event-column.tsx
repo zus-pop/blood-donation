@@ -1,7 +1,5 @@
-// bloodrequest-column.tsx
 import { type ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import type { BloodRequestProps } from "@/apis/bloodrequest.api";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -13,10 +11,24 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import UpdateBloodRequestDialog from "./update-bloodrequest-dialog";
-import DeleteBloodRequestDialog from "./delete-bloodrequest-dialog";
-import ViewBloodRequestDialog from "./view-bloodrequest-dialog";
+import DeleteEventDialog from "./delete-event-dialog";
+import UpdateEventDialog from "./update-event-dialog";
+import ViewEventDialog from "./view-event-dialog";
 import { formatDate } from "@/lib/utils";
+
+export interface EventProps {
+  _id: string;
+  title: string;
+  description: string;
+  registrationStartedAt: string;
+  registrationEndedAt: string;
+  eventStartedAt: string;
+  eventEndedAt: string;
+  slot: number;
+  location: string;
+  status: "UPCOMING" | "REGISTRATION" | "ONGOING" | "ENDED" | "CANCELLED";
+  createdAt: string;
+}
 
 interface ActionsProps {
   onDelete: (id: string) => void;
@@ -24,7 +36,7 @@ interface ActionsProps {
 
 export const columns = ({
   onDelete,
-}: ActionsProps): ColumnDef<BloodRequestProps>[] => [
+}: ActionsProps): ColumnDef<EventProps>[] => [
   {
     accessorKey: "_id",
     header: ({ table }) => (
@@ -48,65 +60,31 @@ export const columns = ({
     enableHiding: false,
   },
   {
+    accessorKey: "title",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="User" />
+      <DataTableColumnHeader column={column} title="Title" />
     ),
-    accessorKey: "name",
-    id: "Name",
   },
   {
-    accessorKey: "phone",
-    header: "Phone",
+    accessorKey: "registrationStartedAt",
+    header: "Registration Start",
+    cell: ({ row }) =>
+      formatDate(new Date(row.original.registrationStartedAt as string), true),
   },
   {
-    accessorKey: "bloodType",
-    header: "Blood Type",
-  },
-  {
-    accessorKey: "bloodComponent",
-    header: "Blood Component",
-  },
-  {
-    accessorKey: "quantity",
-    header: "Quantity",
+    accessorKey: "registrationEndedAt",
+    header: "Registration End",
+    cell: ({ row }) =>
+      formatDate(new Date(row.original.registrationEndedAt as string), true),
   },
   {
     accessorKey: "status",
     header: "Status",
   },
   {
-    accessorKey: "address",
-    header: "Address",
-  },
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Requested Date" />
-    ),
-    cell: ({ row }) => {
-      const formatted = formatDate(new Date(row.original.createdAt));
-      return <div className="">{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "updatedAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated Date" />
-    ),
-    cell: ({ row }) => {
-      const formatted = formatDate(new Date(row.original.updatedAt));
-      return <div className="">{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "requestedBy.email",
-    id: "Requested By",
-    header: "Requested By",
-  },
-  {
     id: "actions",
     cell: ({ row }) => {
-      const bloodrequest = row.original;
+      const event = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -118,16 +96,14 @@ export const columns = ({
           <DropdownMenuContent align="center">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem asChild>
-              <ViewBloodRequestDialog bloodrequest={bloodrequest} />
+              <ViewEventDialog event={event} />
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <UpdateBloodRequestDialog currentData={bloodrequest} />
+              <UpdateEventDialog currentData={event} />
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild className="text-red-600 cursor-pointer">
-              <DeleteBloodRequestDialog
-                callback={() => onDelete(bloodrequest._id)}
-              />
+              <DeleteEventDialog callback={() => onDelete(event._id)} />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

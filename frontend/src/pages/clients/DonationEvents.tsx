@@ -34,8 +34,8 @@ export default function DonationEvents() {
     const fetchUserParticipations = async () => {
       if (isAuthenticated && user) {
         try {
-          const participations = await getParticipations(user._id);
-          const eventIds = new Set(participations.map(p => p.event));
+          const participations = await getParticipations();
+          const eventIds = new Set(participations.map(p => p.eventId));
           setRegisteredEventIds(eventIds);
         } catch {
           // Handle error silently, don't block user from seeing events
@@ -52,8 +52,8 @@ export default function DonationEvents() {
     } else {
       try {
         await createParticipation({
-          user: user._id,
-          event: eventId,
+          userId: user._id,
+          eventId: eventId,
           status: "REGISTERED",
         });
         toast.success("Successfully registered for the event!");

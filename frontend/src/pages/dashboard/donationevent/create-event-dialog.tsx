@@ -5,13 +5,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../../components/ui/dialog";
+} from "@/components/ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "../../../components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -19,11 +19,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../../components/ui/form";
-import { Input } from "../../../components/ui/input";
-import { Textarea } from "../../../components/ui/textarea";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { createEventSchema, type EventSchema } from "./event.schema";
-import { createEvent } from "../../../apis/event.api";
+import { createEvent } from "@/apis/event.api";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 
 const CreateEventDialog = () => {
@@ -51,8 +51,14 @@ const CreateEventDialog = () => {
     const formData = new FormData();
     formData.append("title", event.title);
     formData.append("description", event.description);
-    formData.append("registrationStartedAt", event.registrationStartedAt.toISOString());
-    formData.append("registrationEndedAt", event.registrationEndedAt.toISOString());
+    formData.append(
+      "registrationStartedAt",
+      event.registrationStartedAt.toISOString()
+    );
+    formData.append(
+      "registrationEndedAt",
+      event.registrationEndedAt.toISOString()
+    );
     formData.append("eventStartedAt", event.eventStartedAt.toISOString());
     formData.append("eventEndedAt", event.eventEndedAt.toISOString());
     formData.append("slot", event.slot.toString());
@@ -70,7 +76,9 @@ const CreateEventDialog = () => {
       </DialogTrigger>
       <DialogContent className="rounded-2xl shadow-2xl p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center mb-2">Create New Event</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-center mb-2">
+            Create New Event
+          </DialogTitle>
           <DialogDescription className="text-center mb-4">
             Create a new donation event. Fill in the details below.
           </DialogDescription>
@@ -84,7 +92,11 @@ const CreateEventDialog = () => {
                 <FormItem>
                   <FormLabel className="font-semibold">Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Event Title" {...field} className="h-12 text-base rounded-lg" />
+                    <Input
+                      placeholder="Event Title"
+                      {...field}
+                      className="h-12 text-base rounded-lg"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -97,7 +109,11 @@ const CreateEventDialog = () => {
                 <FormItem>
                   <FormLabel className="font-semibold">Description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Event Description" {...field} className="h-20 text-base rounded-lg" />
+                    <Textarea
+                      placeholder="Event Description"
+                      {...field}
+                      className="h-20 text-base rounded-lg"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -109,9 +125,14 @@ const CreateEventDialog = () => {
                 name="registrationStartedAt"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-semibold">Registration Start</FormLabel>
+                    <FormLabel className="font-semibold">
+                      Registration Start
+                    </FormLabel>
                     <FormControl>
-                      <DateTimePicker date={field.value} setDate={field.onChange} />
+                      <DateTimePicker
+                        date={field.value}
+                        setDate={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -122,9 +143,14 @@ const CreateEventDialog = () => {
                 name="registrationEndedAt"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-semibold">Registration End</FormLabel>
+                    <FormLabel className="font-semibold">
+                      Registration End
+                    </FormLabel>
                     <FormControl>
-                      <DateTimePicker date={field.value} setDate={field.onChange} />
+                      <DateTimePicker
+                        date={field.value}
+                        setDate={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -139,7 +165,10 @@ const CreateEventDialog = () => {
                   <FormItem>
                     <FormLabel className="font-semibold">Event Start</FormLabel>
                     <FormControl>
-                      <DateTimePicker date={field.value} setDate={field.onChange} />
+                      <DateTimePicker
+                        date={field.value}
+                        setDate={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -152,7 +181,10 @@ const CreateEventDialog = () => {
                   <FormItem>
                     <FormLabel className="font-semibold">Event End</FormLabel>
                     <FormControl>
-                      <DateTimePicker date={field.value} setDate={field.onChange} />
+                      <DateTimePicker
+                        date={field.value}
+                        setDate={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -167,7 +199,12 @@ const CreateEventDialog = () => {
                   <FormItem>
                     <FormLabel className="font-semibold">Slot</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="Slot" {...field} className="h-12 text-base rounded-lg" />
+                      <Input
+                        type="number"
+                        placeholder="Slot"
+                        {...field}
+                        className="h-12 text-base rounded-lg"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -180,7 +217,11 @@ const CreateEventDialog = () => {
                   <FormItem>
                     <FormLabel className="font-semibold">Location</FormLabel>
                     <FormControl>
-                      <Input placeholder="Location" {...field} className="h-12 text-base rounded-lg" />
+                      <Input
+                        placeholder="Location"
+                        {...field}
+                        className="h-12 text-base rounded-lg"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -200,12 +241,16 @@ const CreateEventDialog = () => {
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) {
-                          form.setValue("image", file, { shouldValidate: true });
+                          form.setValue("image", file, {
+                            shouldValidate: true,
+                          });
                         }
                       }}
                     />
                   </FormControl>
-                  {typeof form.formState.errors.image === 'object' && form.formState.errors.image && 'message' in form.formState.errors.image
+                  {typeof form.formState.errors.image === "object" &&
+                  form.formState.errors.image &&
+                  "message" in form.formState.errors.image
                     ? form.formState.errors.image.message
                     : null}
                   {imageFile && (
@@ -222,7 +267,11 @@ const CreateEventDialog = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isPending} className="w-full h-12 text-lg font-bold rounded-lg bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800">
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="w-full h-12 text-lg font-bold rounded-lg bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800"
+            >
               Create
             </Button>
           </form>
