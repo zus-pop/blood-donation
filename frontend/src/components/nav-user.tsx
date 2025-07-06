@@ -1,36 +1,33 @@
-import {
-  IconCreditCard,
-  IconDotsVertical,
-  IconLogout,
-  IconNotification,
-  IconUserCircle,
-} from "@tabler/icons-react"
+import { IconDotsVertical, IconLogout } from "@tabler/icons-react";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { useNavigate } from "react-router";
+import { useProfileStore } from "../store/profileStore";
 
 export function NavUser({
   user,
 }: {
   user: {
-    name: string
-    email: string
-  }
+    name: string;
+    email: string;
+  };
 }) {
-  const { isMobile } = useSidebar()
+  const { clearProfile } = useProfileStore();
+  const navigate = useNavigate();
+  const { isMobile } = useSidebar();
 
   return (
     <SidebarMenu>
@@ -67,7 +64,7 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            {/* <DropdownMenuGroup>
               <DropdownMenuItem>
                 <IconUserCircle />
                 Account
@@ -80,9 +77,15 @@ export function NavUser({
                 <IconNotification />
                 Notifications
               </DropdownMenuItem>
-            </DropdownMenuGroup>
+            </DropdownMenuGroup> */}
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => {
+                clearProfile();
+                navigate("/login");
+              }}
+            >
               <IconLogout />
               Log out
             </DropdownMenuItem>
@@ -90,5 +93,5 @@ export function NavUser({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

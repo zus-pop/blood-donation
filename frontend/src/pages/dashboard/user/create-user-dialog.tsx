@@ -1,26 +1,26 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { UserSchema } from "./user.schema";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createUser } from "@/apis/user.api";
-import { useState } from "react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { registerUser } from "../../../apis/auth.api";
+import { UserSchema } from "./user.schema";
 
 export default function CreateUserDialog() {
   const [open, setOpen] = useState(false);
@@ -46,7 +46,7 @@ export default function CreateUserDialog() {
     },
   });
   const { mutate, isPending } = useMutation({
-    mutationFn: createUser,
+    mutationFn: registerUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       setOpen(false);
