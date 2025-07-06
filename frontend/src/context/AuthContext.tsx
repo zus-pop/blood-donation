@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { toast } from "sonner";
-import { createUser, loginUser, getProfile } from "@/apis/user.api";
-import { useProfileStore } from "@/store/profileStore";
 import type { UserProps } from "@/apis/user.api";
+import { useProfileStore } from "@/store/profileStore";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { toast } from "sonner";
+import { getProfile, loginUser, registerUser } from "../apis/auth.api";
 
 // Validation functions
 function validate(form: Record<string, string>): Record<string, string> {
@@ -10,18 +10,22 @@ function validate(form: Record<string, string>): Record<string, string> {
   if (!form.firstName.trim()) errors.firstName = "First name is required";
   if (!form.lastName.trim()) errors.lastName = "Last name is required";
   if (!form.phone.trim()) errors.phone = "Phone number is required";
-  else if (!/^\d{8,15}$/.test(form.phone)) errors.phone = "Phone must be 8-15 digits";
+  else if (!/^\d{8,15}$/.test(form.phone))
+    errors.phone = "Phone must be 8-15 digits";
   if (!form.email.trim()) errors.email = "Email is required";
-  else if (!/^\S+@\S+\.\S+$/.test(form.email)) errors.email = "Invalid email format";
+  else if (!/^\S+@\S+\.\S+$/.test(form.email))
+    errors.email = "Invalid email format";
   if (!form.password) errors.password = "Password is required";
-  else if (form.password.length < 6) errors.password = "Password must be at least 6 characters";
+  else if (form.password.length < 6)
+    errors.password = "Password must be at least 6 characters";
   return errors;
 }
 
 function validateLogin(form: Record<string, string>): Record<string, string> {
   const errors: Record<string, string> = {};
   if (!form.email.trim()) errors.email = "Email is required";
-  else if (!/^\S+@\S+\.\S+$/.test(form.email)) errors.email = "Invalid email format";
+  else if (!/^\S+@\S+\.\S+$/.test(form.email))
+    errors.email = "Invalid email format";
   if (!form.password) errors.password = "Password is required";
   return errors;
 }
@@ -46,25 +50,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserProps | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", phone: "", password: "" });
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    password: "",
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const { setProfile, clearProfile } = useProfileStore();
+  const { accessToken, setAccessToken, setProfile, clearProfile } =
+    useProfileStore();
 
   useEffect(() => {
     const checkUser = async () => {
-      const token = localStorage.getItem("accessToken");
-      if (token) {
+      if (accessToken) {
         try {
           const profile = await getProfile();
           setUser(profile);
           setIsAuthenticated(true);
-          setProfile(profile); // Lưu profile vào zustand
+          setProfile(profile);
         } catch (error) {
-          localStorage.removeItem("accessToken");
+          setAccessToken(null);
           setUser(null);
           setIsAuthenticated(false);
-          clearProfile(); // Xóa profile khỏi zustand nếu lỗi
+          clearProfile();
         }
       } else {
         clearProfile();
@@ -76,7 +86,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setIsModalOpen(false);
-    setForm({ firstName: "", lastName: "", email: "", phone: "", password: "" });
+    setForm({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      password: "",
+    });
     setErrors({});
   };
 
@@ -90,7 +106,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
     try {
-      await createUser({
+      await registerUser({
         firstName: form.firstName,
         lastName: form.lastName,
         email: form.email,
@@ -111,12 +127,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
     try {
-      const res = await loginUser({ email: form.email, password: form.password });
-      localStorage.setItem("accessToken", res.access_token);
+      const res = await loginUser({
+        email: form.email,
+        password: form.password,
+      });
+      setAccessToken(res.access_token);
       const profile = await getProfile();
       setUser(profile);
       setIsAuthenticated(true);
-      setProfile(profile); // Lưu profile vào zustand khi đăng nhập
+      setProfile(profile);
       toast.success("Login successful!");
       closeModal();
     } catch {
@@ -125,15 +144,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem("accessToken");
+    setAccessToken(null);
     setUser(null);
     setIsAuthenticated(false);
-    clearProfile(); // Xóa profile khỏi zustand khi logout
+    clearProfile();
     toast.info("You have been logged out.");
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, isModalOpen, openModal, closeModal, form, errors, handleChange, handleRegister, handleLogin, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated,
+        isModalOpen,
+        openModal,
+        closeModal,
+        form,
+        errors,
+        handleChange,
+        handleRegister,
+        handleLogin,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

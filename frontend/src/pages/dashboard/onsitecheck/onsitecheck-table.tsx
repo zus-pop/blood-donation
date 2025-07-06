@@ -1,10 +1,10 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteOnsiteCheck, getOnsiteChecks } from "@/apis/onsitecheck.api";
-import { DataTable } from "@/components/data-table";
-import { columns } from "./onsitecheck-column";
-import CreateOnsiteCheckDialog from "./create-onsitecheck-dialog";
 import { getParticipations } from "@/apis/participation.api";
 import { getUsers } from "@/apis/user.api";
+import { DataTable } from "@/components/data-table";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import CreateOnsiteCheckDialog from "./create-onsitecheck-dialog";
+import { columns } from "./onsitecheck-column";
 
 const OnsiteCheckTable = () => {
   const { data: onsiteChecks } = useQuery({
@@ -28,9 +28,9 @@ const OnsiteCheckTable = () => {
     queryFn: getUsers,
   });
 
-  console.log("onsiteChecks", onsiteChecks);
-  console.log("participations", participations);
-  console.log("users", users);
+  //   console.log("onsiteChecks", onsiteChecks);
+  //   console.log("participations", participations);
+  //   console.log("users", users);
 
   if (!participations || !users) {
     return <div>Loading...</div>;
@@ -38,10 +38,14 @@ const OnsiteCheckTable = () => {
 
   const onsiteChecksMapped = (onsiteChecks ?? []).map((item) => {
     const participationId = String(item.participationId ?? "");
-    const participation = (participations ?? []).find((p) => String(p._id) === participationId);
+    const participation = (participations ?? []).find(
+      (p) => String(p._id) === participationId
+    );
     const userId = participation ? participation.userId : "";
     const user = (users ?? []).find((u) => String(u._id) === String(userId));
-    const userName = user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : String(userId);
+    const userName = user
+      ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
+      : String(userId);
     return {
       ...item,
       _id: String(item._id ?? ""),
@@ -72,4 +76,4 @@ const OnsiteCheckTable = () => {
   );
 };
 
-export default OnsiteCheckTable; 
+export default OnsiteCheckTable;
