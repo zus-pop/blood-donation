@@ -2,16 +2,30 @@ import { useQuery } from "@tanstack/react-query";
 import { getBloodRequests } from "@/apis/bloodrequest.api";
 import Loading from "@/components/loading";
 import { CalendarIcon, MapPinIcon, DropletIcon } from "lucide-react";
+import { useProfileStore } from "@/store/profileStore";
 
 export default function BloodRequestSection() {
-    const userId = "68454f13415f3e074938edee";
+    const { profile } = useProfileStore();
+    const userId = profile?._id;
 
     const { data: bloodRequests, isLoading } = useQuery({
         queryKey: ["bloodrequests", userId],
-        queryFn: async () => getBloodRequests({ requestedBy: userId }),
+        queryFn: async () => userId ? getBloodRequests({ requestedBy: userId }) : [],
+        enabled: !!userId, // Only run query if userId exists
     });
 
     if (isLoading) return <Loading />;
+
+    if (!profile) {
+        return (
+            <section className="container mx-auto px-4 py-12 max-w-7xl">
+                <div className="text-center">
+                    <h2 className="text-4xl font-bold text-primary mb-2">Please Login</h2>
+                    <p className="text-gray-600">You need to be logged in to view your blood requests</p>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section className="container mx-auto px-4 py-12 max-w-7xl">

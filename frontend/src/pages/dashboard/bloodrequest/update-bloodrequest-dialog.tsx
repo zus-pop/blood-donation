@@ -125,6 +125,40 @@ const UpdateBloodRequestDialog = ({
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
+                name="requestedBy"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>User</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value || ""}
+                        onValueChange={(val) => {
+                          field.onChange(val);
+                          // Auto fill name when user is selected
+                          const selectedUser = users.find(user => user._id === val);
+                          if (selectedUser) {
+                            form.setValue('name', `${selectedUser.firstName} ${selectedUser.lastName}`);
+                          }
+                        }}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select user" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {users.map((user) => (
+                            <SelectItem key={user._id} value={user._id}>
+                              {user.email} ({user.firstName} {user.lastName})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
@@ -152,34 +186,6 @@ const UpdateBloodRequestDialog = ({
                         placeholder="Enter your phone number"
                         {...field}
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="requestedBy"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>User</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value || ""}
-                        onValueChange={(val) => field.onChange(val)}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select user" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {users.map((user) => (
-                            <SelectItem key={user._id} value={user._id}>
-                              {user.email} ({user.firstName} {user.lastName})
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

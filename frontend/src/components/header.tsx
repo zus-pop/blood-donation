@@ -19,24 +19,45 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { openModal, isAuthenticated, user, logout } = useAuth();
-  const navList = [
-    {
-      name: "Blogs",
-      to: "/blogs",
-    },
-    {
-      name: "Donation Events",
-      to: "/donationevents",
-    },
-    {
-      name: "Blood Requests",
-      to: "/blrqsection",
-    },
-    {
-      name: "Blood Infos",
-      to: "/blood-infos",
-    },
-  ];
+
+  // Filter navigation list based on authentication status
+  const getNavList = () => {
+    const baseNavList = [
+      {
+        name: "Blogs",
+        to: "/blogs",
+      },
+      {
+        name: "Donation Events",
+        to: "/donationevents",
+      },
+      {
+        name: "Blood Infos",
+        to: "/blood-infos",
+      },
+    ];
+
+    // Only add Blood Requests if user is authenticated
+    if (isAuthenticated) {
+      baseNavList.splice(2, 0, {
+        name: "Blood Requests",
+        to: "/blrqsection",
+      });
+    }
+
+    return baseNavList;
+  };
+
+  const navList = getNavList();
+
+  // Handler for Request Blood Now button
+  const handleRequestBloodClick = () => {
+    if (isAuthenticated) {
+      navigate("/bloodrequest");
+    } else {
+      openModal();
+    }
+  };
   return (
     <header className="sticky top-0 z-50 w-full px-5 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
@@ -52,8 +73,7 @@ const Header = () => {
               key={nav.name}
               to={nav.to}
               className={({ isActive }: { isActive: boolean }) =>
-                `text-lg font-medium ${
-                  isActive ? "text-red-600" : "text-muted-foreground"
+                `text-lg font-medium ${isActive ? "text-red-600" : "text-muted-foreground"
                 }`
               }
             >
@@ -65,7 +85,7 @@ const Header = () => {
         <div className="flex items-center gap-4">
           <Button className="hidden md:flex bg-red-600 hover:bg-red-700" onClick={() => navigate("/donationevents")}>Donate Now</Button>
           or
-          <Button className="hidden md:flex bg-red-600 hover:bg-red-700" onClick={() => navigate("/bloodrequest")}>Request Blood Now</Button>
+          <Button className="hidden md:flex bg-red-600 hover:bg-red-700" onClick={handleRequestBloodClick}>Request Blood Now</Button>
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -95,44 +115,22 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent side="right">
               <div className="flex flex-col gap-6 mt-6">
-                <a
-                  href="#"
-                  className="text-lg font-medium"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Home
-                </a>
-                <a
-                  href="#"
-                  className="text-lg font-medium text-muted-foreground"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Donate
-                </a>
-                <a
-                  href="#"
-                  className="text-lg font-medium text-muted-foreground"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Find Drives
-                </a>
-                <a
-                  href="#"
-                  className="text-lg font-medium text-muted-foreground"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  About
-                </a>
-                <a
-                  href="#"
-                  className="text-lg font-medium text-muted-foreground"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Contact
-                </a>
+                {navList.map((nav) => (
+                  <NavLink
+                    key={nav.name}
+                    to={nav.to}
+                    className="text-lg font-medium"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {nav.name}
+                  </NavLink>
+                ))}
                 <Separator />
-                <Button className="w-full bg-red-600 hover:bg-red-700">
+                <Button className="w-full bg-red-600 hover:bg-red-700" onClick={() => { navigate("/donationevents"); setMobileMenuOpen(false); }}>
                   Donate Now
+                </Button>
+                <Button className="w-full bg-red-600 hover:bg-red-700" onClick={() => { handleRequestBloodClick(); setMobileMenuOpen(false); }}>
+                  Request Blood Now
                 </Button>
                 {isAuthenticated ? (
                   <Button variant="outline" className="w-full" onClick={logout}>
