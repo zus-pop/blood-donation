@@ -15,6 +15,7 @@ import DeleteEventDialog from "./delete-event-dialog";
 import UpdateEventDialog from "./update-event-dialog";
 import ViewEventDialog from "./view-event-dialog";
 import { formatDate } from "@/lib/utils";
+import { useProfileStore } from "@/store/profileStore";
 
 export interface EventProps {
   _id: string;
@@ -37,77 +38,83 @@ interface ActionsProps {
 export const columns = ({
   onDelete,
 }: ActionsProps): ColumnDef<EventProps>[] => [
-  {
-    accessorKey: "_id",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "title",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
-    ),
-  },
-  {
-    accessorKey: "registrationStartedAt",
-    header: "Registration Start",
-    cell: ({ row }) =>
-      formatDate(new Date(row.original.registrationStartedAt as string), true),
-  },
-  {
-    accessorKey: "registrationEndedAt",
-    header: "Registration End",
-    cell: ({ row }) =>
-      formatDate(new Date(row.original.registrationEndedAt as string), true),
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const event = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="center">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem asChild>
-              <ViewEventDialog event={event} />
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <UpdateEventDialog currentData={event} />
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild className="text-red-600 cursor-pointer">
-              <DeleteEventDialog callback={() => onDelete(event._id)} />
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+    {
+      accessorKey: "_id",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
     },
-  },
-];
+    {
+      accessorKey: "title",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Title" />
+      ),
+    },
+    {
+      accessorKey: "registrationStartedAt",
+      header: "Registration Start",
+      cell: ({ row }) =>
+        formatDate(new Date(row.original.registrationStartedAt as string), true),
+    },
+    {
+      accessorKey: "registrationEndedAt",
+      header: "Registration End",
+      cell: ({ row }) =>
+        formatDate(new Date(row.original.registrationEndedAt as string), true),
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const event = row.original;
+        const { profile } = useProfileStore();
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="center">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <ViewEventDialog event={event} />
+              </DropdownMenuItem>
+              {profile?.role === "STAFF" && (
+                <>
+                  <DropdownMenuItem asChild>
+                    <UpdateEventDialog currentData={event} />
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild className="text-red-600 cursor-pointer">
+                    <DeleteEventDialog callback={() => onDelete(event._id)} />
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];

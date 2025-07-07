@@ -2,6 +2,7 @@ import DashboardProtectedRoute from "@/DashboardProtectedRoute";
 import { lazy, Suspense } from "react";
 import { createBrowserRouter, Outlet } from "react-router";
 import ClientProtectedRoute from "./ClientProtectedRoute";
+import AuthRequiredRoute from "./AuthRequiredRoute";
 import GlobalModal from "./components/GlobalModal";
 import ScrollToTop from "./components/scroll-to-top";
 import { Toaster } from "./components/ui/sonner";
@@ -79,7 +80,11 @@ export default createBrowserRouter([
       },
       {
         path: "/bloodrequest",
-        element: withSuspense(BloodRequests),
+        element: (
+          <AuthRequiredRoute>
+            {withSuspense(BloodRequests)}
+          </AuthRequiredRoute>
+        ),
       },
       {
         path: "/blood-infos",

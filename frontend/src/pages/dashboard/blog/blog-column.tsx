@@ -16,6 +16,7 @@ import DeleteBlogDialog from "./delete-blog-dialog";
 import UpdateBlogDialog from "./update-blog-dialog";
 import ViewBlogDialog from "./view-blog-dialog";
 import { formatDate } from "@/lib/utils";
+import { useProfileStore } from "@/store/profileStore";
 
 interface ActionsProps {
   onDelete: (id: string) => void;
@@ -88,6 +89,7 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<BlogProps>[] => [
     id: "actions",
     cell: ({ row }) => {
       const blog = row.original;
+      const { profile } = useProfileStore();
 
       return (
         <DropdownMenu>
@@ -102,13 +104,17 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<BlogProps>[] => [
             <DropdownMenuItem asChild>
               <ViewBlogDialog blog={blog} />
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <UpdateBlogDialog currentData={blog} />
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild className="text-red-600 cursor-pointer">
-              <DeleteBlogDialog callback={() => onDelete(blog._id)} />
-            </DropdownMenuItem>
+            {profile?.role === "STAFF" && (
+              <>
+                <DropdownMenuItem asChild>
+                  <UpdateBlogDialog currentData={blog} />
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild className="text-red-600 cursor-pointer">
+                  <DeleteBlogDialog callback={() => onDelete(blog._id)} />
+                </DropdownMenuItem>
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );

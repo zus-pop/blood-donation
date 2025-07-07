@@ -10,7 +10,7 @@ export interface UserInput {
     email: string;
     password: string;
     phone?: string;
-    role?: "MEMBER" | "STAFF" | "ADMIN";
+    role?: "MEMBER" | "STAFF" | "ADMIN" | "HOSPITAL";
 }
 export interface UpdateUser {
     firstName: string;

@@ -4,11 +4,12 @@ export interface AuthLoginDto {
 }
 
 export interface AuthRegisterDto {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    phone: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  phone: string;
+  role?: "MEMBER" | "STAFF" | "ADMIN" | "HOSPITAL";
 }
 
 export interface Payload {

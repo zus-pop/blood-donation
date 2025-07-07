@@ -15,6 +15,7 @@ import DeleteOnsiteCheckDialog from "./delete-onsitecheck-dialog";
 import UpdateOnsiteCheckDialog from "./update-onsitecheck-dialog";
 import ViewOnsiteCheckDialog from "./view-onsitecheck-dialog";
 import { format } from "date-fns";
+import { useProfileStore } from "@/store/profileStore";
 
 export interface OnsiteCheckProps {
   _id: string;
@@ -38,100 +39,106 @@ interface ActionsProps {
 export const columns = ({
   onDelete,
 }: ActionsProps): ColumnDef<OnsiteCheckProps>[] => [
-  {
-    accessorKey: "_id",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+    {
+      accessorKey: "_id",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: "userName",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="User" />
+      ),
+      cell: ({ row }) => row.original.userName || "",
+    },
+    {
+      accessorKey: "pulseRate",
+      header: "Pulse Rate",
+    },
+    {
+      accessorKey: "bloodPressure",
+      header: "Blood Pressure",
+    },
+    {
+      accessorKey: "hemoglobinLevel",
+      header: "Hemoglobin Level",
+    },
+    {
+      accessorKey: "bodyTemperature",
+      header: "Body Temperature",
+    },
+    {
+      accessorKey: "weight",
+      header: "Weight",
+    },
+    {
+      accessorKey: "canDonate",
+      header: "Can Donate",
+      cell: ({ row }) => (row.original.canDonate ? "Yes" : "No"),
+    },
+    {
+      accessorKey: "checkedAt",
+      header: "Checked At",
+      cell: ({ row }) => {
+        const value = row.original.checkedAt;
+        if (!value) return "";
+        try {
+          return format(new Date(value), "dd/MM/yyyy HH:mm");
+        } catch {
+          return value;
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "userName",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="User" />
-    ),
-    cell: ({ row }) => row.original.userName || "",
-  },
-  {
-    accessorKey: "pulseRate",
-    header: "Pulse Rate",
-  },
-  {
-    accessorKey: "bloodPressure",
-    header: "Blood Pressure",
-  },
-  {
-    accessorKey: "hemoglobinLevel",
-    header: "Hemoglobin Level",
-  },
-  {
-    accessorKey: "bodyTemperature",
-    header: "Body Temperature",
-  },
-  {
-    accessorKey: "weight",
-    header: "Weight",
-  },
-  {
-    accessorKey: "canDonate",
-    header: "Can Donate",
-    cell: ({ row }) => (row.original.canDonate ? "Yes" : "No"),
-  },
-  {
-    accessorKey: "checkedAt",
-    header: "Checked At",
-    cell: ({ row }) => {
-      const value = row.original.checkedAt;
-      if (!value) return "";
-      try {
-        return format(new Date(value), "dd/MM/yyyy HH:mm");
-      } catch {
-        return value;
-      }
+      },
     },
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const onsiteCheck = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="center">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem asChild>
-              <ViewOnsiteCheckDialog onsiteCheck={onsiteCheck} />
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <UpdateOnsiteCheckDialog currentData={onsiteCheck} />
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild className="text-red-600 cursor-pointer">
-              <DeleteOnsiteCheckDialog callback={() => onDelete(onsiteCheck._id)} />
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const onsiteCheck = row.original;
+        const { profile } = useProfileStore();
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="center">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <ViewOnsiteCheckDialog onsiteCheck={onsiteCheck} />
+              </DropdownMenuItem>
+              {profile?.role === "STAFF" && (
+                <>
+                  <DropdownMenuItem asChild>
+                    <UpdateOnsiteCheckDialog currentData={onsiteCheck} />
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild className="text-red-600 cursor-pointer">
+                    <DeleteOnsiteCheckDialog callback={() => onDelete(onsiteCheck._id)} />
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
     },
-  },
-]; 
+  ]; 
