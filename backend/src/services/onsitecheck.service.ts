@@ -2,7 +2,11 @@ import { OnSiteCheck } from "../models";
 import { CreateOnSiteCheckDto, OnSiteCheckQuery, UpdateOnSiteCheckDto } from "../types/onsitecheck.type";
 
 export async function findOnSiteChecks(query: OnSiteCheckQuery) {
-  const checks = OnSiteCheck.find(query);
+  const checks = await OnSiteCheck.find(query)
+    .populate({
+      path: 'participationId',
+      populate: { path: 'userId' }
+    });
   return checks;
 }
 

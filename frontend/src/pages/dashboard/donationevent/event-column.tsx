@@ -81,6 +81,19 @@ export const columns = ({
     {
       accessorKey: "status",
       header: "Status",
+      cell: ({ row }) => {
+        const status = row.original.status;
+        let color = "";
+        switch (status) {
+          case "UPCOMING": color = "bg-blue-100 text-blue-700"; break;
+          case "REGISTRATION": color = "bg-yellow-100 text-yellow-700"; break;
+          case "ONGOING": color = "bg-green-100 text-green-700"; break;
+          case "ENDED": color = "bg-gray-200 text-gray-700"; break;
+          case "CANCELLED": color = "bg-red-100 text-red-700"; break;
+          default: color = "bg-gray-100 text-gray-700";
+        }
+        return <span className={`px-2 py-1 rounded text-xs font-semibold ${color}`}>{status}</span>;
+      },
     },
     {
       id: "actions",

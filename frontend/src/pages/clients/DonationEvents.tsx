@@ -35,7 +35,9 @@ export default function DonationEvents() {
       if (isAuthenticated && user) {
         try {
           const participations = await getParticipations();
-          const eventIds = new Set(participations.map(p => p.event)); // Đổi eventId -> event
+          // Lọc participation chỉ của user hiện tại
+          const userParticipations = participations.filter(p => p.user === user._id);
+          const eventIds = new Set(userParticipations.map(p => p.event));
           setRegisteredEventIds(eventIds);
         } catch {
           // Handle error silently, don't block user from seeing events

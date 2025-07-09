@@ -55,7 +55,7 @@ const OnsiteCheckTable = () => {
         const participation = (participations ?? []).find(
           (p) => String(p._id) === participationId
         );
-        const userId = participation ? participation.userId : "";
+        const userId = participation ? participation.user : "";
         const user = (users ?? []).find((u) => String(u._id) === String(userId));
         userName = user
           ? `${user.firstName || ""} ${user.lastName || ""}`.trim()

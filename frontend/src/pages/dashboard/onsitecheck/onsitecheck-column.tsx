@@ -91,7 +91,14 @@ export const columns = ({
     {
       accessorKey: "canDonate",
       header: "Can Donate",
-      cell: ({ row }) => (row.original.canDonate ? "Yes" : "No"),
+      cell: ({ row }) => {
+        const canDonate = row.original.canDonate;
+        return canDonate ? (
+          <span className="px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-700">Yes</span>
+        ) : (
+          <span className="px-2 py-1 rounded text-xs font-semibold bg-red-100 text-red-700">No</span>
+        );
+      },
     },
     {
       accessorKey: "checkedAt",
