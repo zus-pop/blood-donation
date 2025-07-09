@@ -85,10 +85,10 @@ const CreateOnsiteCheckDialog = () => {
                       </SelectTrigger>
                       <SelectContent>
                         {(participations ?? []).map((p) => {
-                          const user = (users ?? []).find((u) => u._id === p.userId);
-                          const event = (events ?? []).find((e) => e._id === p.eventId);
-                          const userName = user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : p.userId;
-                          const eventName = event ? event.title : p.eventId;
+                          const user = (users ?? []).find((u) => u._id === p.user);
+                          const event = (events ?? []).find((e) => e._id === p.event);
+                          const userName = user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : p.user;
+                          const eventName = event ? event.title : p.event;
                           return (
                             <SelectItem key={p._id} value={String(p._id)}>
                               {userName} - {eventName}
