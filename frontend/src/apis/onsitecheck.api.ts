@@ -2,7 +2,12 @@ import myAxios from "../lib/custom-axios";
 
 export interface OnsiteCheckProps {
     _id?: string;
-    participationId: string;
+    participationId: string | {
+        _id: string;
+        userId: string | { _id: string; firstName?: string; lastName?: string };
+        eventId?: string;
+        status?: string;
+    };
     pulseRate?: number;
     bloodPressure?: string;
     hemoglobinLevel?: number;

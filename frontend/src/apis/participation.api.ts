@@ -2,8 +2,8 @@ import myAxios from "../lib/custom-axios";
 
 export interface ParticipationProps {
     _id?: string;
-    userId: string;
-    eventId: string;
+    user: string;
+    event: string;
     status: "REGISTERED" | "CANCELLED" | "ATTENDED";
     createdAt?: string;
     updatedAt?: string;

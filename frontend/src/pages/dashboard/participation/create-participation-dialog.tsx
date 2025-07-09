@@ -1,7 +1,6 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -30,16 +29,15 @@ const CreateParticipationDialog = () => {
     },
   });
   const onSubmit = (data: ParticipationSchema) => {
-    mutate(data);
+    const submitData = {
+      user: data.userId,
+      event: data.eventId,
+      status: data.status,
+    };
+    mutate(submitData);
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          New Participation
-        </Button>
-      </DialogTrigger>
       <DialogContent className="rounded-2xl shadow-2xl p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center mb-2">
