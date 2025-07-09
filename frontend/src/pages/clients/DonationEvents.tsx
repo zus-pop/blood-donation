@@ -35,7 +35,7 @@ export default function DonationEvents() {
       if (isAuthenticated && user) {
         try {
           const participations = await getParticipations();
-          const eventIds = new Set(participations.map(p => p.eventId));
+          const eventIds = new Set(participations.map(p => p.event)); // Đổi eventId -> event
           setRegisteredEventIds(eventIds);
         } catch {
           // Handle error silently, don't block user from seeing events
@@ -52,8 +52,8 @@ export default function DonationEvents() {
     } else {
       try {
         await createParticipation({
-          userId: user._id,
-          eventId: eventId,
+          user: user._id, // Đúng tên trường backend yêu cầu
+          event: eventId, // Đúng tên trường backend yêu cầu
           status: "REGISTERED",
         });
         toast.success("Successfully registered for the event!");
