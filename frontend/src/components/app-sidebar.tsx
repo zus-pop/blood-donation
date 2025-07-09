@@ -28,7 +28,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Droplet } from "lucide-react";
+import { Droplets } from "lucide-react";
 import { Link } from "react-router";
 import { useProfileStore } from "../store/profileStore";
 
@@ -62,12 +62,12 @@ const data = {
     {
       title: "Onsite Check",
       url: "onsitecheck",
-      icon: IconListDetails,
+      icon: IconFileDescription,
     },
     {
       title: "Blood Inventory",
       url: "blood-inventory",
-      icon: IconListDetails,
+      icon: IconDatabase,
     },
     {
       title: "Blog",
@@ -177,8 +177,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <Link to="/dashboard" onClick={() => setCurrentItem(null)}>
-                <Droplet className="!size-5" />
-                <span className="text-base font-semibold">Bloody</span>
+                <Droplets className="!size-8 text-sidebar-primary" />
+                <span className="text-xl font-bold">Bloody</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -200,6 +200,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             name: profile
               ? `${profile.firstName} ${profile.lastName}`
               : data.user.name,
+            role: profile ? profile.role : "",
           }}
         />
       </SidebarFooter>

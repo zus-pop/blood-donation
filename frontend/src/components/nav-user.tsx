@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useNavigate } from "react-router";
 import { useProfileStore } from "../store/profileStore";
+import { Badge } from "@/components/ui/badge";
 
 export function NavUser({
   user,
@@ -23,6 +24,7 @@ export function NavUser({
   user: {
     name: string;
     email: string;
+    role: string | undefined;
   };
 }) {
   const { clearProfile } = useProfileStore();
@@ -35,16 +37,21 @@ export function NavUser({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="text-muted-foreground truncate text-xs">
-                  {user.email}
-                </span>
-              </div>
-              <IconDotsVertical className="ml-auto size-4" />
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                    <div className="flex items-center gap-2">
+                        <span className="truncate font-medium">{user.name}</span>
+                        <Badge variant="default" className="text-xs">
+                            {user.role}
+                        </Badge>
+                    </div>
+                    <span className="text-muted-foreground truncate text-xs">
+                        {user.email}
+                    </span>
+                </div>
+                <IconDotsVertical className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -56,7 +63,12 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="truncate font-medium">{user.name}</span>
+                    <Badge variant="default" className="text-xs">
+                      {user.role}
+                    </Badge>
+                  </div>
                   <span className="text-muted-foreground truncate text-xs">
                     {user.email}
                   </span>
