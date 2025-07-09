@@ -45,7 +45,9 @@ export function NavMain({
             </Button> */}
           </SidebarMenuItem>
         </SidebarMenu>
-        <SidebarGroupLabel>Resources Management</SidebarGroupLabel>
+        <SidebarGroupLabel className="text-md">
+          Resources Management
+        </SidebarGroupLabel>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
@@ -56,7 +58,7 @@ export function NavMain({
                   setCurrentItem(item.title);
                 }}
                 tooltip={item.title}
-                className="data-[active=true]:bg-primary data-[active=true]:text-primary-foreground data-[active=true]:hover:bg-primary/90 data-[active=true]:hover:text-primary-foreground transition-all duration-200 ease-in-out transform hover:scale-105"
+                className="data-[active=true]:bg-primary data-[active=true]:text-primary-foreground data-[active=true]:hover:bg-primary/90 data-[active=true]:hover:text-primary-foreground transition-all duration-200 ease-in-out transform hover:scale-105 text-md [&_svg]:size-6"
               >
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>
