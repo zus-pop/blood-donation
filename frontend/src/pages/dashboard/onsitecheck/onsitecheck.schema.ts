@@ -9,7 +9,6 @@ export const onsiteCheckSchema = z.object({
   bodyTemperature: z.any().optional(),
   weight: z.any().optional(),
   canDonate: z.any().optional(),
-  checkedAt: z.any().optional(),
   createdAt: z.any().optional(),
   updatedAt: z.any().optional(),
 });

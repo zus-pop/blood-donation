@@ -28,20 +28,22 @@ const ParticipationTable = () => {
   });
 
   // Map userId, eventId sang tên
-  const participationWithNames = (participations ?? []).map((p: any) => {
-    const user = users?.find((u) => u._id === p.user);
-    const event = events?.find((e) => e._id === p.event);
-    return {
-      _id: p._id || "",
-      user: p.user,
-      event: p.event,
-      status: p.status,
-      createdAt: p.createdAt,
-      updatedAt: p.updatedAt,
-      userName: user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "",
-      eventName: event ? event.title : "",
-    };
-  });
+  const participationWithNames = (participations ?? [])
+    .map((p: any) => {
+      const user = users?.find((u) => u._id === p.user);
+      const event = events?.find((e) => e._id === p.event);
+      return {
+        _id: p._id || "",
+        user: p.user,
+        event: p.event,
+        status: p.status,
+        createdAt: p.createdAt,
+        updatedAt: p.updatedAt,
+        userName: user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "",
+        eventName: event ? event.title : "",
+      };
+    })
+    .sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime());
 
   return (
     <div>

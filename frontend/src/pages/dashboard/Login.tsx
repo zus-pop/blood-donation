@@ -24,7 +24,7 @@ export default function LoginPage() {
                 <img
                     src="banner.jpg"
                     alt="Image"
-                    className="absolute h-200 w-200 object-cover pb-20 dark:brightness-[0.2] dark:grayscale"
+                    className="absolute h-full w-200 object-contain dark:brightness-[0.2] dark:grayscale"
                 />
             </div>
         </div >

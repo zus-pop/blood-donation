@@ -94,10 +94,6 @@ const ViewOnsiteCheckDialog = ({ onsiteCheck }: ViewOnsiteCheckDialogProps) => {
                   <span className="font-semibold text-gray-700">Can Donate:</span>
                   <span className="text-gray-900">{onsiteCheck.canDonate ? 'Yes' : 'No'}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-gray-700">Checked At:</span>
-                  <span className="text-gray-900">{onsiteCheck.checkedAt ? new Date(onsiteCheck.checkedAt).toLocaleString() : '-'}</span>
-                </div>
               </div>
             </div>
             <Separator />
