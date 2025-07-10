@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createInventory } from "@/apis/bloodInventory.api";
 import { getBloodTypes } from "@/apis/bloodType.api";
 import { getParticipations } from "@/apis/participation.api";
+import { getUsers } from "@/apis/user.api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -45,10 +46,8 @@ const COMPONENT_TYPES = ["WHOLE_BLOOD", "PLASMA", "PLATELETS", "RBC"];
 const STATUS_OPTIONS = [
   { value: "available", label: "Available", color: "bg-green-100 text-green-800" },
   { value: "reserved", label: "Reserved", color: "bg-yellow-100 text-yellow-800" },
-  { value: "in_testing", label: "In Testing", color: "bg-blue-100 text-blue-800" },
   { value: "used", label: "Used", color: "bg-gray-100 text-gray-800" },
   { value: "expired", label: "Expired", color: "bg-red-100 text-red-800" },
-  { value: "quarantined", label: "Quarantined", color: "bg-purple-100 text-purple-800" },
 ];
 
 const CreateBloodInventoryDialog = () => {
@@ -74,6 +73,11 @@ const CreateBloodInventoryDialog = () => {
   const { data: participations = [], isLoading: participationsLoading } = useQuery({
     queryKey: ["participations"],
     queryFn: getParticipations,
+  });
+
+  const { data: users = [] } = useQuery({
+    queryKey: ["users"],
+    queryFn: getUsers,
   });
 
   const { mutate, isPending } = useMutation({
@@ -139,7 +143,7 @@ const CreateBloodInventoryDialog = () => {
               name="participation"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Participation</FormLabel>
+                  <FormLabel>Donor</FormLabel>
                   <FormControl>
                     <Select
                       value={field.value}
@@ -147,16 +151,24 @@ const CreateBloodInventoryDialog = () => {
                       disabled={participationsLoading}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select participation" />
+                        <SelectValue placeholder="Select donor" />
                       </SelectTrigger>
                       <SelectContent>
                         {participations
-                          .filter((p: any) => p.status === 'ATTENDED') // Only show attended participations
-                          .map((participation: any) => (
-                            <SelectItem key={participation._id} value={participation._id}>
-                              {participation.userName || participation.user} - {participation.eventName || participation.event}
-                            </SelectItem>
-                          ))}
+                          .filter((p: any) => p.status === 'ATTENDED')
+                          .map((participation: any) => {
+                            
+                            const user = users.find((u: any) => u._id === participation.user);
+                            const userName = user 
+                              ? `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.email
+                              : "Unknown User";
+                            
+                            return (
+                              <SelectItem key={participation._id} value={participation._id}>
+                                {userName}
+                              </SelectItem>
+                            );
+                          })}
                       </SelectContent>
                     </Select>
                   </FormControl>
