@@ -139,19 +139,6 @@ const UpdateOnsiteCheckDialog = ({ currentData }: UpdateOnsiteCheckDialogProps) 
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="checkedAt"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-semibold">Checked At</FormLabel>
-                  <FormControl>
-                    <Input type="datetime-local" {...field} className="h-12 text-base rounded-lg" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <Button type="submit" className="w-full" disabled={isPending}>
               Update
             </Button>
