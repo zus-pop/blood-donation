@@ -49,7 +49,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? date.toLocaleString() : <span>Pick a date and time</span>}
+          {date ? date.toLocaleString("en-US", { year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: true }) : <span>Pick a date and time</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 z-50">

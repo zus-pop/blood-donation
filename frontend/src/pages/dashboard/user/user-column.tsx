@@ -14,6 +14,7 @@ import {
 import type { UserProps } from "@/apis/user.api";
 import UpdateUserDialog from "./update-user-dialog";
 import { formatDate } from "@/lib/utils";
+import { useProfileStore } from "@/store/profileStore";
 
 interface ActionsProps {
     onDelete: (id: string) => void;
@@ -47,20 +48,35 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<UserProps>[] => [
         header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
     },
     {
-        accessorKey: "firstName",
-        header: "First Name",
-    },
-    {
-        accessorKey: "lastName",
-        header: "Last Name",
-    },
-    {
         accessorKey: "phone",
         header: "Phone",
     },
     {
         accessorKey: "role",
         header: "Role",
+        cell: ({ row }) => {
+            const role = row.original.role;
+            const getRoleStyle = (role: string | undefined) => {
+                switch (role?.toUpperCase()) {
+                    case "ADMIN":
+                        return "bg-red-100 text-red-800 border-red-200";
+                    case "STAFF":
+                        return "bg-blue-100 text-blue-800 border-blue-200";
+                    case "HOSPITAL":
+                        return "bg-green-100 text-green-800 border-green-200";
+                    case "MEMBER":
+                        return "bg-gray-100 text-gray-800 border-gray-200";
+                    default:
+                        return "bg-gray-100 text-gray-800 border-gray-200";
+                }
+            };
+
+            return (
+                <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getRoleStyle(role)}`}>
+                    {role || "N/A"}
+                </span>
+            );
+        },
     },
     {
         accessorKey: "createdAt",
@@ -88,6 +104,8 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<UserProps>[] => [
         id: "actions",
         cell: ({ row }) => {
             const user = row.original;
+            const { profile } = useProfileStore();
+
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -98,13 +116,17 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<UserProps>[] => [
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="center">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem asChild>
-                            <UpdateUserDialog currentData={user} />
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => onDelete(user._id)} className="text-red-600 cursor-pointer">
-                            Delete
-                        </DropdownMenuItem>
+                        {profile?.role === "ADMIN" && (
+                            <>
+                                <DropdownMenuItem asChild>
+                                    <UpdateUserDialog currentData={user} />
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => onDelete(user._id)} className="text-red-600 cursor-pointer">
+                                    Delete
+                                </DropdownMenuItem>
+                            </>
+                        )}
                     </DropdownMenuContent>
                 </DropdownMenu>
             );

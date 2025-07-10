@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteCategory, getCategories } from "../../../apis/category.api";
-import { DataTable } from "../../../components/data-table";
+import { deleteCategory, getCategories } from "@/apis/category.api";
+import { DataTable } from "@/components/data-table";
 import { columns } from "./category-column";
 import CreateCategoryDialog from "./create-category-dialog";
 import { toast } from "sonner";

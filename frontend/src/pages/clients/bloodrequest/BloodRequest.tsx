@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -15,7 +15,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import Loading from '@/components/loading';
+import { useProfileStore } from '@/store/profileStore';
 
 import { z } from "zod";
 import Footer from '@/components/footer';
@@ -45,6 +47,8 @@ const BLOOD_COMPONENTS = [
 
 export default function BloodRequest() {
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [confirmInfo, setConfirmInfo] = useState(false);
+    const { profile } = useProfileStore();
 
     const form = useForm({
         resolver: zodResolver(clientBloodRequestSchema),
@@ -55,23 +59,37 @@ export default function BloodRequest() {
             bloodComponent: "",
             quantity: 100,
             address: "",
-            requestedBy: "68454f13415f3e074938edee",
+            requestedBy: profile?._id || "",
         },
         mode: "onChange",
     });
+
+
+    // Auto-fill form when profile is available
+    useEffect(() => {
+        if (profile) {
+            const fullName = `${profile.firstName || ''} ${profile.lastName || ''}`.trim();
+            form.setValue('name', fullName || profile.email || '');
+            form.setValue('phone', profile.phone || '');
+            form.setValue('requestedBy', profile._id);
+        }
+    }, [profile, form]);
 
     const { mutate } = useMutation({
         mutationFn: createBloodRequest,
         onSuccess: () => {
             setIsSubmitting(false);
+            const fullName = profile ? `${profile.firstName || ''} ${profile.lastName || ''}`.trim() : '';
             form.reset({
-                name: "",
-                phone: "",
+                name: fullName || profile?.email || '',
+                phone: profile?.phone || '',
                 bloodType: "",
                 bloodComponent: "",
                 quantity: 100,
                 address: "",
+                requestedBy: profile?._id || "",
             });
+            setConfirmInfo(false);
             toast.success("Blood request submitted successfully!");
         },
         onError: () => {
@@ -81,6 +99,18 @@ export default function BloodRequest() {
     });
 
     function onSubmit(data: ClientBloodRequestSchema) {
+        // Check if user is logged in
+        if (!profile || !profile._id) {
+            toast.error("Please log in to submit a blood request. Click the 'Login Now' button above.");
+            return;
+        }
+
+        // Check if information is confirmed
+        if (!confirmInfo) {
+            toast.error("Please confirm that the information provided is accurate.");
+            return;
+        }
+
         setIsSubmitting(true);
         console.log(data);
         mutate(data);
@@ -96,6 +126,34 @@ export default function BloodRequest() {
                     </p>
                 </div>
 
+                {/* Profile Info Display */}
+                {profile && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <h3 className="text-lg font-semibold text-blue-800 mb-2">Your Profile Information</h3>
+                        <div className=" gap-4 text-sm">
+                            <div className="mb-2">
+                                <span className="font-medium text-blue-700">Email: </span>
+                                <span className="text-blue-600">{profile.email}</span>
+                            </div>
+                            <div className="mb-2">
+                                <span className="font-medium text-blue-700">Name: </span>
+                                <span className="text-blue-600">
+                                    {`${profile.firstName || ''} ${profile.lastName || ''}`.trim() || profile.email}
+                                </span>
+                            </div>
+                            <div className="mb-2">
+                                <span className="font-medium text-blue-700">Phone: </span>
+                                <span className="text-blue-600">{profile.phone || 'Not provided'}</span>
+                            </div>
+
+                        </div>
+                        <p className="text-xs text-blue-600 mt-2">
+                            * This information has been automatically filled in the form below
+                        </p>
+                    </div>
+                )}
+
+
                 <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
 
                     <Form {...form}>
@@ -110,8 +168,8 @@ export default function BloodRequest() {
                                             <FormControl>
                                                 <Input
                                                     type="text"
-
                                                     placeholder="Enter your name"
+                                                    className={profile ? "bg-blue-50 border-blue-200" : ""}
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -129,6 +187,7 @@ export default function BloodRequest() {
                                                 <Input
                                                     type="tel"
                                                     placeholder="Enter your phone number"
+                                                    className={profile?.phone ? "bg-blue-50 border-blue-200" : ""}
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -224,13 +283,28 @@ export default function BloodRequest() {
                                 )}
                             />
 
+                            <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 bg-blue-50 border-blue-200">
+                                <Checkbox
+                                    checked={confirmInfo}
+                                    onCheckedChange={(checked) => setConfirmInfo(checked === true)}
+                                />
+                                <div className="space-y-1 leading-none">
+                                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                        Confirm Information
+                                    </label>
+                                    <p className="text-xs text-muted-foreground">
+                                        I confirm that all the information provided above is accurate and complete. I understand that providing false information may delay or prevent the blood request process.
+                                    </p>
+                                </div>
+                            </div>
+
                             <div className="flex justify-center pt-4">
                                 <Button
                                     type="submit"
                                     className="w-full md:w-auto px-8 bg-red-600 hover:bg-red-700"
-                                    disabled={isSubmitting}
+                                    disabled={isSubmitting || !profile || !confirmInfo}
                                 >
-                                    {isSubmitting ? <Loading /> : "Submit Blood Request"}
+                                    {isSubmitting ? <Loading /> : !profile ? "Please Login to Submit" : "Submit Blood Request"}
                                 </Button>
                             </div>
                         </form>

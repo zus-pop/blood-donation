@@ -1,30 +1,53 @@
+import DashboardProtectedRoute from "@/DashboardProtectedRoute";
 import { lazy, Suspense } from "react";
 import { createBrowserRouter, Outlet } from "react-router";
+import ClientProtectedRoute from "./ClientProtectedRoute";
+import AuthRequiredRoute from "./AuthRequiredRoute";
+import GlobalModal from "./components/GlobalModal";
 import ScrollToTop from "./components/scroll-to-top";
 import { Toaster } from "./components/ui/sonner";
-import GlobalModal from "./components/GlobalModal";
-import ProtectedRoute from "@/ProtectedRoute";
 
 const Login = lazy(() => import("./pages/dashboard/Login"));
 const Header = lazy(() => import("./components/header"));
 const WelcomeDashBoard = lazy(() => import("./components/welcome-dashboard"));
 const BlogTable = lazy(() => import("./pages/dashboard/blog/blog-table"));
-const CategoryTable = lazy(() => import("./pages/dashboard/category/category-table"));
+const CategoryTable = lazy(
+  () => import("./pages/dashboard/category/category-table")
+);
 const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
 const Home = lazy(() => import("./pages/clients/Home"));
-const BloodRequestsManage = lazy(() => import("./pages/dashboard/bloodrequest/index"));
+const BloodRequestsManage = lazy(
+  () => import("./pages/dashboard/bloodrequest/index")
+);
 const UserPage = lazy(() => import("./pages/dashboard/user"));
-const BloodRequests = lazy(() => import("./pages/clients/bloodrequest/BloodRequest"));
-const BloodInventoryTable = lazy(() => import("./pages/dashboard/blood-inventory/blood-inventory-table"))
-const EventTable = lazy(() => import("./pages/dashboard/donationevent/event-table"))
+const BloodRequests = lazy(
+  () => import("./pages/clients/bloodrequest/BloodRequest")
+);
+const BloodInventoryTable = lazy(
+  () => import("./pages/dashboard/blood-inventory/blood-inventory-table")
+);
+const EventTable = lazy(
+  () => import("./pages/dashboard/donationevent/event-table")
+);
 const BlogSection = lazy(() => import("./pages/clients/blogs/BlogSection"));
 const BlogDetail = lazy(() => import("./pages/clients/blogs/BlogDetail"));
-const BloodInfoSection = lazy(() => import("./pages/clients/bloodinfo/BloodInfoSection"));
-const BloodRequestSection = lazy(() => import("./pages/clients/bloodrequest/BloodRequestSection"));
+const BloodInfoSection = lazy(
+  () => import("./pages/clients/bloodinfo/BloodInfoSection")
+);
+const BloodRequestSection = lazy(
+  () => import("./pages/clients/bloodrequest/BloodRequestSection")
+);
 const DonationEvents = lazy(() => import("./pages/clients/DonationEvents"));
+const ParticipationTable = lazy(
+  () => import("./pages/dashboard/participation/participation-table")
+);
+const OnsiteCheckTable = lazy(
+  () => import("./pages/dashboard/onsitecheck/onsitecheck-table")
+);
+
 function withSuspense(Component: React.ComponentType) {
   return (
-    <Suspense >
+    <Suspense>
       <Component />
     </Suspense>
   );
@@ -34,14 +57,13 @@ export default createBrowserRouter([
   {
     path: "/",
     element: (
-      <>
-
+      <ClientProtectedRoute>
         <ScrollToTop />
         <Header />
         <Outlet />
         <GlobalModal />
         <Toaster richColors theme="system" />
-      </>
+      </ClientProtectedRoute>
     ),
     children: [
       {
@@ -58,7 +80,11 @@ export default createBrowserRouter([
       },
       {
         path: "/bloodrequest",
-        element: withSuspense(BloodRequests),
+        element: (
+          <AuthRequiredRoute>
+            {withSuspense(BloodRequests)}
+          </AuthRequiredRoute>
+        ),
       },
       {
         path: "/blood-infos",
@@ -71,7 +97,7 @@ export default createBrowserRouter([
       {
         path: "/donationevents",
         element: withSuspense(DonationEvents),
-      }
+      },
     ],
   },
   {
@@ -81,13 +107,13 @@ export default createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-      <ProtectedRoute>
+      <DashboardProtectedRoute>
         <>
           <ScrollToTop />
           <Dashboard />
           <Toaster richColors theme="system" />
         </>
-      </ProtectedRoute>
+      </DashboardProtectedRoute>
     ),
     children: [
       {
@@ -118,7 +144,14 @@ export default createBrowserRouter([
         path: "donationevent",
         element: withSuspense(EventTable),
       },
-
-    ]
-  }
+      {
+        path: "participation",
+        element: withSuspense(ParticipationTable),
+      },
+      {
+        path: "onsitecheck",
+        element: withSuspense(OnsiteCheckTable),
+      },
+    ],
+  },
 ]);

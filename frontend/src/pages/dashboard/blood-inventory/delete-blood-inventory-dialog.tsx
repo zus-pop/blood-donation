@@ -7,13 +7,9 @@ import {
 } from "@/components/ui/dialog";
 import { Trash } from "lucide-react";
 import { useState } from "react";
-import { Button } from "../../../components/ui/button";
+import { Button } from "@/components/ui/button";
 
-const DeleteBloodInventoryDialog = ({
-  callback,
-}: {
-  callback: () => void;
-}) => {
+const DeleteBloodInventoryDialog = ({ callback }: { callback: () => void }) => {
   const [open, setOpen] = useState(false);
 
   const handleDelete = () => {

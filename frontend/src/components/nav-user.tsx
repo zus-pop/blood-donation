@@ -1,36 +1,35 @@
-import {
-  IconCreditCard,
-  IconDotsVertical,
-  IconLogout,
-  IconNotification,
-  IconUserCircle,
-} from "@tabler/icons-react"
+import { IconDotsVertical, IconLogout } from "@tabler/icons-react";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { useNavigate } from "react-router";
+import { useProfileStore } from "../store/profileStore";
+import { Badge } from "@/components/ui/badge";
 
 export function NavUser({
   user,
 }: {
   user: {
-    name: string
-    email: string
-  }
+    name: string;
+    email: string;
+    role: string | undefined;
+  };
 }) {
-  const { isMobile } = useSidebar()
+  const { clearProfile } = useProfileStore();
+  const navigate = useNavigate();
+  const { isMobile } = useSidebar();
 
   return (
     <SidebarMenu>
@@ -38,16 +37,21 @@ export function NavUser({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="text-muted-foreground truncate text-xs">
-                  {user.email}
-                </span>
-              </div>
-              <IconDotsVertical className="ml-auto size-4" />
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                    <div className="flex items-center gap-2">
+                        <span className="truncate font-medium">{user.name}</span>
+                        <Badge variant="default" className="text-xs">
+                            {user.role}
+                        </Badge>
+                    </div>
+                    <span className="text-muted-foreground truncate text-xs">
+                        {user.email}
+                    </span>
+                </div>
+                <IconDotsVertical className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -59,7 +63,12 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="truncate font-medium">{user.name}</span>
+                    <Badge variant="default" className="text-xs">
+                      {user.role}
+                    </Badge>
+                  </div>
                   <span className="text-muted-foreground truncate text-xs">
                     {user.email}
                   </span>
@@ -67,7 +76,7 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            {/* <DropdownMenuGroup>
               <DropdownMenuItem>
                 <IconUserCircle />
                 Account
@@ -80,9 +89,15 @@ export function NavUser({
                 <IconNotification />
                 Notifications
               </DropdownMenuItem>
-            </DropdownMenuGroup>
+            </DropdownMenuGroup> */}
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => {
+                clearProfile();
+                navigate("/login");
+              }}
+            >
               <IconLogout />
               Log out
             </DropdownMenuItem>
@@ -90,5 +105,5 @@ export function NavUser({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

@@ -3,6 +3,8 @@ import {
   IconCamera,
   IconCategory,
   IconDatabase,
+  IconDropletMinus,
+  IconDropletPlus,
   IconFileAi,
   IconFileDescription,
   IconFileWord,
@@ -11,14 +13,11 @@ import {
   IconReport,
   IconSearch,
   IconSettings,
-  IconDropletMinus,
-  IconDropletPlus,
-  IconUser
+  IconUser,
 } from "@tabler/icons-react";
 import * as React from "react";
 
 import { NavMain } from "@/components/nav-main";
-import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
@@ -29,7 +28,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Droplet } from "lucide-react";
+import { Droplets } from "lucide-react";
+import { Link } from "react-router";
+import { useProfileStore } from "../store/profileStore";
 
 const data = {
   user: {
@@ -41,7 +42,7 @@ const data = {
     {
       title: "User Management",
       url: "users",
-      icon: IconUser
+      icon: IconUser,
     },
     {
       title: "Donation Event",
@@ -54,9 +55,19 @@ const data = {
       icon: IconDropletMinus,
     },
     {
+      title: "Participations",
+      url: "participation",
+      icon: IconListDetails,
+    },
+    {
+      title: "Onsite Check",
+      url: "onsitecheck",
+      icon: IconFileDescription,
+    },
+    {
       title: "Blood Inventory",
       url: "blood-inventory",
-      icon: IconListDetails,
+      icon: IconDatabase,
     },
     {
       title: "Blog",
@@ -154,6 +165,8 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { profile } = useProfileStore();
+  const [currentItem, setCurrentItem] = React.useState<string | null>(null);
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -163,21 +176,33 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
-                <Droplet className="!size-5" />
-                <span className="text-base font-semibold">Bloody</span>
-              </a>
+              <Link to="/dashboard" onClick={() => setCurrentItem(null)}>
+                <Droplets className="!size-8 text-sidebar-primary" />
+                <span className="text-xl font-bold">Bloody</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain
+          currentItem={currentItem}
+          setCurrentItem={setCurrentItem}
+          items={data.navMain}
+        />
         {/* <NavDocuments items={data.documents} /> */}
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser
+          user={{
+            email: profile ? profile.email : data.user.email,
+            name: profile
+              ? `${profile.firstName} ${profile.lastName}`
+              : data.user.name,
+            role: profile ? profile.role : "",
+          }}
+        />
       </SidebarFooter>
     </Sidebar>
   );

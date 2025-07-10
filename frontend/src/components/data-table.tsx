@@ -28,6 +28,8 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Input } from "./ui/input";
+import { CustomPagination, PaginationInfo } from "./ui/pagination";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -55,6 +57,11 @@ export function DataTable<TData, TValue>({
     onRowSelectionChange: setRowSelection,
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 5,
+      },
+    },
     state: {
       sorting,
       columnVisibility,
@@ -66,14 +73,19 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        <Input
-          placeholder={`Filter ${filter}...`}
-          value={(table.getColumn(filter)?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn(filter)?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <div className="relative max-w-sm w-full">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" /></svg>
+          </span>
+          <Input
+            placeholder="Search by name..."
+            value={(table.getColumn(filter)?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn(filter)?.setFilterValue(event.target.value)
+            }
+            className="pl-10 rounded-full border-2 border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary transition-all"
+          />
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -112,9 +124,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   );
                 })}
@@ -150,6 +162,44 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="flex items-center justify-between space-x-2 py-4">
+        <PaginationInfo
+          currentPage={table.getState().pagination.pageIndex + 1}
+          totalItems={table.getFilteredRowModel().rows.length}
+          itemsPerPage={table.getState().pagination.pageSize}
+        />
+
+        <div className="flex items-center space-x-6 lg:space-x-8">
+          <div className="flex items-center space-x-2">
+            <p className="text-sm font-medium whitespace-nowrap">Rows per page</p>
+            <Select
+              value={`${table.getState().pagination.pageSize}`}
+              onValueChange={(value) => {
+                table.setPageSize(Number(value))
+              }}
+            >
+              <SelectTrigger className="h-8 w-[70px]">
+                <SelectValue placeholder={table.getState().pagination.pageSize} />
+              </SelectTrigger>
+              <SelectContent side="top">
+                {[1, 5, 10, 20, 30, 40, 50].map((pageSize) => (
+                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                    {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <CustomPagination
+            currentPage={table.getState().pagination.pageIndex + 1}
+            totalPages={table.getPageCount()}
+            onPageChange={(page) => table.setPageIndex(page - 1)}
+          />
+        </div>
       </div>
     </div>
   );

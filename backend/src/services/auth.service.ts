@@ -10,7 +10,7 @@ export async function login(authLoginDto: AuthLoginDto) {
   const user = await findUserByEmail(authLoginDto.email);
 
   const isMatched = await comparePassword(authLoginDto.password, user.password);
-  console.log(isMatched);
+
   //  compare hashed password with input password with bcrypt
   if (!isMatched) {
     throw new Error("Password not match!");
@@ -40,7 +40,7 @@ export async function register(authRegisterDto: AuthRegisterDto) {
     firstName: authRegisterDto.firstName,
     lastName: authRegisterDto.lastName,
     phone: authRegisterDto.phone,
-    role: "MEMBER",
+    role: authRegisterDto.role || "MEMBER",
   });
 
   const token = signToken({
