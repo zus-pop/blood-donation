@@ -41,7 +41,14 @@ type BloodType = {
 };
 
 const COMPONENT_TYPES = ["WHOLE_BLOOD", "PLASMA", "PLATELETS", "RBC"];
-const STATUS_OPTIONS = ["available", "reserved", "in_testing", "used"];
+const STATUS_OPTIONS = [
+  { value: "available", label: "Available", color: "bg-green-100 text-green-800" },
+  { value: "reserved", label: "Reserved", color: "bg-yellow-100 text-yellow-800" },
+  { value: "in_testing", label: "In Testing", color: "bg-blue-100 text-blue-800" },
+  { value: "used", label: "Used", color: "bg-gray-100 text-gray-800" },
+  { value: "expired", label: "Expired", color: "bg-red-100 text-red-800" },
+  { value: "quarantined", label: "Quarantined", color: "bg-purple-100 text-purple-800" },
+];
 
 const CreateBloodInventoryDialog = () => {
   const [open, setOpen] = useState(false);
@@ -54,7 +61,7 @@ const CreateBloodInventoryDialog = () => {
       participation: "",
       componentType: "",
       quantity: 1,
-      status: "",
+      status: undefined,
     },
   });
 
@@ -189,8 +196,12 @@ const CreateBloodInventoryDialog = () => {
                       </SelectTrigger>
                       <SelectContent>
                         {STATUS_OPTIONS.map((status) => (
-                          <SelectItem key={status} value={status}>
-                            {status}
+                          <SelectItem key={status.value} value={status.value}>
+                            <div className="flex items-center gap-2">
+                              <span className={`px-2 py-1 rounded text-xs ${status.color}`}>
+                                {status.label}
+                              </span>
+                            </div>
                           </SelectItem>
                         ))}
                       </SelectContent>
