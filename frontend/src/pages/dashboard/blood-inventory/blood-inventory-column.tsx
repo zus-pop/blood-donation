@@ -74,7 +74,25 @@ export const columns = ({
     },
     { accessorKey: "componentType", header: "Component" },
     { accessorKey: "quantity", header: "Quantity" },
-    { accessorKey: "status", header: "Status" },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.original.status;
+        let color = "";
+        switch (status?.toUpperCase()) {
+          case "AVAILABLE": color = "bg-green-100 text-green-800 border-green-200"; break;
+          case "RESERVED": color = "bg-yellow-100 text-yellow-800 border-yellow-200"; break;
+          case "USED": color = "bg-gray-200 text-gray-800 border-gray-300"; break;
+          default: color = "bg-gray-100 text-gray-700 border-gray-200";
+        }
+        return (
+          <span className={`px-2 py-1 rounded-full text-xs font-medium border ${color}`}>
+            {status}
+          </span>
+        );
+      }
+    },
     {
       accessorKey: "createdAt",
       header: ({ column }) => (
