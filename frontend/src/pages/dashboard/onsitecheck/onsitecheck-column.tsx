@@ -26,7 +26,6 @@ export interface OnsiteCheckProps {
   bodyTemperature?: number;
   weight?: number;
   canDonate?: boolean;
-  checkedAt?: string;
   createdAt?: string;
   updatedAt?: string;
   userName?: string;
@@ -101,10 +100,23 @@ export const columns = ({
       },
     },
     {
-      accessorKey: "checkedAt",
-      header: "Checked At",
+      accessorKey: "createdAt",
+      header: "Created At",
       cell: ({ row }) => {
-        const value = row.original.checkedAt;
+        const value = row.original.createdAt;
+        if (!value) return "";
+        try {
+          return format(new Date(value), "dd/MM/yyyy HH:mm");
+        } catch {
+          return value;
+        }
+      },
+    },
+    {
+      accessorKey: "updatedAt",
+      header: "Updated At",
+      cell: ({ row }) => {
+        const value = row.original.updatedAt;
         if (!value) return "";
         try {
           return format(new Date(value), "dd/MM/yyyy HH:mm");

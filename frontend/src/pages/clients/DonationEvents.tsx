@@ -13,6 +13,10 @@ export default function DonationEvents() {
   const [error, setError] = useState<string | null>(null);
   const { openModal, isAuthenticated, user } = useAuth();
   const [registeredEventIds, setRegisteredEventIds] = useState<Set<string>>(new Set());
+  const [page, setPage] = useState(1);
+  const pageSize = 3;
+  const totalPages = Math.ceil(events.length / pageSize);
+  const paginatedEvents = events.slice((page - 1) * pageSize, page * pageSize);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -74,45 +78,60 @@ export default function DonationEvents() {
       ) : error ? (
         <div className="text-center text-red-500">{error}</div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {events.map((event) => (
-            <Card key={event._id} className="overflow-hidden shadow transition-transform duration-300 hover:scale-105 hover:shadow-xl group cursor-pointer">
-              <div className="overflow-hidden h-56 bg-gray-100 flex items-center justify-center">
-                {event.image ? (
-                  <img src={event.image} alt={event.title} className="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110" />
-                ) : (
-                  <span className="text-6xl text-red-400">🩸</span>
-                )}
-              </div>
-              <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-2 group-hover:text-red-600 transition-colors duration-200">{event.title}</h2>
-                <p className="mb-2 text-muted-foreground">{event.description}</p>
-                <div className="mb-2 text-sm">
-                  Date: <span className="font-medium">{event.eventStartedAt?.slice(0, 10)}</span>
+        <>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {paginatedEvents.map((event) => (
+              <Card key={event._id} className="overflow-hidden shadow transition-transform duration-300 hover:scale-105 hover:shadow-xl group cursor-pointer">
+                <div className="overflow-hidden h-56 bg-gray-100 flex items-center justify-center">
+                  {event.image ? (
+                    <img src={event.image} alt={event.title} className="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110" />
+                  ) : (
+                    <span className="text-6xl text-red-400">🩸</span>
+                  )}
                 </div>
-                <div className="mb-2 text-sm">
-                  End date: <span className="font-medium">{event.eventEndedAt?.slice(0, 10)}</span>
-                </div>
-                <div className="mb-4 text-sm">Location: <span className="font-medium">Thu Duc City</span></div>
-                {registeredEventIds.has(event._id) ? (
-                  <Button
-                    disabled
-                    className="bg-gray-400 text-white font-semibold shadow-lg px-6 py-2 rounded transition-all duration-200"
-                  >
-                    Registered
-                  </Button>
-                ) : (
-                  <Button 
-                    className="bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-semibold shadow-lg px-6 py-2 rounded transition-all duration-200" 
-                    onClick={() => handleRegisterClick(event._id)}
-                  >
-                    Register to Donate
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                <CardContent className="p-6">
+                  <h2 className="text-xl font-bold mb-2 group-hover:text-red-600 transition-colors duration-200">{event.title}</h2>
+                  <p className="mb-2 text-muted-foreground">{event.description}</p>
+                  <div className="mb-2 text-sm">
+                    Date: <span className="font-medium">{event.eventStartedAt?.slice(0, 10)}</span>
+                  </div>
+                  <div className="mb-2 text-sm">
+                    End date: <span className="font-medium">{event.eventEndedAt?.slice(0, 10)}</span>
+                  </div>
+                  <div className="mb-4 text-sm">Location: <span className="font-medium">Thu Duc City</span></div>
+                  {registeredEventIds.has(event._id) ? (
+                    <Button
+                      disabled
+                      className="bg-gray-400 text-white font-semibold shadow-lg px-6 py-2 rounded transition-all duration-200"
+                    >
+                      Registered
+                    </Button>
+                  ) : (
+                    <Button 
+                      className="bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-semibold shadow-lg px-6 py-2 rounded transition-all duration-200" 
+                      onClick={() => handleRegisterClick(event._id)}
+                    >
+                      Register to Donate
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          {totalPages > 1 && (
+            <div className="flex justify-center gap-2 mb-8">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  className={`px-4 py-2 rounded border font-semibold ${p === page ? 'bg-red-500 text-white border-red-500' : 'bg-white text-red-500 border-red-500 hover:bg-red-100'}`}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

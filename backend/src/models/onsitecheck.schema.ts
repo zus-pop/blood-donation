@@ -13,7 +13,6 @@ export const OnSiteCheckSchema = new Schema(
     bodyTemperature: Number,
     weight: Number,
     canDonate: Boolean,
-    checkedAt: Date,
   },
   { timestamps: true, collection: "onsitecheck" }
 ); 

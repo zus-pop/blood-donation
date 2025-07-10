@@ -14,7 +14,6 @@ export interface OnsiteCheckProps {
     bodyTemperature?: number;
     weight?: number;
     canDonate?: boolean;
-    checkedAt?: string;
     createdAt?: string;
     updatedAt?: string;
 }

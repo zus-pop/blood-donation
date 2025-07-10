@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { onsiteCheckSchema, type OnsiteCheckSchema } from "./onsitecheck.schema";
-import { createOnsiteCheck } from "@/apis/onsitecheck.api";
+import { createOnsiteCheck, getOnsiteChecks } from "@/apis/onsitecheck.api";
 import { getParticipations } from "@/apis/participation.api";
 import { getUsers } from "@/apis/user.api";
 import { getEvents } from "@/apis/event.api";
@@ -26,7 +26,6 @@ const CreateOnsiteCheckDialog = () => {
       bodyTemperature: undefined,
       weight: undefined,
       canDonate: undefined,
-      checkedAt: "",
     },
   });
   const queryClient = useQueryClient();
@@ -53,6 +52,12 @@ const CreateOnsiteCheckDialog = () => {
     queryKey: ["events"],
     queryFn: getEvents,
   });
+  const { data: onsiteChecks } = useQuery({
+    queryKey: ["onsitechecks"],
+    queryFn: getOnsiteChecks,
+  });
+  // Lấy danh sách participationId đã có onsite check
+  const participationIdsWithOnsiteCheck = new Set((onsiteChecks ?? []).map((o) => typeof o.participationId === 'object' && o.participationId !== null ? o.participationId._id : String(o.participationId)));
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -84,17 +89,19 @@ const CreateOnsiteCheckDialog = () => {
                         <SelectValue placeholder="Select participation" />
                       </SelectTrigger>
                       <SelectContent>
-                        {(participations ?? []).map((p) => {
-                          const user = (users ?? []).find((u) => u._id === p.user);
-                          const event = (events ?? []).find((e) => e._id === p.event);
-                          const userName = user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : p.user;
-                          const eventName = event ? event.title : p.event;
-                          return (
-                            <SelectItem key={p._id} value={String(p._id)}>
-                              {userName} - {eventName}
-                            </SelectItem>
-                          );
-                        })}
+                        {(participations ?? [])
+                          .filter((p) => !participationIdsWithOnsiteCheck.has(String(p._id)))
+                          .map((p) => {
+                            const user = (users ?? []).find((u) => u._id === p.user);
+                            const event = (events ?? []).find((e) => e._id === p.event);
+                            const userName = user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : p.user;
+                            const eventName = event ? event.title : p.event;
+                            return (
+                              <SelectItem key={p._id} value={String(p._id)}>
+                                {userName} - {eventName}
+                              </SelectItem>
+                            );
+                          })}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -175,19 +182,6 @@ const CreateOnsiteCheckDialog = () => {
                   <FormLabel className="font-semibold">Can Donate</FormLabel>
                   <FormControl>
                     <Input type="checkbox" checked={!!field.value} readOnly disabled />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="checkedAt"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-semibold">Checked At</FormLabel>
-                  <FormControl>
-                    <Input type="datetime-local" {...field} className="h-12 text-base rounded-lg" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

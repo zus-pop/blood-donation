@@ -57,15 +57,13 @@ export const updateOnsiteCheck = async (id: string, data: UpdateOnSiteCheckDto) 
     bloodPressure,
     hemoglobinLevel,
     bodyTemperature,
-    weight,
-    checkedAt
+    weight
   } = data;
   if (pulseRate !== undefined) onsiteCheck.pulseRate = pulseRate;
   if (bloodPressure !== undefined) onsiteCheck.bloodPressure = bloodPressure;
   if (hemoglobinLevel !== undefined) onsiteCheck.hemoglobinLevel = hemoglobinLevel;
   if (bodyTemperature !== undefined) onsiteCheck.bodyTemperature = bodyTemperature;
   if (weight !== undefined) onsiteCheck.weight = weight;
-  if (checkedAt !== undefined) onsiteCheck.checkedAt = checkedAt;
   onsiteCheck.canDonate = checkCanDonate({
     hemoglobinLevel: onsiteCheck.hemoglobinLevel ?? undefined,
     bloodPressure: onsiteCheck.bloodPressure ?? undefined,
