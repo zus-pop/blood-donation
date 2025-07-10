@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createInventory } from "@/apis/bloodInventory.api";
 import { getBloodTypes } from "@/apis/bloodType.api";
+import { getParticipations } from "@/apis/participation.api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -70,6 +71,11 @@ const CreateBloodInventoryDialog = () => {
     queryFn: getBloodTypes,
   });
 
+  const { data: participations = [], isLoading: participationsLoading } = useQuery({
+    queryKey: ["participations"],
+    queryFn: getParticipations,
+  });
+
   const { mutate, isPending } = useMutation({
     mutationFn: createInventory,
     onSuccess: () => {
@@ -133,9 +139,26 @@ const CreateBloodInventoryDialog = () => {
               name="participation"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Participation ID</FormLabel>
+                  <FormLabel>Participation</FormLabel>
                   <FormControl>
-                    <Input placeholder="Participation ID" {...field} />
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={participationsLoading}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select participation" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {participations
+                          .filter((p: any) => p.status === 'ATTENDED') // Only show attended participations
+                          .map((participation: any) => (
+                            <SelectItem key={participation._id} value={participation._id}>
+                              {participation.userName || participation.user} - {participation.eventName || participation.event}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -155,7 +178,7 @@ const CreateBloodInventoryDialog = () => {
                       <SelectContent>
                         {COMPONENT_TYPES.map((comp) => (
                           <SelectItem key={comp} value={comp}>
-                            {comp}
+                            {comp.replace("_", " ")}
                           </SelectItem>
                         ))}
                       </SelectContent>

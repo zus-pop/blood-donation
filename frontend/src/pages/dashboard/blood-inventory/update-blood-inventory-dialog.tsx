@@ -84,6 +84,7 @@ const UpdateBloodInventoryDialog = ({ currentData }: { currentData: any }) => {
     queryFn: getBloodTypes,
   });
 
+
   const { mutate, isPending } = useMutation({
     mutationFn: (data: BloodInventoryForm) =>
       updateInventory(currentData._id, data),
@@ -138,20 +139,6 @@ const UpdateBloodInventoryDialog = ({ currentData }: { currentData: any }) => {
                         ))}
                       </SelectContent>
                     </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="participation"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Participation ID</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Participation ID" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

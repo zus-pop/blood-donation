@@ -28,9 +28,18 @@ export async function getBloodSeed() {
 }
 export interface InventoryProps {
   _id: string;
+  participation: string | {
+    _id: string;
+    userId: {
+      _id: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+    };
+    eventId: string;
+    status: string;
+  };
   bloodType: string | { _id: string; bloodType: string };
-  participation?: string;
-  participationId?: string;
   componentType: string;
   quantity: number;
   status: string;

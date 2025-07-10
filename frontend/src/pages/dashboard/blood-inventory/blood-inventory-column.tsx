@@ -52,24 +52,38 @@ export const columns = ({
       cell: ({ row }) => {
         const bloodType = row.original.bloodType;
         if (typeof bloodType === "object" && bloodType !== null) {
-          return bloodType.bloodType; // or bloodType.blood_group if that's the property
+          return bloodType.bloodType;
         }
         return bloodType;
       },
     },
     {
       accessorKey: "participation",
-      header: "Participation ID",
+      header: "User ID",
       cell: ({ row }) => {
         const p = row.original.participation;
+        
+        // Add debug logging
+        console.log("Participation data:", p);
+        
         if (typeof p === "object" && p !== null) {
-          return (
-            (p as { _id?: string; id?: string })._id ||
-            (p as { id?: string }).id ||
-            ""
-          );
+          // If participation is populated with user data
+          const user = (p as any).userId;
+          console.log("User data:", user);
+          
+          if (typeof user === "object" && user !== null) {
+            // Display the user's _id
+            return user._id || "Unknown User ID";
+          } else if (typeof user === "string") {
+            // If userId is just a string (ObjectId), display it directly
+            return user;
+          }
+          
+          // Fallback: try to get userId directly from participation
+          const userId = (p as any).userId;
+          return userId || "No User ID";
         }
-        return p;
+        return p || "N/A";
       },
     },
     {
