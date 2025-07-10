@@ -3,12 +3,30 @@ import { InventoryQuery } from "../types/inventory.type";
 
 // Find inventory items based on query
 export async function findInventory(query: InventoryQuery) {
-  return Inventory.find(query).populate("bloodType").populate("participation");
+  return Inventory.find(query)
+    .populate("bloodType")
+    .populate({
+      path: "participation",
+      populate: {
+        path: "userId",
+        model: "User",
+        select: "firstName lastName email"
+      }
+    });
 }
 
 // Find a single inventory item by ID
 export async function findInventoryById(id: string) {
-  const inventory = await Inventory.findById(id);
+  const inventory = await Inventory.findById(id)
+    .populate("bloodType")
+    .populate({
+      path: "participation",
+      populate: {
+        path: "userId",
+        model: "User",
+        select: "firstName lastName email"
+      }
+    });
   if (!inventory) {
     throw new Error("Inventory item not found");
   }
