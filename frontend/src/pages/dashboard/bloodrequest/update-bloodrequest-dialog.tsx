@@ -59,7 +59,6 @@ const STATUS_OPTIONS = [
   "APPROVAL",
   "REJECTED",
   "CANCELLED",
-  "MATCHED",
   "FULL_FILLED",
   "IN_PROGRESS",
 ];
