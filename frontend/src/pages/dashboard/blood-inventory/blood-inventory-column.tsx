@@ -58,28 +58,27 @@ export const columns = ({
       },
     },
     {
-      accessorKey: "participation",
-      header: "User",
+      accessorKey: "userName", 
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Donor Name" />
+      ),
       cell: ({ row }) => {
-        const p = row.original.participation;
-        
-        if (typeof p === "object" && p !== null) {
-          // If participation is populated with user data
-          const user = (p as any).userId;
-          
-          if (typeof user === "object" && user !== null) {
-            // Display the user's name
-            const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
-            return fullName || user.email || "Unknown User";
-          } else if (typeof user === "string") {
-            return "User ID: " + user;
-          }
-        
-          const userId = (p as any).userId;
-          return userId ? "User ID: " + userId : "No User Data";
+        const userId = row.original.userId;
+        if (typeof userId === "object" && userId !== null) {
+          const fullName = `${userId.firstName || ""} ${userId.lastName || ""}`.trim();
+          return fullName || userId.email || "Unknown User";
         }
         
-        return typeof p === "string" ? "Participation ID: " + p : "N/A";
+        const p = row.original.participation;
+        if (typeof p === "object" && p !== null) {
+          const user = (p as any).userId;
+          if (typeof user === "object" && user !== null) {
+            const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
+            return fullName || user.email || "Unknown User";
+          }
+        }
+        
+        return "N/A";
       },
     },
     {

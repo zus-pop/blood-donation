@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { updateInventory } from "@/apis/bloodInventory.api";
 import { getBloodTypes } from "@/apis/bloodType.api";
+import { getUsers } from "@/apis/user.api";
+import { getParticipations } from "@/apis/participation.api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -41,6 +43,13 @@ type BloodType = {
   bloodType: string;
 };
 
+type User = {
+  _id: string;
+  firstName?: string;
+  lastName?: string;
+  email: string;
+};
+
 const COMPONENT_TYPES = ["WHOLE_BLOOD", "PLASMA", "PLATELETS", "RBC"];
 const STATUS_OPTIONS = [
   { value: "AVAILABLE", label: "Available", color: "bg-green-100 text-green-800" },
@@ -57,7 +66,7 @@ const UpdateBloodInventoryDialog = ({ currentData }: { currentData: any }) => {
     resolver: zodResolver(bloodInventorySchema),
     defaultValues: {
       bloodType: "",
-      participation: "",
+      userId: "",
       componentType: "",
       quantity: 1,
       status: undefined,
@@ -67,9 +76,15 @@ const UpdateBloodInventoryDialog = ({ currentData }: { currentData: any }) => {
   // Update form when dialog opens with current data
   useEffect(() => {
     if (open && currentData) {
+      // Get userId from current data
+      let userId = "";
+      if (currentData.userId) {
+        userId = typeof currentData.userId === "object" ? currentData.userId._id : currentData.userId;
+      }
+
       form.reset({
         bloodType: currentData.bloodType?._id || currentData.bloodType || "",
-        participation: currentData.participation?._id || currentData.participation || "",
+        userId: userId,
         componentType: currentData.componentType,
         quantity: currentData.quantity,
         status: currentData.status,
@@ -82,6 +97,15 @@ const UpdateBloodInventoryDialog = ({ currentData }: { currentData: any }) => {
     queryFn: getBloodTypes,
   });
 
+  const { data: users = [], isLoading: usersLoading } = useQuery({
+    queryKey: ["users"],
+    queryFn: getUsers,
+  });
+
+  const { data: participations = [] } = useQuery({
+    queryKey: ["participations"],
+    queryFn: getParticipations,
+  });
 
   const { mutate, isPending } = useMutation({
     mutationFn: (data: BloodInventoryForm) =>
@@ -99,8 +123,32 @@ const UpdateBloodInventoryDialog = ({ currentData }: { currentData: any }) => {
   });
 
   function onSubmit(data: BloodInventoryForm) {
-    console.log("Update payload:", data);
-    mutate({ ...data, quantity: Number(data.quantity) });
+    // Find a participation record for the selected user
+    const selectedUserId = data.userId;
+    
+    // Look for any participation for this user
+    const userParticipation = participations.find((p: any) => 
+      (p.userId === selectedUserId || p.user === selectedUserId)
+    );
+
+    // Prepare submit data
+    const submitData: BloodInventoryForm & { participation?: string } = {
+      ...data,
+      quantity: Number(data.quantity),
+    };
+
+    // Only add participation if it exists
+    if (userParticipation) {
+      submitData.participation = userParticipation._id;
+    } else {
+      // Create a warning but still allow submission
+      console.warn("No participation found for this user. Submitting without participation.");
+      // You could show a toast warning instead of blocking
+      toast.warning("No participation found for this user, but inventory will still be created.");
+    }
+
+    console.log("Update payload:", submitData);
+    mutate(submitData);
   }
 
   return (
@@ -133,6 +181,35 @@ const UpdateBloodInventoryDialog = ({ currentData }: { currentData: any }) => {
                         {bloodTypes.map((type: BloodType) => (
                           <SelectItem key={type._id} value={type._id}>
                             {type.bloodType}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="userId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Donor</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={usersLoading}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select donor" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {users.map((user: User) => (
+                          <SelectItem key={user._id} value={user._id}>
+                            {user.firstName || ""} {user.lastName || ""} ({user.email})
                           </SelectItem>
                         ))}
                       </SelectContent>
