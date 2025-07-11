@@ -24,18 +24,18 @@ const BloodInventoryTable = () => {
 
   if (isLoading) return <div>Loading...</div>;
 
-  // Map userId to user names (handles both participation and direct user references)
   const inventoryWithUserNames = (inventories ?? [])
     .map((inventory: any) => {
       let userName = "";
-
-      // First try to get user from direct userId
       if (inventory.userId) {
-        const user = users?.find((u) => u._id === inventory.userId);
-        userName = user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "";
+        if (typeof inventory.userId === "object") {
+          userName = `${inventory.userId.firstName || ""} ${inventory.userId.lastName || ""}`.trim();
+        } else {
+          const user = users?.find((u) => u._id === inventory.userId);
+          userName = user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "";
+        }
       }
 
-      // If no direct user found, try from participation
       if (!userName && inventory.participation && typeof inventory.participation === "object") {
         const user = inventory.participation.userId;
         if (typeof user === "object" && user !== null) {

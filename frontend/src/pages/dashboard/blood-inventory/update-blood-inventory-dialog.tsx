@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { updateInventory } from "@/apis/bloodInventory.api";
 import { getBloodTypes } from "@/apis/bloodType.api";
 import { getUsers } from "@/apis/user.api";
-import { getParticipations } from "@/apis/participation.api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -102,11 +101,6 @@ const UpdateBloodInventoryDialog = ({ currentData }: { currentData: any }) => {
     queryFn: getUsers,
   });
 
-  const { data: participations = [] } = useQuery({
-    queryKey: ["participations"],
-    queryFn: getParticipations,
-  });
-
   const { mutate, isPending } = useMutation({
     mutationFn: (data: BloodInventoryForm) =>
       updateInventory(currentData._id, data),
@@ -123,29 +117,10 @@ const UpdateBloodInventoryDialog = ({ currentData }: { currentData: any }) => {
   });
 
   function onSubmit(data: BloodInventoryForm) {
-    // Find a participation record for the selected user
-    const selectedUserId = data.userId;
-    
-    // Look for any participation for this user
-    const userParticipation = participations.find((p: any) => 
-      (p.userId === selectedUserId || p.user === selectedUserId)
-    );
-
-    // Prepare submit data
-    const submitData: BloodInventoryForm & { participation?: string } = {
+    const submitData = {
       ...data,
       quantity: Number(data.quantity),
     };
-
-    // Only add participation if it exists
-    if (userParticipation) {
-      submitData.participation = userParticipation._id;
-    } else {
-      // Create a warning but still allow submission
-      console.warn("No participation found for this user. Submitting without participation.");
-      // You could show a toast warning instead of blocking
-      toast.warning("No participation found for this user, but inventory will still be created.");
-    }
 
     console.log("Update payload:", submitData);
     mutate(submitData);

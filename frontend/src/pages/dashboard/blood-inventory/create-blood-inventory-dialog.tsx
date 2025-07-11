@@ -3,8 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createInventory } from "@/apis/bloodInventory.api";
 import { getBloodTypes } from "@/apis/bloodType.api";
 import { getUsers } from "@/apis/user.api";
-// import { getParticipations } from "@/apis/participation.api";
-// import { toast } from "sonner";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -83,22 +82,21 @@ const CreateBloodInventoryDialog = () => {
     queryFn: getUsers,
   });
 
-  // const { data: participations = [] } = useQuery({
-  //   queryKey: ["participations"],
-  //   queryFn: getParticipations,
-  // });
-
   const { mutate, isPending } = useMutation({
     mutationFn: createInventory,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["inventories"] });
       setOpen(false);
       form.reset();
+      toast.success("Blood inventory created successfully!");
+    },
+    onError: (error: any) => {
+      console.error("Creation error:", error);
+      toast.error("Failed to create blood inventory: " + (error.response?.data?.error || error.message));
     },
   });
 
   function onSubmit(data: BloodInventoryForm) {
-    // Simple submission without participation logic
     const submitData = {
       ...data,
       quantity: Number(data.quantity),
