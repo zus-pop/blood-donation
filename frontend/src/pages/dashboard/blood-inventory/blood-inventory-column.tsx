@@ -59,28 +59,27 @@ export const columns = ({
     },
     {
       accessorKey: "participation",
-      header: "User ID",
+      header: "User",
       cell: ({ row }) => {
         const p = row.original.participation;
-      
+        
         if (typeof p === "object" && p !== null) {
           // If participation is populated with user data
           const user = (p as any).userId;
-          console.log("User data:", user);
           
           if (typeof user === "object" && user !== null) {
-            // Display the user's _id
-            return user._id || "Unknown User ID";
+            // Display the user's name
+            const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
+            return fullName || user.email || "Unknown User";
           } else if (typeof user === "string") {
-            // If userId is just a string (ObjectId), display it directly
-            return user;
+            return "User ID: " + user;
           }
-          
-          // Fallback: try to get userId directly from participation
+        
           const userId = (p as any).userId;
-          return userId || "No User ID";
+          return userId ? "User ID: " + userId : "No User Data";
         }
-        return p || "N/A";
+        
+        return typeof p === "string" ? "Participation ID: " + p : "N/A";
       },
     },
     {
