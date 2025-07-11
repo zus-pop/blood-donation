@@ -44,10 +44,10 @@ type BloodType = {
 
 const COMPONENT_TYPES = ["WHOLE_BLOOD", "PLASMA", "PLATELETS", "RBC"];
 const STATUS_OPTIONS = [
-  { value: "available", label: "Available", color: "bg-green-100 text-green-800" },
-  { value: "reserved", label: "Reserved", color: "bg-yellow-100 text-yellow-800" },
-  { value: "used", label: "Used", color: "bg-gray-100 text-gray-800" },
-  { value: "expired", label: "Expired", color: "bg-red-100 text-red-800" },
+  { value: "AVAILABLE", label: "Available", color: "bg-green-100 text-green-800" },
+  { value: "RESERVED", label: "Reserved", color: "bg-yellow-100 text-yellow-800" },
+  { value: "USED", label: "Used", color: "bg-gray-100 text-gray-800" },
+  { value: "EXPIRED", label: "Expired", color: "bg-red-100 text-red-800" },
 ];
 
 const CreateBloodInventoryDialog = () => {

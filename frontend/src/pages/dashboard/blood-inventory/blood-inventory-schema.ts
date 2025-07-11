@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const STATUS_VALUES = ["available", "reserved", "used", "expired"] as const;
+const STATUS_VALUES = ["AVAILABLE", "RESERVED", "USED", "EXPIRED"] as const;
 
 export const bloodInventorySchema = z.object({
   bloodType: z.string().min(1, "Blood type is required"),
