@@ -22,7 +22,7 @@ export const BloodRequestSchema = new Schema(
         status: {
             type: String,
             default: "PENDING",
-            enum: ["PENDING", "APPROVAL", "REJECTED", "CANCELLED", "MATCHED", "FULL_FILLED", "IN_PROGRESS"],
+            enum: ["PENDING", "APPROVAL", "REJECTED", "CANCELLED", "FULL_FILLED", "IN_PROGRESS"],
         },
         phone:
         {
