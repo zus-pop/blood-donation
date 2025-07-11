@@ -52,46 +52,85 @@ export const columns = ({
       cell: ({ row }) => {
         const bloodType = row.original.bloodType;
         if (typeof bloodType === "object" && bloodType !== null) {
-          return bloodType.bloodType; // or bloodType.blood_group if that's the property
+          return bloodType.bloodType;
         }
         return bloodType;
       },
     },
     {
       accessorKey: "participation",
-      header: "Participation ID",
+      header: "User",
       cell: ({ row }) => {
         const p = row.original.participation;
+        
         if (typeof p === "object" && p !== null) {
-          return (
-            (p as { _id?: string; id?: string })._id ||
-            (p as { id?: string }).id ||
-            ""
-          );
+          // If participation is populated with user data
+          const user = (p as any).userId;
+          
+          if (typeof user === "object" && user !== null) {
+            // Display the user's name
+            const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
+            return fullName || user.email || "Unknown User";
+          } else if (typeof user === "string") {
+            return "User ID: " + user;
+          }
+        
+          const userId = (p as any).userId;
+          return userId ? "User ID: " + userId : "No User Data";
         }
-        return p;
+        
+        return typeof p === "string" ? "Participation ID: " + p : "N/A";
       },
     },
-    { accessorKey: "componentType", header: "Component" },
-    { accessorKey: "quantity", header: "Quantity" },
+    {
+      accessorKey: "componentType",
+      header: "Component",
+      cell: ({ row }) => {
+        const component = row.original.componentType;
+        return component ? component.replace("_", " ") : "";
+      },
+    },
+    {
+      accessorKey: "quantity",
+      header: "Quantity (ml)",
+      cell: ({ row }) => {
+        return `${row.original.quantity} ml`;
+      },
+    },
     {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => {
         const status = row.original.status;
-        let color = "";
-        switch (status?.toUpperCase()) {
-          case "AVAILABLE": color = "bg-green-100 text-green-800 border-green-200"; break;
-          case "RESERVED": color = "bg-yellow-100 text-yellow-800 border-yellow-200"; break;
-          case "USED": color = "bg-gray-200 text-gray-800 border-gray-300"; break;
-          default: color = "bg-gray-100 text-gray-700 border-gray-200";
-        }
+        const getStatusStyle = (status: string) => {
+          switch (status?.toLowerCase()) {
+            case "available":
+              return "bg-green-100 text-green-800 border-green-200";
+            case "reserved":
+              return "bg-yellow-100 text-yellow-800 border-yellow-200";
+            case "in_testing":
+              return "bg-blue-100 text-blue-800 border-blue-200";
+            case "used":
+              return "bg-gray-100 text-gray-800 border-gray-200";
+            case "expired":
+              return "bg-red-100 text-red-800 border-red-200";
+            case "quarantined":
+              return "bg-purple-100 text-purple-800 border-purple-200";
+            default:
+              return "bg-gray-100 text-gray-800 border-gray-200";
+          }
+        };
+
         return (
-          <span className={`px-2 py-1 rounded-full text-xs font-medium border ${color}`}>
-            {status}
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusStyle(
+              status
+            )}`}
+          >
+            {status?.replace("_", " ").toUpperCase()}
           </span>
         );
-      }
+      },
     },
     {
       accessorKey: "createdAt",

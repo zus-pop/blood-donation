@@ -4,11 +4,11 @@ import { Button } from "./ui/button";
 
 const slides = [
   {
-    image: "/src/assets/hero1.png",
+    image: "/hero1.png",
     alt: "Blood donation hands",
   },
   {
-    image: "/src/assets/hero2.png",
+    image: "/hero2.png",
     alt: "Blood donation drop",
   },
 ];
