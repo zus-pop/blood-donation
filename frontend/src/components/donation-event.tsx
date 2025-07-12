@@ -74,6 +74,37 @@ const DonationEvent = () => {
     if (!isAuthenticated || !user) {
       openModal();
     } else {
+      // Kiểm tra điều kiện 3 tháng kể từ lần attended gần nhất
+      // 1. Lấy tất cả participation của user có status ATTENDED
+      const attendedParts = participations.filter(p => {
+        const userId = typeof p.user === 'string' ? p.user : (typeof p.user === 'object' && p.user !== null && '_id' in p.user ? (p.user as { _id: string })._id : '');
+        return userId === user._id && p.status === 'ATTENDED';
+      });
+      if (attendedParts.length > 0) {
+        // 2. Tìm event attended gần nhất
+        const attendedEvents = attendedParts.map(p => {
+          const ev = events.find(e => e._id === (typeof p.event === 'string' ? p.event : (typeof p.event === 'object' && p.event !== null && '_id' in p.event ? (p.event as { _id: string })._id : '')));
+          return ev ? { ...ev, participationId: p._id } : null;
+        }).filter(Boolean) as (EventProps & { participationId?: string })[];
+        attendedEvents.sort((a, b) => new Date(b.eventEndedAt).getTime() - new Date(a.eventEndedAt).getTime());
+        const latestAttended = attendedEvents[0];
+        const latestAttendedEnd = new Date(latestAttended.eventEndedAt);
+        // 3. Kiểm tra ngày bắt đầu của event muốn đăng ký
+        const eventToRegister = events.find(e => e._id === eventId);
+        if (eventToRegister) {
+          const eventStart = new Date(eventToRegister.eventStartedAt);
+          const threeMonthsAfter = new Date(latestAttendedEnd);
+          threeMonthsAfter.setMonth(threeMonthsAfter.getMonth() + 3);
+          if (eventStart <= latestAttendedEnd) {
+            toast.error("Bạn không thể đăng ký sự kiện có thời gian trước hoặc trùng với sự kiện bạn đã hiến máu gần nhất.");
+            return;
+          }
+          if (eventStart <= threeMonthsAfter) {
+            toast.error("Bạn đã tham gia 1 sự kiện hiến máu trong vòng 3 tháng trở lại đây, vui lòng chờ đủ 3 tháng để đăng ký sự kiện mới.");
+            return;
+          }
+        }
+      }
       try {
         await createParticipation({
           user: user._id,
@@ -116,9 +147,8 @@ const DonationEvent = () => {
           <div className="space-y-4">
             {renderEvents.map((event) => {
               const availableSlot = getAvailableSlot(event);
-              // Kiểm tra trực tiếp: user đã đăng ký event này chưa
+              // Kiểm tra: user đã từng đăng ký event này chưa (bất kỳ status nào)
               const isRegistered = participations.some(p => {
-                if (p.status !== 'REGISTERED') return false;
                 // user có thể là string hoặc object
                 const userId = typeof p.user === 'string' ? p.user : (typeof p.user === 'object' && p.user !== null && '_id' in p.user ? (p.user as { _id: string })._id : '');
                 if (userId !== (user?._id || '')) return false;

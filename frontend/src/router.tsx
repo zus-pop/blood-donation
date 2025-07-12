@@ -44,6 +44,7 @@ const ParticipationTable = lazy(
 const OnsiteCheckTable = lazy(
   () => import("./pages/dashboard/onsitecheck/onsitecheck-table")
 );
+const MyEventPage = lazy(() => import("./pages/clients/MyEventPage"));
 
 function withSuspense(Component: React.ComponentType) {
   return (
@@ -97,6 +98,10 @@ export default createBrowserRouter([
       {
         path: "/donationevents",
         element: withSuspense(DonationEvents),
+      },
+      {
+        path: "/my-events",
+        element: withSuspense(MyEventPage),
       },
     ],
   },

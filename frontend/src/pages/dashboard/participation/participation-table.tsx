@@ -5,6 +5,8 @@ import { getEvents } from "@/apis/event.api";
 import { DataTable } from "@/components/data-table";
 import { columns } from "./participation-column";
 import CreateParticipationDialog from "./create-participation-dialog";
+import type { ParticipationProps as ApiParticipationProps } from "@/apis/participation.api";
+import type { ParticipationProps } from "./participation-column";
 
 const ParticipationTable = () => {
   const { data: participations } = useQuery({
@@ -29,19 +31,23 @@ const ParticipationTable = () => {
 
   // Map userId, eventId sang tên
   const participationWithNames = (participations ?? [])
-    .map((p: any) => {
+    .map((p: ApiParticipationProps) => {
       const user = users?.find((u) => u._id === p.user);
       const event = events?.find((e) => e._id === p.event);
+      const userName = user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "";
+      const participationId = p._id ? String(p._id) : "";
       return {
-        _id: p._id || "",
+        _id: participationId,
         user: p.user,
         event: p.event,
         status: p.status,
         createdAt: p.createdAt,
         updatedAt: p.updatedAt,
-        userName: user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "",
+        userName,
         eventName: event ? event.title : "",
-      };
+        participationId,
+        userNameForSearch: (userName + " " + participationId).toLowerCase(),
+      } as ParticipationProps & { userNameForSearch: string; };
     })
     .sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime());
 
@@ -57,7 +63,7 @@ const ParticipationTable = () => {
         <CreateParticipationDialog />
       </div>
       <DataTable
-        filter="userName"
+        filter="userNameForSearch"
         columns={columns({
           onDelete: mutate,
         })}
