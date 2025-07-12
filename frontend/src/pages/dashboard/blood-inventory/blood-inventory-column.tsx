@@ -58,9 +58,9 @@ export const columns = ({
       },
     },
     {
-      accessorKey: "userName", 
+      accessorKey: "Participant", 
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Donor Name" />
+        <DataTableColumnHeader column={column} title="Participant" />
       ),
       cell: ({ row }) => {
         const userId = row.original.userId;
