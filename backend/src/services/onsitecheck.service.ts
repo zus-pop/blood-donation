@@ -7,7 +7,10 @@ export async function findOnSiteChecks(query: OnSiteCheckQuery) {
   const checks = await OnSiteCheck.find(query)
     .populate({
       path: 'participationId',
-      populate: { path: 'userId' }
+      populate: [
+        { path: 'userId' },
+        { path: 'eventId' }
+      ]
     });
   return checks;
 }

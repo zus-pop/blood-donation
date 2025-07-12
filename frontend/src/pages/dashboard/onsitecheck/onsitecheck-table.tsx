@@ -40,6 +40,7 @@ const OnsiteCheckTable = () => {
     .filter(item => !!item && item.participationId && (typeof item.participationId === 'string' || (typeof item.participationId === 'object' && item.participationId !== null)) && item._id)
     .map((item) => {
       let userName = "";
+      let eventName = "";
       // Nếu participationId đã populate
       if (item.participationId && typeof item.participationId === 'object' && 'userId' in item.participationId) {
         const userObj = item.participationId.userId;
@@ -48,9 +49,18 @@ const OnsiteCheckTable = () => {
         } else if (typeof userObj === 'string') {
           userName = userObj;
         }
+        // Lấy tên event nếu đã populate
+        if ('eventId' in item.participationId) {
+          const eventObj = item.participationId.eventId;
+          if (eventObj && typeof eventObj === 'object' && 'title' in eventObj) {
+            eventName = eventObj.title;
+          } else if (typeof eventObj === 'string') {
+            eventName = eventObj;
+          }
+        }
       }
       // Nếu chưa populate, fallback về cách cũ
-      if (!userName && participations && users) {
+      if ((!userName || !eventName) && participations && users) {
         const participationId = String(item.participationId ?? "");
         const participation = (participations ?? []).find(
           (p) => String(p._id) === participationId
@@ -60,12 +70,22 @@ const OnsiteCheckTable = () => {
         userName = user
           ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
           : String(userId);
+        // Lấy tên event
+        const eventId = participation ? participation.event : "";
+        // Nếu có danh sách events, lấy title
+        if (eventId && window.__eventsList) {
+          const eventObj = window.__eventsList.find(e => e._id === eventId);
+          eventName = eventObj ? eventObj.title : eventId;
+        } else {
+          eventName = eventId;
+        }
       }
       return {
         ...item,
         _id: String(item._id ?? ""),
         participationId: typeof item.participationId === 'object' && '_id' in item.participationId ? item.participationId._id : String(item.participationId ?? ""),
         userName,
+        eventName,
       };
     })
     .sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime());

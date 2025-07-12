@@ -81,9 +81,14 @@ export default function DonationEvents() {
       const latestAttendedEnd = new Date(latestAttended.eventEndedAt);
       // Chỉ cho phép đăng ký event có ngày bắt đầu > 3 tháng kể từ event attended gần nhất
       const eventStart = new Date(eventToRegister.eventStartedAt);
-      const threeMonthsAfter = addMonths(latestAttendedEnd, 3);
+      const threeMonthsAfter = new Date(latestAttendedEnd);
+      threeMonthsAfter.setMonth(threeMonthsAfter.getMonth() + 3);
+      if (eventStart <= latestAttendedEnd) {
+        toast.error("Bạn không thể đăng ký sự kiện có thời gian trước hoặc trùng với sự kiện bạn đã hiến máu gần nhất.");
+        return;
+      }
       if (eventStart <= threeMonthsAfter) {
-        toast.error("You cannot register for this event because you have donated blood within the last 3 months.");
+        toast.error("Bạn đã tham gia 1 sự kiện hiến máu trong vòng 3 tháng trở lại đây, vui lòng chờ đủ 3 tháng để đăng ký sự kiện mới.");
         return;
       }
     }
@@ -94,6 +99,10 @@ export default function DonationEvents() {
         status: "REGISTERED",
       });
       toast.success("Successfully registered for the event!");
+      // Refetch participations để cập nhật UI
+      const participations = await getParticipations();
+      const userParts = participations.filter(p => p.user === user._id);
+      setUserParticipations(userParts);
     } catch {
       toast.error("Failed to register for the event. You may have already registered.");
     }

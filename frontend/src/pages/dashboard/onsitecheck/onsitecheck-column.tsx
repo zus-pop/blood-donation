@@ -68,6 +68,13 @@ export const columns = ({
       cell: ({ row }) => row.original.userName || "",
     },
     {
+      accessorKey: "eventName",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Event" />
+      ),
+      cell: ({ row }) => row.original.eventName || "",
+    },
+    {
       accessorKey: "pulseRate",
       header: "Pulse Rate",
     },
@@ -97,32 +104,6 @@ export const columns = ({
         ) : (
           <span className="px-2 py-1 rounded text-xs font-semibold bg-red-100 text-red-700">No</span>
         );
-      },
-    },
-    {
-      accessorKey: "createdAt",
-      header: "Created At",
-      cell: ({ row }) => {
-        const value = row.original.createdAt;
-        if (!value) return "";
-        try {
-          return format(new Date(value), "dd/MM/yyyy HH:mm");
-        } catch {
-          return value;
-        }
-      },
-    },
-    {
-      accessorKey: "updatedAt",
-      header: "Updated At",
-      cell: ({ row }) => {
-        const value = row.original.updatedAt;
-        if (!value) return "";
-        try {
-          return format(new Date(value), "dd/MM/yyyy HH:mm");
-        } catch {
-          return value;
-        }
       },
     },
     {
