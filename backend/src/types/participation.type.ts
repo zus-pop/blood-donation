@@ -7,9 +7,9 @@ export interface ParticipationQuery {
 export interface CreateParticipationDto {
   user: string;
   event: string;
-  status: "REGISTERED" | "CANCELLED" | "ATTENDED";
+  status: "REGISTERED" | "CANCELLED" | "ATTENDED" | "NOT_ELIGIBLE";
 }
 
 export interface UpdateParticipationDto {
-  status?: "REGISTERED" | "CANCELLED" | "ATTENDED";
+  status?: "REGISTERED" | "CANCELLED" | "ATTENDED" | "NOT_ELIGIBLE";
 } 

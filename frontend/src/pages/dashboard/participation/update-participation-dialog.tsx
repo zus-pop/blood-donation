@@ -76,6 +76,7 @@ const UpdateParticipationDialog = ({ currentData }: UpdateParticipationDialogPro
                         <SelectItem value="REGISTERED">REGISTERED</SelectItem>
                         <SelectItem value="CANCELLED">CANCELLED</SelectItem>
                         <SelectItem value="ATTENDED">ATTENDED</SelectItem>
+                        <SelectItem value="NOT_ELIGIBLE">NOT ELIGIBLE</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>

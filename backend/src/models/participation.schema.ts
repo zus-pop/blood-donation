@@ -15,7 +15,7 @@ export const ParticipationSchema = new Schema(
     status: {
       type: String,
       required: true,
-      enum: ["REGISTERED", "CANCELLED", "ATTENDED"],
+      enum: ["REGISTERED", "CANCELLED", "ATTENDED", "NOT_ELIGIBLE"],
       default: "REGISTERED",
     },
   },

@@ -116,9 +116,8 @@ const DonationEvent = () => {
           <div className="space-y-4">
             {renderEvents.map((event) => {
               const availableSlot = getAvailableSlot(event);
-              // Kiểm tra trực tiếp: user đã đăng ký event này chưa
+              // Kiểm tra: user đã từng đăng ký event này chưa (bất kỳ status nào)
               const isRegistered = participations.some(p => {
-                if (p.status !== 'REGISTERED') return false;
                 // user có thể là string hoặc object
                 const userId = typeof p.user === 'string' ? p.user : (typeof p.user === 'object' && p.user !== null && '_id' in p.user ? (p.user as { _id: string })._id : '');
                 if (userId !== (user?._id || '')) return false;

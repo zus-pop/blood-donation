@@ -4,15 +4,21 @@ import { Button } from "@/components/ui/button";
 import { getEvents } from "@/apis/event.api";
 import type { EventProps } from "@/apis/event.api";
 import { useAuth } from "@/context/AuthContext";
-import { createParticipation, getParticipations } from "@/apis/participation.api";
+import { createParticipation, getParticipations, updateParticipation } from "@/apis/participation.api";
 import { toast } from "sonner";
+
+function addMonths(date: Date, months: number) {
+  const d = new Date(date);
+  d.setMonth(d.getMonth() + months);
+  return d;
+}
 
 export default function DonationEvents() {
   const [events, setEvents] = useState<EventProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { openModal, isAuthenticated, user } = useAuth();
-  const [registeredEventIds, setRegisteredEventIds] = useState<Set<string>>(new Set());
+  const [userParticipations, setUserParticipations] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const pageSize = 3;
   const totalPages = Math.ceil(events.length / pageSize);
@@ -40,9 +46,8 @@ export default function DonationEvents() {
         try {
           const participations = await getParticipations();
           // Lọc participation chỉ của user hiện tại
-          const userParticipations = participations.filter(p => p.user === user._id);
-          const eventIds = new Set(userParticipations.map(p => p.event));
-          setRegisteredEventIds(eventIds);
+          const userParts = participations.filter(p => p.user === user._id);
+          setUserParticipations(userParts);
         } catch {
           // Handle error silently, don't block user from seeing events
           console.error("Failed to fetch user participations");
@@ -52,21 +57,45 @@ export default function DonationEvents() {
     fetchUserParticipations();
   }, [isAuthenticated, user]);
 
+  // Tập hợp các eventId user đã từng đăng ký (bất kỳ status nào)
+  const registeredEventIds = new Set(userParticipations.map(p => p.event));
+
   const handleRegisterClick = async (eventId: string) => {
     if (!isAuthenticated || !user) {
       openModal();
-    } else {
-      try {
-        await createParticipation({
-          user: user._id, // Đúng tên trường backend yêu cầu
-          event: eventId, // Đúng tên trường backend yêu cầu
-          status: "REGISTERED",
-        });
-        toast.success("Successfully registered for the event!");
-        setRegisteredEventIds(prev => new Set(prev).add(eventId));
-      } catch {
-        toast.error("Failed to register for the event. You may have already registered.");
+      return;
+    }
+    // Lấy event user muốn đăng ký
+    const eventToRegister = events.find(e => e._id === eventId);
+    if (!eventToRegister) return;
+    // Lấy các participation attended
+    const attendedParts = userParticipations.filter(p => p.status === "ATTENDED");
+    if (attendedParts.length > 0) {
+      // Lấy event attended gần nhất
+      const attendedEvents = attendedParts.map(p => {
+        const ev = events.find(e => e._id === p.event);
+        return ev ? { ...ev, participationId: p._id } : null;
+      }).filter(Boolean) as (EventProps & { participationId?: string })[];
+      attendedEvents.sort((a, b) => new Date(b.eventEndedAt).getTime() - new Date(a.eventEndedAt).getTime());
+      const latestAttended = attendedEvents[0];
+      const latestAttendedEnd = new Date(latestAttended.eventEndedAt);
+      // Chỉ cho phép đăng ký event có ngày bắt đầu > 3 tháng kể từ event attended gần nhất
+      const eventStart = new Date(eventToRegister.eventStartedAt);
+      const threeMonthsAfter = addMonths(latestAttendedEnd, 3);
+      if (eventStart <= threeMonthsAfter) {
+        toast.error("You cannot register for this event because you have donated blood within the last 3 months.");
+        return;
       }
+    }
+    try {
+      await createParticipation({
+        user: user._id,
+        event: eventId,
+        status: "REGISTERED",
+      });
+      toast.success("Successfully registered for the event!");
+    } catch {
+      toast.error("Failed to register for the event. You may have already registered.");
     }
   };
 

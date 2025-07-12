@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteParticipation, getParticipations } from "@/apis/participation.api";
 import { getUsers } from "@/apis/user.api";
@@ -32,6 +33,8 @@ const ParticipationTable = () => {
     .map((p: any) => {
       const user = users?.find((u) => u._id === p.user);
       const event = events?.find((e) => e._id === p.event);
+      const userName = user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "";
+      const participationId = p._id || "";
       return {
         _id: p._id || "",
         user: p.user,
@@ -39,8 +42,10 @@ const ParticipationTable = () => {
         status: p.status,
         createdAt: p.createdAt,
         updatedAt: p.updatedAt,
-        userName: user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "",
+        userName,
         eventName: event ? event.title : "",
+        participationId,
+        userNameForSearch: (userName + " " + participationId).toLowerCase(),
       };
     })
     .sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime());
@@ -57,7 +62,7 @@ const ParticipationTable = () => {
         <CreateParticipationDialog />
       </div>
       <DataTable
-        filter="userName"
+        filter="userNameForSearch"
         columns={columns({
           onDelete: mutate,
         })}
