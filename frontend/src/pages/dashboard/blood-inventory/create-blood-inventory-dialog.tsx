@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createInventory } from "@/apis/bloodInventory.api";
 import { getBloodTypes } from "@/apis/bloodType.api";
-import { getParticipations } from "@/apis/participation.api";
 import { getUsers } from "@/apis/user.api";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,6 +42,13 @@ type BloodType = {
   bloodType: string;
 };
 
+type User = {
+  _id: string;
+  firstName?: string;
+  lastName?: string;
+  email: string;
+};
+
 const COMPONENT_TYPES = ["WHOLE_BLOOD", "PLASMA", "PLATELETS", "RBC"];
 const STATUS_OPTIONS = [
   { value: "AVAILABLE", label: "Available", color: "bg-green-100 text-green-800" },
@@ -58,7 +65,7 @@ const CreateBloodInventoryDialog = () => {
     resolver: zodResolver(bloodInventorySchema),
     defaultValues: {
       bloodType: "",
-      participation: "",
+      userId: "",
       componentType: "",
       quantity: 1,
       status: undefined,
@@ -70,12 +77,7 @@ const CreateBloodInventoryDialog = () => {
     queryFn: getBloodTypes,
   });
 
-  const { data: participations = [], isLoading: participationsLoading } = useQuery({
-    queryKey: ["participations"],
-    queryFn: getParticipations,
-  });
-
-  const { data: users = [] } = useQuery({
+  const { data: users = [], isLoading: usersLoading } = useQuery({
     queryKey: ["users"],
     queryFn: getUsers,
   });
@@ -86,11 +88,22 @@ const CreateBloodInventoryDialog = () => {
       queryClient.invalidateQueries({ queryKey: ["inventories"] });
       setOpen(false);
       form.reset();
+      toast.success("Blood inventory created successfully!");
+    },
+    onError: (error: any) => {
+      console.error("Creation error:", error);
+      toast.error("Failed to create blood inventory: " + (error.response?.data?.error || error.message));
     },
   });
 
   function onSubmit(data: BloodInventoryForm) {
-    mutate({ ...data, quantity: Number(data.quantity) });
+    const submitData = {
+      ...data,
+      quantity: Number(data.quantity),
+    };
+
+    console.log("Submitting data:", submitData);
+    mutate(submitData);
   }
 
   return (
@@ -138,9 +151,10 @@ const CreateBloodInventoryDialog = () => {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
-              name="participation"
+              name="userId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Donor</FormLabel>
@@ -148,27 +162,17 @@ const CreateBloodInventoryDialog = () => {
                     <Select
                       value={field.value}
                       onValueChange={field.onChange}
-                      disabled={participationsLoading}
+                      disabled={usersLoading}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select donor" />
                       </SelectTrigger>
                       <SelectContent>
-                        {participations
-                          .filter((p: any) => p.status === 'ATTENDED')
-                          .map((participation: any) => {
-                            
-                            const user = users.find((u: any) => u._id === participation.user);
-                            const userName = user 
-                              ? `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.email
-                              : "Unknown User";
-                            
-                            return (
-                              <SelectItem key={participation._id} value={participation._id}>
-                                {userName}
-                              </SelectItem>
-                            );
-                          })}
+                        {users.map((user: User) => (
+                          <SelectItem key={user._id} value={user._id}>
+                            {user.firstName || ""} {user.lastName || ""} ({user.email})
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -176,6 +180,7 @@ const CreateBloodInventoryDialog = () => {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="componentType"
@@ -200,6 +205,7 @@ const CreateBloodInventoryDialog = () => {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="quantity"
@@ -218,6 +224,7 @@ const CreateBloodInventoryDialog = () => {
                 </FormItem>
               )}
             />
+            
             <FormField
               control={form.control}
               name="status"
@@ -246,6 +253,7 @@ const CreateBloodInventoryDialog = () => {
                 </FormItem>
               )}
             />
+            
             <DialogFooter>
               <DialogClose asChild>
                 <Button variant="outline" type="button">
