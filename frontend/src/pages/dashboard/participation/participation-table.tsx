@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteParticipation, getParticipations } from "@/apis/participation.api";
 import { getUsers } from "@/apis/user.api";

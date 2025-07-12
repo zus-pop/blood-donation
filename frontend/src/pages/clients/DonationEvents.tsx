@@ -4,14 +4,8 @@ import { Button } from "@/components/ui/button";
 import { getEvents } from "@/apis/event.api";
 import type { EventProps } from "@/apis/event.api";
 import { useAuth } from "@/context/AuthContext";
-import { createParticipation, getParticipations, updateParticipation } from "@/apis/participation.api";
+import { createParticipation, getParticipations } from "@/apis/participation.api";
 import { toast } from "sonner";
-
-function addMonths(date: Date, months: number) {
-  const d = new Date(date);
-  d.setMonth(d.getMonth() + months);
-  return d;
-}
 
 export default function DonationEvents() {
   const [events, setEvents] = useState<EventProps[]>([]);

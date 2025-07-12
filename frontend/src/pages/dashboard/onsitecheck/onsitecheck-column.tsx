@@ -14,7 +14,6 @@ import {
 import DeleteOnsiteCheckDialog from "./delete-onsitecheck-dialog";
 import UpdateOnsiteCheckDialog from "./update-onsitecheck-dialog";
 import ViewOnsiteCheckDialog from "./view-onsitecheck-dialog";
-import { format } from "date-fns";
 import { useProfileStore } from "@/store/profileStore";
 
 export interface OnsiteCheckProps {
@@ -29,6 +28,7 @@ export interface OnsiteCheckProps {
   createdAt?: string;
   updatedAt?: string;
   userName?: string;
+  eventName?: string;
 }
 
 interface ActionsProps {

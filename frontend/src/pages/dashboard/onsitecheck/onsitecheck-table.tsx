@@ -53,7 +53,7 @@ const OnsiteCheckTable = () => {
         if ('eventId' in item.participationId) {
           const eventObj = item.participationId.eventId;
           if (eventObj && typeof eventObj === 'object' && 'title' in eventObj) {
-            eventName = eventObj.title;
+            eventName = (eventObj as any).title;
           } else if (typeof eventObj === 'string') {
             eventName = eventObj;
           }
@@ -72,13 +72,7 @@ const OnsiteCheckTable = () => {
           : String(userId);
         // Lấy tên event
         const eventId = participation ? participation.event : "";
-        // Nếu có danh sách events, lấy title
-        if (eventId && window.__eventsList) {
-          const eventObj = window.__eventsList.find(e => e._id === eventId);
-          eventName = eventObj ? eventObj.title : eventId;
-        } else {
-          eventName = eventId;
-        }
+        eventName = eventId;
       }
       return {
         ...item,
