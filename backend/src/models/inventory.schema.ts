@@ -7,10 +7,15 @@ export const InventorySchema = new Schema(
       ref: "Blood",
       required: true,
     },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     participation: {
       type: Schema.Types.ObjectId,
       ref: "Participation",
-      required: true,
+      required: false,
     },
     componentType: {
       type: String,
@@ -22,8 +27,8 @@ export const InventorySchema = new Schema(
       default: 0,
     },
     status: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     }
   },
   { timestamps: true, collection: "inventory" }

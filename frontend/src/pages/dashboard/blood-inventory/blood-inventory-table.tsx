@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getInventories, deleteInventory } from "@/apis/bloodInventory.api";
+import { getUsers } from "@/apis/user.api";
 import { DataTable } from "@/components/data-table";
 import { columns } from "./blood-inventory-column";
 import CreateBloodInventoryDialog from "./create-blood-inventory-dialog";
@@ -8,6 +9,10 @@ const BloodInventoryTable = () => {
   const { data: inventories, isLoading } = useQuery({
     queryKey: ["inventories"],
     queryFn: getInventories,
+  });
+  const { data: users } = useQuery({
+    queryKey: ["users"],
+    queryFn: getUsers,
   });
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
@@ -18,6 +23,32 @@ const BloodInventoryTable = () => {
   });
 
   if (isLoading) return <div>Loading...</div>;
+
+  const inventoryWithUserNames = (inventories ?? [])
+    .map((inventory: any) => {
+      let userName = "";
+      if (inventory.userId) {
+        if (typeof inventory.userId === "object") {
+          userName = `${inventory.userId.firstName || ""} ${inventory.userId.lastName || ""}`.trim();
+        } else {
+          const user = users?.find((u) => u._id === inventory.userId);
+          userName = user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "";
+        }
+      }
+
+      if (!userName && inventory.participation && typeof inventory.participation === "object") {
+        const user = inventory.participation.userId;
+        if (typeof user === "object" && user !== null) {
+          userName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
+        }
+      }
+
+      return {
+        ...inventory,
+        userName: userName || "Unknown User",
+      };
+    })
+    .sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime());
 
   return (
     <div>
@@ -33,9 +64,9 @@ const BloodInventoryTable = () => {
         <CreateBloodInventoryDialog />
       </div>
       <DataTable
-        filter="bloodType"
+        filter="userName"
         columns={columns({ onDelete: mutate })}
-        data={inventories ?? []}
+        data={inventoryWithUserNames}
       />
     </div>
   );
