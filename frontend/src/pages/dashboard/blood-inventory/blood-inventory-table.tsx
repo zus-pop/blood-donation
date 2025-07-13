@@ -84,7 +84,7 @@ const BloodInventoryTable = () => {
         )}
       </div>
       <DataTable
-        filter="userName"
+        filter="bloodType"
         columns={columns({ onDelete: mutate })}
         data={inventoryWithUserNames}
       />
