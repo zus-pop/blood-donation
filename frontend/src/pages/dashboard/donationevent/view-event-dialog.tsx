@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Calendar, Eye, MapPin, Users, Image as ImageIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { formatDate } from "../../../lib/utils";
 
 interface EventProps {
   _id: string;
@@ -44,7 +45,7 @@ const ViewEventDialog = ({ event }: ViewEventDialogProps) => {
               src={event.image}
               alt={event.title}
               className="w-full h-64 object-cover rounded-t-2xl border-b border-gray-200"
-              style={{ objectPosition: 'center' }}
+              style={{ objectPosition: "center" }}
             />
           ) : (
             <div className="w-full h-64 flex items-center justify-center bg-gray-100 rounded-t-2xl border-b border-gray-200">
@@ -63,7 +64,9 @@ const ViewEventDialog = ({ event }: ViewEventDialogProps) => {
                 </div>
                 <div className="flex items-center gap-1">
                   <span>Status:</span>
-                  <span className="font-semibold ml-1 text-blue-600 uppercase tracking-wide">{event.status}</span>
+                  <span className="font-semibold ml-1 text-blue-600 uppercase tracking-wide">
+                    {event.status}
+                  </span>
                 </div>
               </DialogDescription>
             </DialogHeader>
@@ -71,7 +74,9 @@ const ViewEventDialog = ({ event }: ViewEventDialogProps) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
               <div className="space-y-3">
                 <div>
-                  <span className="font-semibold text-gray-800">Description:</span>
+                  <span className="font-semibold text-gray-800">
+                    Description:
+                  </span>
                   <div className="whitespace-pre-wrap text-gray-700 mt-1">
                     {event.description}
                   </div>
@@ -89,26 +94,28 @@ const ViewEventDialog = ({ event }: ViewEventDialogProps) => {
               </div>
               <div className="space-y-3">
                 <div>
-                  <span className="font-semibold text-gray-800">Registration:</span>
-                  <span className="whitespace-nowrap block text-gray-700 mt-1">{`${new Date(
-                    event.registrationStartedAt
-                  ).toLocaleString()} – ${new Date(
-                    event.registrationEndedAt
-                  ).toLocaleString()}`}</span>
+                  <span className="font-semibold text-gray-800">
+                    Registration:
+                  </span>
+                  <span className="whitespace-nowrap block text-gray-700 mt-1">{`${formatDate(
+                    new Date(event.registrationStartedAt)
+                  )} – ${formatDate(
+                    new Date(event.registrationEndedAt)
+                  )}`}</span>
                 </div>
                 <div>
                   <span className="font-semibold text-gray-800">Event:</span>
-                  <span className="whitespace-nowrap block text-gray-700 mt-1">{`${new Date(
-                    event.eventStartedAt
-                  ).toLocaleString()} – ${new Date(
-                    event.eventEndedAt
-                  ).toLocaleString()}`}</span>
+                  <span className="whitespace-nowrap block text-gray-700 mt-1">{`${formatDate(
+                    new Date(event.eventStartedAt)
+                  )} – ${formatDate(new Date(event.eventEndedAt))}`}</span>
                 </div>
                 <div>
-                  <span className="font-semibold text-gray-800">Last updated:</span>
+                  <span className="font-semibold text-gray-800">
+                    Last updated:
+                  </span>
                   <div className="text-gray-700 mt-1">
                     {event.updatedAt
-                      ? new Date(event.updatedAt).toLocaleString()
+                      ? formatDate(new Date(event.updatedAt))
                       : "-"}
                   </div>
                 </div>
