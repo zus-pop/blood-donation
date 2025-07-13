@@ -123,7 +123,7 @@ const UpdateCategoryDialog = ({
               <div className="flex justify-center">
                 <Button className="text-xl" type="submit">
                   <span className="p-2">
-                    {isPending ? <Loading></Loading> : <span>Submit</span>}
+                    {isPending ? <Loading inline message="Updating..." /> : <span>Submit</span>}
                   </span>
                 </Button>
               </div>
