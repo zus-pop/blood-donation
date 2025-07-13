@@ -1,73 +1,27 @@
 "use client";
 import {
   ArrowLeft,
-  ArrowRight,
   Calendar,
   ChevronRight,
-  Clock,
   Droplets,
-  Facebook,
   Heart,
-  Linkedin,
   Share2,
-  Twitter,
-  User,
 } from "lucide-react";
 
+import { getBlog } from "@/apis/blog.api";
+import { getCategoriesGroupBy } from "@/apis/category.api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { formatDate } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router";
-import { getBlog } from "@/apis/blog.api";
-import { formatDate } from "@/lib/utils";
-
-// Sample related posts
-const relatedPosts = [
-  {
-    id: "3",
-    title: "The Surprising Health Benefits of Regular Blood Donation",
-    excerpt:
-      "Did you know that donating blood regularly can have positive effects on your own health? Discover the unexpected benefits.",
-    category: "health-benefits",
-    categoryName: "Health Benefits",
-    author: "Dr. Michael Chen",
-    date: "June 5, 2025",
-    readTime: "4 min read",
-    image: "/placeholder.svg?height=200&width=400",
-  },
-  {
-    id: "5",
-    title: "Preparing for Your First Blood Donation: A Complete Guide",
-    excerpt:
-      "Nervous about donating blood for the first time? This comprehensive guide will walk you through everything you need to know.",
-    category: "donation-tips",
-    categoryName: "Donation Tips",
-    author: "James Wilson",
-    date: "May 30, 2025",
-    readTime: "8 min read",
-    image: "/placeholder.svg?height=200&width=400",
-  },
-  {
-    id: "7",
-    title: "Foods to Boost Iron Levels Before and After Donation",
-    excerpt:
-      "Learn about the best foods to eat before and after donating blood to maintain healthy iron levels and recover quickly.",
-    category: "nutrition",
-    categoryName: "Nutrition & Wellness",
-    author: "Nutritionist Robert Kim",
-    date: "May 25, 2025",
-    readTime: "5 min read",
-    image: "/placeholder.svg?height=200&width=400",
-  },
-];
 
 export default function BlogDetail() {
   const { id } = useParams();
@@ -76,6 +30,11 @@ export default function BlogDetail() {
     queryKey: ["blog", id],
     queryFn: () => getBlog(id!),
     staleTime: 1000 * 60,
+  });
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories-group"],
+    queryFn: getCategoriesGroupBy,
   });
 
   if (isLoading) {
@@ -154,13 +113,24 @@ export default function BlogDetail() {
               <div className="flex items-center space-x-4 mb-8">
                 <span className="font-medium">Share this article:</span>
                 <Button variant="outline" size="icon" className="rounded-full">
-                  <Facebook className="h-4 w-4" />
+                  <svg
+                    role="img"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <title>Facebook</title>
+                    <path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z" />
+                  </svg>
                 </Button>
                 <Button variant="outline" size="icon" className="rounded-full">
-                  <Twitter className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon" className="rounded-full">
-                  <Linkedin className="h-4 w-4" />
+                  <svg
+                    role="img"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <title>X</title>
+                    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+                  </svg>
                 </Button>
                 <Button variant="outline" size="icon" className="rounded-full">
                   <Share2 className="h-4 w-4" />
@@ -182,9 +152,11 @@ export default function BlogDetail() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button className="w-full bg-white text-red-600 hover:bg-red-100">
-                      Schedule Donation
-                    </Button>
+                    <Link to="/donationevents" className="w-full">
+                      <Button className="w-full bg-white text-red-600 hover:bg-red-100">
+                        Schedule Donation
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
 
@@ -192,41 +164,16 @@ export default function BlogDetail() {
                 <div>
                   <h3 className="text-lg font-bold mb-4">Categories</h3>
                   <div className="space-y-2">
-                    <Link
-                      to="/blogs?category=donation-tips"
-                      className="flex items-center justify-between p-2 rounded-md hover:bg-muted"
-                    >
-                      <span>Donation Tips</span>
-                      <ChevronRight className="h-4 w-4" />
-                    </Link>
-                    <Link
-                      to="/blog?category=patient-stories"
-                      className="flex items-center justify-between p-2 rounded-md hover:bg-muted"
-                    >
-                      <span>Patient Stories</span>
-                      <ChevronRight className="h-4 w-4" />
-                    </Link>
-                    <Link
-                      to="/blog?category=health-benefits"
-                      className="flex items-center justify-between p-2 rounded-md hover:bg-muted"
-                    >
-                      <span>Health Benefits</span>
-                      <ChevronRight className="h-4 w-4" />
-                    </Link>
-                    <Link
-                      to="/blog?category=research"
-                      className="flex items-center justify-between p-2 rounded-md hover:bg-muted"
-                    >
-                      <span>Medical Research</span>
-                      <ChevronRight className="h-4 w-4" />
-                    </Link>
-                    <Link
-                      to="/blog?category=events"
-                      className="flex items-center justify-between p-2 rounded-md hover:bg-muted"
-                    >
-                      <span>Events & Drives</span>
-                      <ChevronRight className="h-4 w-4" />
-                    </Link>
+                    {categories.map((category) => (
+                      <Link
+                        key={category._id}
+                        to={`/blogs?category=${category.slug}`}
+                        className="flex items-center justify-between p-2 rounded-md hover:bg-muted"
+                      >
+                        <span>{category.name}</span>
+                        <ChevronRight className="h-4 w-4" />
+                      </Link>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -236,7 +183,7 @@ export default function BlogDetail() {
       </section>
 
       {/* More Articles Section */}
-      <section className="py-12 bg-muted/50">
+      {/* <section className="py-12 bg-muted/50">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-6 text-center">
             More Articles You Might Like
@@ -292,7 +239,7 @@ export default function BlogDetail() {
             </Button>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* CTA Section */}
       <section className="py-12 bg-red-600 text-white">
@@ -308,19 +255,14 @@ export default function BlogDetail() {
               today.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button
-                size="lg"
-                className="bg-white text-red-600 hover:bg-red-100"
-              >
-                Schedule Donation
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-red-700"
-              >
-                Find a Blood Drive
-              </Button>
+              <Link to="/donationevents" className="w-full sm:w-auto">
+                <Button
+                  size="lg"
+                  className="bg-white text-red-600 hover:bg-red-100"
+                >
+                  Find a Blood Drive
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

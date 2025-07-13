@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
-import { ChevronRight, ChevronLeft, ChevronRight as NextIcon } from "lucide-react";
+import {
+  ChevronRight,
+  ChevronLeft,
+  ChevronRight as NextIcon,
+} from "lucide-react";
 import { Button } from "./ui/button";
+import { Link } from "react-router";
 
 const slides = [
   {
@@ -23,7 +28,8 @@ const Hero = () => {
   }, []);
 
   const goTo = (idx: number) => setCurrent(idx);
-  const prev = () => setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
+  const prev = () =>
+    setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
   const next = () => setCurrent((prev) => (prev + 1) % slides.length);
 
   return (
@@ -33,7 +39,9 @@ const Hero = () => {
           key={idx}
           src={slide.image}
           alt={slide.alt}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${idx === current ? "opacity-100 z-0" : "opacity-0 z-0"}`}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+            idx === current ? "opacity-100 z-0" : "opacity-0 z-0"
+          }`}
         />
       ))}
       {/* Overlay */}
@@ -44,16 +52,19 @@ const Hero = () => {
           Your Donation Can Save Lives
         </h1>
         <p className="text-lg md:text-xl mb-8 text-red-100 drop-shadow">
-          Every 2 seconds, someone in our community needs blood. Join thousands of donors and make a difference today.
+          Every 2 seconds, someone in our community needs blood. Join thousands
+          of donors and make a difference today.
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
-          <Button size="lg" className="bg-white text-red-600 hover:bg-red-100">
-            Schedule Donation
-            <ChevronRight className="ml-2 h-4 w-4" />
-          </Button>
-          <Button size="lg" variant="outline" className="text-red-700 hover:text-white hover:bg-red-500 border-2">
-            Learn More
-          </Button>
+          <Link to="/donationevents" className="w-full sm:w-auto">
+            <Button
+              size="lg"
+              className="bg-white text-red-600 hover:bg-red-100"
+            >
+              Schedule Donation
+              <ChevronRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
         </div>
       </div>
       {/* Controls */}
@@ -76,7 +87,9 @@ const Hero = () => {
         {slides.map((_, idx) => (
           <button
             key={idx}
-            className={`w-3 h-3 rounded-full border border-white ${idx === current ? "bg-white" : "bg-transparent"}`}
+            className={`w-3 h-3 rounded-full border border-white ${
+              idx === current ? "bg-white" : "bg-transparent"
+            }`}
             onClick={() => goTo(idx)}
             aria-label={`Go to slide ${idx + 1}`}
           />
