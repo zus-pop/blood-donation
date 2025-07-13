@@ -63,7 +63,6 @@ export default createBrowserRouter([
         <Header />
         <Outlet />
         <GlobalModal />
-        <Toaster richColors theme="system" />
       </ClientProtectedRoute>
     ),
     children: [
@@ -82,9 +81,7 @@ export default createBrowserRouter([
       {
         path: "/bloodrequest",
         element: (
-          <AuthRequiredRoute>
-            {withSuspense(BloodRequests)}
-          </AuthRequiredRoute>
+          <AuthRequiredRoute>{withSuspense(BloodRequests)}</AuthRequiredRoute>
         ),
       },
       {
@@ -116,7 +113,6 @@ export default createBrowserRouter([
         <>
           <ScrollToTop />
           <Dashboard />
-          <Toaster richColors theme="system" />
         </>
       </DashboardProtectedRoute>
     ),
