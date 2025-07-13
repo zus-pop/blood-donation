@@ -17,15 +17,19 @@ import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, Droplets, Filter, Search } from "lucide-react";
-import { useState } from "react";
-import { Link } from "react-router";
+import { useMemo, useState } from "react";
+import { Link, useLocation } from "react-router";
 import { getBlogs } from "@/apis/blog.api";
 import { getCategoriesGroupBy } from "@/apis/category.api";
 import Loading from "@/components/loading";
 import { formatDate } from "@/lib/utils";
 
 export default function BlogSection() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const { search } = useLocation();
+  const category = useMemo(() => new URLSearchParams(search), [search]);
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    category.get("category") ?? "all"
+  );
   const [searchTitle, setSearchTitle] = useState("");
   const { data: categories = [] } = useQuery({
     queryKey: ["categories-group"],
