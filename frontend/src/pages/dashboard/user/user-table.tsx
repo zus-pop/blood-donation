@@ -4,8 +4,10 @@ import { DataTable } from "@/components/data-table";
 import { columns } from "./user-column";
 import CreateUserDialog from "./create-user-dialog";
 import { toast } from "sonner";
+import { useProfileStore } from "@/store/profileStore";
 
 const UserTable = () => {
+  const { profile } = useProfileStore();
   const { data: users } = useQuery({
     queryKey: ["users"],
     queryFn: getUsers,
@@ -27,7 +29,11 @@ const UserTable = () => {
           <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
           <p className="text-muted-foreground">Manage users</p>
         </div>
-        <CreateUserDialog />
+        {profile?.role === "ADMIN" ? (
+          <CreateUserDialog />
+        ) : (
+          <p className="text-muted-foreground">Only admins can create users</p>
+        )}
       </div>
       <DataTable
         filter="email"

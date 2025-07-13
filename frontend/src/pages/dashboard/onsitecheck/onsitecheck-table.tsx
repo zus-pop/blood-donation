@@ -5,8 +5,10 @@ import { DataTable } from "@/components/data-table";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import CreateOnsiteCheckDialog from "./create-onsitecheck-dialog";
 import { columns } from "./onsitecheck-column";
+import { useProfileStore } from "../../../store/profileStore";
 
 const OnsiteCheckTable = () => {
+  const { profile } = useProfileStore();
   const { data: onsiteChecks } = useQuery({
     queryKey: ["onsitechecks"],
     queryFn: getOnsiteChecks,
@@ -37,24 +39,38 @@ const OnsiteCheckTable = () => {
   }
 
   const onsiteChecksMapped = (onsiteChecks ?? [])
-    .filter(item => !!item && item.participationId && (typeof item.participationId === 'string' || (typeof item.participationId === 'object' && item.participationId !== null)) && item._id)
+    .filter(
+      (item) =>
+        !!item &&
+        item.participationId &&
+        (typeof item.participationId === "string" ||
+          (typeof item.participationId === "object" &&
+            item.participationId !== null)) &&
+        item._id
+    )
     .map((item) => {
       let userName = "";
       let eventName = "";
       // Nếu participationId đã populate
-      if (item.participationId && typeof item.participationId === 'object' && 'userId' in item.participationId) {
+      if (
+        item.participationId &&
+        typeof item.participationId === "object" &&
+        "userId" in item.participationId
+      ) {
         const userObj = item.participationId.userId;
-        if (userObj && typeof userObj === 'object') {
-          userName = `${userObj.firstName || ""} ${userObj.lastName || ""}`.trim();
-        } else if (typeof userObj === 'string') {
+        if (userObj && typeof userObj === "object") {
+          userName = `${userObj.firstName || ""} ${
+            userObj.lastName || ""
+          }`.trim();
+        } else if (typeof userObj === "string") {
           userName = userObj;
         }
         // Lấy tên event nếu đã populate
-        if ('eventId' in item.participationId) {
+        if ("eventId" in item.participationId) {
           const eventObj = item.participationId.eventId;
-          if (eventObj && typeof eventObj === 'object' && 'title' in eventObj) {
+          if (eventObj && typeof eventObj === "object" && "title" in eventObj) {
             eventName = (eventObj as any).title;
-          } else if (typeof eventObj === 'string') {
+          } else if (typeof eventObj === "string") {
             eventName = eventObj;
           }
         }
@@ -66,7 +82,9 @@ const OnsiteCheckTable = () => {
           (p) => String(p._id) === participationId
         );
         const userId = participation ? participation.user : "";
-        const user = (users ?? []).find((u) => String(u._id) === String(userId));
+        const user = (users ?? []).find(
+          (u) => String(u._id) === String(userId)
+        );
         userName = user
           ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
           : String(userId);
@@ -77,12 +95,20 @@ const OnsiteCheckTable = () => {
       return {
         ...item,
         _id: String(item._id ?? ""),
-        participationId: typeof item.participationId === 'object' && '_id' in item.participationId ? item.participationId._id : String(item.participationId ?? ""),
+        participationId:
+          typeof item.participationId === "object" &&
+          "_id" in item.participationId
+            ? item.participationId._id
+            : String(item.participationId ?? ""),
         userName,
         eventName,
       };
     })
-    .sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime());
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt ?? 0).getTime() -
+        new Date(a.createdAt ?? 0).getTime()
+    );
 
   return (
     <div>
@@ -93,7 +119,13 @@ const OnsiteCheckTable = () => {
           </h1>
           <p className="text-muted-foreground">Manage onsite checks</p>
         </div>
-        <CreateOnsiteCheckDialog />
+        {profile?.role === "STAFF" ? (
+          <CreateOnsiteCheckDialog />
+        ) : (
+          <p className="text-muted-foreground">
+            Only staffs can create onsite checks
+          </p>
+        )}
       </div>
       <DataTable
         filter="userName"
