@@ -1,4 +1,4 @@
-import { Participation } from "../models";
+import { Participation, DonationEvent } from "../models";
 import { CreateParticipationDto, ParticipationQuery, UpdateParticipationDto } from "../types/participation.type";
 
 export const findParticipations = async (query: ParticipationQuery) => {
@@ -34,12 +34,42 @@ export const createParticipation = async (data: CreateParticipationDto) => {
   return await participation.save();
 };
 
+function addMonths(date: Date, months: number) {
+  const d = new Date(date);
+  d.setMonth(d.getMonth() + months);
+  return d;
+}
+
 export const updateParticipation = async (id: string, data: UpdateParticipationDto) => {
   const participation = await Participation.findById(id);
   if (!participation) throw new Error("Participation not found");
   const { status } = data;
   if (status) participation.status = status;
-  return await participation.save();
+  const saved = await participation.save();
+
+  // Nếu chuyển sang ATTENDED thì hủy các participation REGISTERED khác dưới 3 tháng
+  if (status === "ATTENDED") {
+    // Lấy event vừa attended
+    const attendedEvent = await DonationEvent.findById(participation.eventId);
+    if (attendedEvent) {
+      const attendedEnd = new Date(attendedEvent.eventEndedAt);
+      const threeMonthsAfter = addMonths(attendedEnd, 3);
+      // Tìm các participation REGISTERED khác của user
+      const toCancel = await Participation.find({
+        userId: participation.userId,
+        status: "REGISTERED",
+        _id: { $ne: participation._id },
+      });
+      for (const part of toCancel) {
+        const ev = await DonationEvent.findById(part.eventId);
+        if (ev && new Date(ev.eventStartedAt) < threeMonthsAfter) {
+          part.status = "CANCELLED";
+          await part.save();
+        }
+      }
+    }
+  }
+  return saved;
 };
 
 export const deleteParticipation = async (id: string) => {

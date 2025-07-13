@@ -4,7 +4,7 @@ export interface ParticipationProps {
     _id?: string;
     user: string;
     event: string;
-    status: "REGISTERED" | "CANCELLED" | "ATTENDED";
+    status: "REGISTERED" | "CANCELLED" | "ATTENDED" | "NOT_ELIGIBLE";
     createdAt?: string;
     updatedAt?: string;
 }

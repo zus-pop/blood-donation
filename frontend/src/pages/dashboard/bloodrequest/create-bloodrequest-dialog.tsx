@@ -55,7 +55,6 @@ const STATUS_OPTIONS = [
   "APPROVAL",
   "REJECTED",
   "CANCELLED",
-  "MATCHED",
   "FULL_FILLED",
   "IN_PROGRESS",
 ];
@@ -300,7 +299,7 @@ const CreateBloodRequestDialog = () => {
               <div className="flex justify-center">
                 <Button className="text-xl" type="submit">
                   <span className="p-2">
-                    {isPending ? <Loading /> : <span>Submit</span>}
+                    {isPending ? <Loading inline message="Creating..." /> : <span>Submit</span>}
                   </span>
                 </Button>
               </div>

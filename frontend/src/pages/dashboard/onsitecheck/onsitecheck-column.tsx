@@ -14,7 +14,6 @@ import {
 import DeleteOnsiteCheckDialog from "./delete-onsitecheck-dialog";
 import UpdateOnsiteCheckDialog from "./update-onsitecheck-dialog";
 import ViewOnsiteCheckDialog from "./view-onsitecheck-dialog";
-import { format } from "date-fns";
 import { useProfileStore } from "@/store/profileStore";
 
 export interface OnsiteCheckProps {
@@ -26,10 +25,10 @@ export interface OnsiteCheckProps {
   bodyTemperature?: number;
   weight?: number;
   canDonate?: boolean;
-  checkedAt?: string;
   createdAt?: string;
   updatedAt?: string;
   userName?: string;
+  eventName?: string;
 }
 
 interface ActionsProps {
@@ -69,6 +68,13 @@ export const columns = ({
       cell: ({ row }) => row.original.userName || "",
     },
     {
+      accessorKey: "eventName",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Event" />
+      ),
+      cell: ({ row }) => row.original.eventName || "",
+    },
+    {
       accessorKey: "pulseRate",
       header: "Pulse Rate",
     },
@@ -98,19 +104,6 @@ export const columns = ({
         ) : (
           <span className="px-2 py-1 rounded text-xs font-semibold bg-red-100 text-red-700">No</span>
         );
-      },
-    },
-    {
-      accessorKey: "checkedAt",
-      header: "Checked At",
-      cell: ({ row }) => {
-        const value = row.original.checkedAt;
-        if (!value) return "";
-        try {
-          return format(new Date(value), "dd/MM/yyyy HH:mm");
-        } catch {
-          return value;
-        }
       },
     },
     {

@@ -37,14 +37,6 @@ const Header = () => {
       },
     ];
 
-    // Only add Blood Requests if user is authenticated
-    if (isAuthenticated) {
-      baseNavList.splice(2, 0, {
-        name: "Blood Requests",
-        to: "/blrqsection",
-      });
-    }
-
     return baseNavList;
   };
 
@@ -97,6 +89,10 @@ const Header = () => {
               <DropdownMenuContent>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate('/my-events')}>My Event</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/blrqsection')}>
+                  My Requests
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -133,10 +129,15 @@ const Header = () => {
                   Request Blood Now
                 </Button>
                 {isAuthenticated ? (
-                  <Button variant="outline" className="w-full" onClick={logout}>
-                    <User className="mr-2 h-4 w-4" />
-                    Logout
-                  </Button>
+                  <>
+                    <Button variant="outline" className="w-full" onClick={() => { navigate("/blrqsection"); setMobileMenuOpen(false); }}>
+                      Blood Requests
+                    </Button>
+                    <Button variant="outline" className="w-full" onClick={logout}>
+                      <User className="mr-2 h-4 w-4" />
+                      Logout
+                    </Button>
+                  </>
                 ) : (
                   <Button variant="outline" className="w-full" onClick={openModal}>
                     <User className="mr-2 h-4 w-4" />

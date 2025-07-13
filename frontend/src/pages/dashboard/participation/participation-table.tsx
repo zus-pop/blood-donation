@@ -1,12 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteParticipation, getParticipations } from "@/apis/participation.api";
+import {
+  deleteParticipation,
+  getParticipations,
+} from "@/apis/participation.api";
 import { getUsers } from "@/apis/user.api";
 import { getEvents } from "@/apis/event.api";
 import { DataTable } from "@/components/data-table";
 import { columns } from "./participation-column";
 import CreateParticipationDialog from "./create-participation-dialog";
+import type { ParticipationProps as ApiParticipationProps } from "@/apis/participation.api";
+import type { ParticipationProps } from "./participation-column";
+import { useProfileStore } from "@/store/profileStore";
 
 const ParticipationTable = () => {
+  const { profile } = useProfileStore();
   const { data: participations } = useQuery({
     queryKey: ["participations"],
     queryFn: getParticipations,
@@ -28,20 +35,32 @@ const ParticipationTable = () => {
   });
 
   // Map userId, eventId sang tên
-  const participationWithNames = (participations ?? []).map((p: any) => {
-    const user = users?.find((u) => u._id === p.user);
-    const event = events?.find((e) => e._id === p.event);
-    return {
-      _id: p._id || "",
-      user: p.user,
-      event: p.event,
-      status: p.status,
-      createdAt: p.createdAt,
-      updatedAt: p.updatedAt,
-      userName: user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "",
-      eventName: event ? event.title : "",
-    };
-  });
+  const participationWithNames = (participations ?? [])
+    .map((p: ApiParticipationProps) => {
+      const user = users?.find((u) => u._id === p.user);
+      const event = events?.find((e) => e._id === p.event);
+      const userName = user
+        ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
+        : "";
+      const participationId = p._id ? String(p._id) : "";
+      return {
+        _id: participationId,
+        user: p.user,
+        event: p.event,
+        status: p.status,
+        createdAt: p.createdAt,
+        updatedAt: p.updatedAt,
+        userName,
+        eventName: event ? event.title : "",
+        participationId,
+        userNameForSearch: (userName + " " + participationId).toLowerCase(),
+      } as ParticipationProps & { userNameForSearch: string };
+    })
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt ?? 0).getTime() -
+        new Date(a.createdAt ?? 0).getTime()
+    );
 
   return (
     <div>
@@ -52,10 +71,16 @@ const ParticipationTable = () => {
           </h1>
           <p className="text-muted-foreground">Manage participations</p>
         </div>
-        <CreateParticipationDialog />
+        {profile?.role === "STAFF" ? (
+          <CreateParticipationDialog />
+        ) : (
+          <p className="text-muted-foreground">
+            Only staffs can manage participations
+          </p>
+        )}
       </div>
       <DataTable
-        filter="userName"
+        filter="userNameForSearch"
         columns={columns({
           onDelete: mutate,
         })}
@@ -65,4 +90,4 @@ const ParticipationTable = () => {
   );
 };
 
-export default ParticipationTable; 
+export default ParticipationTable;

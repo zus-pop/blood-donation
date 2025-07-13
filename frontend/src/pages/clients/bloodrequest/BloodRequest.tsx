@@ -304,7 +304,7 @@ export default function BloodRequest() {
                                     className="w-full md:w-auto px-8 bg-red-600 hover:bg-red-700"
                                     disabled={isSubmitting || !profile || !confirmInfo}
                                 >
-                                    {isSubmitting ? <Loading /> : !profile ? "Please Login to Submit" : "Submit Blood Request"}
+                                    {isSubmitting ? <Loading inline message="Submitting..." /> : !profile ? "Please Login to Submit" : "Submit Blood Request"}
                                 </Button>
                             </div>
                         </form>

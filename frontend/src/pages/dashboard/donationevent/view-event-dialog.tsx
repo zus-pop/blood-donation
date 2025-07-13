@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Calendar, Eye, MapPin, Users, Image as ImageIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { formatDate } from "../../../lib/utils";
 
 interface EventProps {
   _id: string;
@@ -36,78 +37,85 @@ const ViewEventDialog = ({ event }: ViewEventDialogProps) => {
         <Eye className="size-5" />
         View event
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto rounded-2xl p-0">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto overflow-x-hidden rounded-2xl p-0 bg-white shadow-xl">
         <div className="flex flex-col">
           {/* Event Image */}
           {event.image ? (
             <img
               src={event.image}
               alt={event.title}
-              className="w-full h-64 object-cover rounded-t-2xl"
+              className="w-full h-64 object-cover rounded-t-2xl border-b border-gray-200"
+              style={{ objectPosition: "center" }}
             />
           ) : (
-            <div className="w-full h-64 flex items-center justify-center bg-gray-100 rounded-t-2xl">
+            <div className="w-full h-64 flex items-center justify-center bg-gray-100 rounded-t-2xl border-b border-gray-200">
               <ImageIcon className="w-16 h-16 text-gray-300" />
             </div>
           )}
           <div className="p-6 flex flex-col gap-4">
             <DialogHeader>
-              <DialogTitle className="text-2xl font-bold mb-1">
+              <DialogTitle className="text-2xl font-extrabold mb-1 text-gray-900">
                 {event.title}
               </DialogTitle>
-              <DialogDescription className="flex flex-wrap items-center gap-4 text-sm mb-2">
+              <DialogDescription className="flex flex-wrap items-center gap-4 text-sm mb-2 text-gray-600">
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
-                  {new Date(event.createdAt).toLocaleString()}
+                  <span>{new Date(event.createdAt).toLocaleString()}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  Status:{" "}
-                  <span className="font-semibold ml-1">{event.status}</span>
+                  <span>Status:</span>
+                  <span className="font-semibold ml-1 text-blue-600 uppercase tracking-wide">
+                    {event.status}
+                  </span>
                 </div>
               </DialogDescription>
             </DialogHeader>
             <Separator />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+              <div className="space-y-3">
                 <div>
-                  <span className="font-semibold">Description:</span>
-                  <div className="whitespace-pre-wrap text-gray-700">
+                  <span className="font-semibold text-gray-800">
+                    Description:
+                  </span>
+                  <div className="whitespace-pre-wrap text-gray-700 mt-1">
                     {event.description}
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4" />
-                  <span className="font-semibold">Location:</span>
-                  <span className="ml-1">{event.location}</span>
+                <div className="flex items-center gap-1 mt-2">
+                  <MapPin className="h-4 w-4 text-red-500" />
+                  <span className="font-semibold text-gray-800">Location:</span>
+                  <span className="ml-1 text-gray-700">{event.location}</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Users className="h-4 w-4" />
-                  <span className="font-semibold">Slots:</span>
-                  <span className="ml-1">{event.slot}</span>
+                <div className="flex items-center gap-1 mt-2">
+                  <Users className="h-4 w-4 text-green-600" />
+                  <span className="font-semibold text-gray-800">Slots:</span>
+                  <span className="ml-1 text-gray-700">{event.slot}</span>
                 </div>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div>
-                  <span className="font-semibold">Registration:</span>
-                  <span className="whitespace-nowrap block">{`${new Date(
-                    event.registrationStartedAt
-                  ).toLocaleString()} – ${new Date(
-                    event.registrationEndedAt
-                  ).toLocaleString()}`}</span>
+                  <span className="font-semibold text-gray-800">
+                    Registration:
+                  </span>
+                  <span className="whitespace-nowrap block text-gray-700 mt-1">{`${formatDate(
+                    new Date(event.registrationStartedAt)
+                  )} – ${formatDate(
+                    new Date(event.registrationEndedAt)
+                  )}`}</span>
                 </div>
                 <div>
-                  <span className="font-semibold">Event:</span>
-                  <span className="whitespace-nowrap block">{`${new Date(
-                    event.eventStartedAt
-                  ).toLocaleString()} – ${new Date(
-                    event.eventEndedAt
-                  ).toLocaleString()}`}</span>
+                  <span className="font-semibold text-gray-800">Event:</span>
+                  <span className="whitespace-nowrap block text-gray-700 mt-1">{`${formatDate(
+                    new Date(event.eventStartedAt)
+                  )} – ${formatDate(new Date(event.eventEndedAt))}`}</span>
                 </div>
                 <div>
-                  <span className="font-semibold">Last updated:</span>
-                  <div>
+                  <span className="font-semibold text-gray-800">
+                    Last updated:
+                  </span>
+                  <div className="text-gray-700 mt-1">
                     {event.updatedAt
-                      ? new Date(event.updatedAt).toLocaleString()
+                      ? formatDate(new Date(event.updatedAt))
                       : "-"}
                   </div>
                 </div>

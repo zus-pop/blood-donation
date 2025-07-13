@@ -10,7 +10,9 @@ import { DataTable } from "@/components/data-table";
 import { columns } from "./bloodrequest-column";
 import CreateBloodRequestDialog from "./create-bloodrequest-dialog";
 import { toast } from "sonner";
+import { useProfileStore } from "@/store/profileStore";
 const BloodRequestTable = () => {
+  const { profile } = useProfileStore();
   const { data: bloodrequests = [] } = useQuery<BloodRequestProps[]>({
     queryKey: ["bloodrequests"],
     queryFn: () => getBloodRequests({}),
@@ -34,12 +36,19 @@ const BloodRequestTable = () => {
           </h1>
           <p className="text-muted-foreground">Manage blood requests</p>
         </div>
-        <CreateBloodRequestDialog />
+        {profile?.role === "STAFF" ? (
+          <CreateBloodRequestDialog />
+        ) : (
+          <p className="text-muted-foreground">
+            Only staffs can create blood requests
+          </p>
+        )}
       </div>
       <DataTable
         filter="Name"
         columns={columns({ onDelete: mutate })}
         data={bloodrequests ?? []}
+        initialSorting={[{ id: "createdAt", desc: true }]}
       />
     </div>
   );

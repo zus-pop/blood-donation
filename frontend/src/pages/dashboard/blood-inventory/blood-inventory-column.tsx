@@ -52,29 +52,85 @@ export const columns = ({
       cell: ({ row }) => {
         const bloodType = row.original.bloodType;
         if (typeof bloodType === "object" && bloodType !== null) {
-          return bloodType.bloodType; // or bloodType.blood_group if that's the property
+          return bloodType.bloodType;
         }
         return bloodType;
       },
     },
     {
-      accessorKey: "participation",
-      header: "Participation ID",
+      accessorKey: "Participant", 
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Participant" />
+      ),
       cell: ({ row }) => {
+        const userId = row.original.userId;
+        if (typeof userId === "object" && userId !== null) {
+          const fullName = `${userId.firstName || ""} ${userId.lastName || ""}`.trim();
+          return fullName || userId.email || "Unknown User";
+        }
+        
         const p = row.original.participation;
         if (typeof p === "object" && p !== null) {
-          return (
-            (p as { _id?: string; id?: string })._id ||
-            (p as { id?: string }).id ||
-            ""
-          );
+          const user = (p as any).userId;
+          if (typeof user === "object" && user !== null) {
+            const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
+            return fullName || user.email || "Unknown User";
+          }
         }
-        return p;
+        
+        return "N/A";
       },
     },
-    { accessorKey: "componentType", header: "Component" },
-    { accessorKey: "quantity", header: "Quantity" },
-    { accessorKey: "status", header: "Status" },
+    {
+      accessorKey: "componentType",
+      header: "Component",
+      cell: ({ row }) => {
+        const component = row.original.componentType;
+        return component ? component.replace("_", " ") : "";
+      },
+    },
+    {
+      accessorKey: "quantity",
+      header: "Quantity (ml)",
+      cell: ({ row }) => {
+        return `${row.original.quantity} ml`;
+      },
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.original.status;
+        const getStatusStyle = (status: string) => {
+          switch (status?.toLowerCase()) {
+            case "available":
+              return "bg-green-100 text-green-800 border-green-200";
+            case "reserved":
+              return "bg-yellow-100 text-yellow-800 border-yellow-200";
+            case "in_testing":
+              return "bg-blue-100 text-blue-800 border-blue-200";
+            case "used":
+              return "bg-gray-100 text-gray-800 border-gray-200";
+            case "expired":
+              return "bg-red-100 text-red-800 border-red-200";
+            case "quarantined":
+              return "bg-purple-100 text-purple-800 border-purple-200";
+            default:
+              return "bg-gray-100 text-gray-800 border-gray-200";
+          }
+        };
+
+        return (
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusStyle(
+              status
+            )}`}
+          >
+            {status?.replace("_", " ").toUpperCase()}
+          </span>
+        );
+      },
+    },
     {
       accessorKey: "createdAt",
       header: ({ column }) => (

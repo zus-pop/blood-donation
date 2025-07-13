@@ -12,9 +12,14 @@ const router = express.Router();
 
 // Get all inventory items
 router.get("/", async (req: Request, res: Response) => {
-  const query = req.query as any as InventoryQuery;
-  const inventory = await findInventory(query);
-  res.json(inventory);
+  try {
+    const query = req.query as any as InventoryQuery;
+    const inventories = await findInventory(query);
+    res.status(200).json(inventories);
+  } catch (err) {
+    console.error("Route error:", err);
+    res.status(400).json({ error: "Cannot fetch inventory", detail: err });
+  }
 });
 
 // Get a single inventory item by ID
