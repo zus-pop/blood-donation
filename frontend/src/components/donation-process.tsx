@@ -1,6 +1,7 @@
 import { Droplets, Heart, Info, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Link } from "react-router";
 
 const DonationProcess = () => {
   const donationSteps = [
@@ -60,9 +61,11 @@ const DonationProcess = () => {
             The entire process takes about 1 hour, with the actual donation only
             taking 8-10 minutes.
           </p>
-          <Button className="bg-red-600 hover:bg-red-700">
-            Schedule Your Donation
-          </Button>
+          <Link to="/donationevents">
+            <Button className="bg-red-600 hover:bg-red-700">
+              Schedule Your Donation
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
