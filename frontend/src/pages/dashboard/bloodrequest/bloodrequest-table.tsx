@@ -48,6 +48,7 @@ const BloodRequestTable = () => {
         filter="Name"
         columns={columns({ onDelete: mutate })}
         data={bloodrequests ?? []}
+        initialSorting={[{ id: "createdAt", desc: true }]}
       />
     </div>
   );
