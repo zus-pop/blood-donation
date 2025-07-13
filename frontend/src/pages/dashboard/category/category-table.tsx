@@ -4,8 +4,10 @@ import { DataTable } from "@/components/data-table";
 import { columns } from "./category-column";
 import CreateCategoryDialog from "./create-category-dialog";
 import { toast } from "sonner";
+import { useProfileStore } from "@/store/profileStore";
 
 const CategoryTable = () => {
+  const { profile } = useProfileStore();
   const { data: categories } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
@@ -30,7 +32,13 @@ const CategoryTable = () => {
             Manage your categories and content
           </p>
         </div>
-        <CreateCategoryDialog />
+        {profile?.role === "STAFF" ? (
+          <CreateCategoryDialog />
+        ) : (
+          <p className="text-muted-foreground">
+            Only staffs can create categories
+          </p>
+        )}
       </div>
       <DataTable
         filter="name"

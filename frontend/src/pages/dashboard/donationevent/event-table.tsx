@@ -4,8 +4,10 @@ import { deleteEvent, getEvents } from "@/apis/event.api";
 import { DataTable } from "@/components/data-table";
 import { columns } from "./event-column";
 import CreateEventDialog from "./create-event-dialog";
+import { useProfileStore } from "@/store/profileStore";
 
 const EventTable = () => {
+  const { profile } = useProfileStore();
   const { data: events } = useQuery({
     queryKey: ["events"],
     queryFn: getEvents,
@@ -27,7 +29,11 @@ const EventTable = () => {
           </h1>
           <p className="text-muted-foreground">Manage your donation events</p>
         </div>
-        <CreateEventDialog />
+        {profile?.role === "STAFF" ? (
+          <CreateEventDialog />
+        ) : (
+          <p className="text-muted-foreground">Only staffs can create events</p>
+        )}
       </div>
       <DataTable
         filter="title"
