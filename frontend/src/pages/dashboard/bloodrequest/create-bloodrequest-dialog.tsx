@@ -14,7 +14,7 @@ import {
   useQuery as useUserQuery,
 } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { createBloodRequest } from "@/apis/bloodrequest.api";
 import Loading from "@/components/loading";
@@ -40,7 +40,7 @@ import {
   bloodRequestSchema,
   type BloodRequestSchema,
 } from "./bloodrequest.schema";
-import { getUsers } from "@/apis/user.api";
+import { getActiveUsers } from "@/apis/user.api";
 import { toast } from "sonner";
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 const BLOOD_COMPONENTS = [
@@ -51,21 +51,17 @@ const BLOOD_COMPONENTS = [
   "WHITE_CELLS",
 ];
 const STATUS_OPTIONS = [
-  "PENDING",
-  "APPROVAL",
-  "REJECTED",
-  "CANCELLED",
-  "FULL_FILLED",
-  "IN_PROGRESS",
+  "PENDING"
 ];
 
 const CreateBloodRequestDialog = () => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState<boolean>(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const { data: users = [] } = useUserQuery({
-    queryKey: ["users"],
-    queryFn: getUsers,
+    queryKey: ["users-actives"],
+    queryFn: getActiveUsers,
     staleTime: 1000 * 60,
   });
 
@@ -94,9 +90,36 @@ const CreateBloodRequestDialog = () => {
     },
   });
 
+  // Reset form về giá trị mặc định mỗi khi đóng/mở modal
+  useEffect(() => {
+    if (!open) {
+      form.reset({
+        name: "",
+        phone: "",
+        bloodType: "",
+        bloodComponent: "WHOLE_BLOOD",
+        quantity: 100,
+        status: "PENDING",
+        address: "",
+        requestedBy: "",
+      });
+    }
+  }, [open]);
+
   function onSubmit(data: BloodRequestSchema) {
     mutate(data);
   }
+
+  useEffect(() => {
+    if (open && formRef.current) {
+      // blur any focused element when modal opens
+      setTimeout(() => {
+        if (document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur();
+        }
+      }, 100);
+    }
+  }, [open]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -115,52 +138,68 @@ const CreateBloodRequestDialog = () => {
         </DialogHeader>
         <Form {...form}>
           <div className="h-[70vh] overflow-y-auto p-4 border rounded-md">
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
                 name="requestedBy"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email of User</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={(val) => {
-                          field.onChange(val);
-                          // Auto fill name when user is selected
-                          const selectedUser = users.find(user => user._id === val);
-                          if (selectedUser) {
-                            form.setValue('name', `${selectedUser.firstName} ${selectedUser.lastName}`);
-                          }
-                        }}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select Email" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {users.map((user) => (
-                            <SelectItem key={user._id} value={user._id}>
-                              {user.email} ({user.firstName} {user.lastName})
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const [search, setSearch] = useState("");
+                  const [isFocused, setIsFocused] = useState(false);
+                  const filteredUsers = users.filter(
+                    (user) =>
+                      user.email.toLowerCase().includes(search.toLowerCase())
+                  );
+                  return (
+                    <FormItem>
+                      <FormLabel>Email of User</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            type="text"
+                            placeholder="Search email..."
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setTimeout(() => setIsFocused(false), 150)}
+                            className="mb-2"
+                            tabIndex={-1}
+                          />
+                          {isFocused && (
+                            <div className="max-h-40 overflow-y-auto border rounded absolute bg-white w-full z-10">
+                              {filteredUsers.map(user => (
+                                <div
+                                  key={user._id}
+                                  className={`p-2 cursor-pointer hover:bg-gray-100 ${field.value === user._id ? "bg-gray-200" : ""}`}
+                                  onMouseDown={() => {
+                                    field.onChange(user._id);
+                                    form.setValue('name', `${user.firstName} ${user.lastName}`);
+                                    setSearch(`${user.email}`);
+                                  }}
+                                >
+                                  {user.email}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Your Full Name</FormLabel>
+                    <FormLabel>Full Name</FormLabel>
                     <FormControl>
                       <Input
                         type="text"
-                        placeholder="Enter your name"
+                        placeholder="Enter name"
                         {...field}
+                        tabIndex={-1}
                       />
                     </FormControl>
                     <FormMessage />
@@ -178,6 +217,7 @@ const CreateBloodRequestDialog = () => {
                         type="tel"
                         placeholder="Enter your phone number"
                         {...field}
+                        tabIndex={-1}
                       />
                     </FormControl>
                     <FormMessage />
@@ -273,7 +313,9 @@ const CreateBloodRequestDialog = () => {
                         <SelectContent>
                           {STATUS_OPTIONS.map((status) => (
                             <SelectItem key={status} value={status}>
-                              {status}
+                              <span className="inline-block px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-medium">
+                                {status}
+                              </span>
                             </SelectItem>
                           ))}
                         </SelectContent>
