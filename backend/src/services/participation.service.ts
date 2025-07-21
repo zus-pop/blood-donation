@@ -76,6 +76,6 @@ export const deleteParticipation = async (id: string) => {
   const deletedParticipation = await Participation.findByIdAndDelete(id);
 
   if (!deletedParticipation) throw new Error("Participation not found");
-  
+
   return deletedParticipation;
 };

@@ -9,7 +9,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Edit } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { updateUser, type UserProps } from "@/apis/user.api";
 import Loading from "@/components/loading";
@@ -71,6 +71,19 @@ const UpdateUserDialog = ({ currentData }: UpdateUserDialogProps) => {
       toast.success("User updated successfully");
     },
   });
+
+  // Reset form về giá trị gốc mỗi khi mở modal
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        email: currentData.email || "",
+        firstName: currentData.firstName || "",
+        lastName: currentData.lastName || "",
+        phone: currentData.phone || "",
+        role: currentData.role || "MEMBER",
+      });
+    }
+  }, [open, currentData]);
 
   function onSubmit(data: any) {
     mutate(data);

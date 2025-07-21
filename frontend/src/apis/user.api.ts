@@ -1,3 +1,4 @@
+
 import myAxios from "../lib/custom-axios";
 
 export interface UserProps {
@@ -8,6 +9,7 @@ export interface UserProps {
     phone?: string;
     password?: string;
     role?: string;
+    isDeleted?: boolean;
     createdAt?: string;
     updatedAt?: string;
 }
@@ -17,7 +19,10 @@ export const getUsers = async (): Promise<UserProps[]> => {
     const res = await myAxios.get("/users");
     return res.data;
 };
-
+export const getActiveUsers = async (): Promise<UserProps[]> => {
+    const res = await myAxios.get("/users/active");
+    return res.data;
+};
 export const deleteUser = async (id: string): Promise<void> => {
     await myAxios.delete(`/users/${id}`);
 };

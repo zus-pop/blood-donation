@@ -1,11 +1,17 @@
+
 import express, { Request, Response } from "express";
-import { findUsers, createUser, findUserById, updateUser, deleteUser } from "../services/user.service";
+import { findUsers, createUser, findUserById, updateUser, deleteUser, findActiveUsers } from "../services/user.service";
 import { UserQuery } from "../types/user.type";
 const router = express.Router();
 
 router.get("/", async (req: Request, res: Response) => {
     const query = req.query as any as UserQuery;
     const users = await findUsers(query);
+    res.status(200).json(users);
+});
+router.get("/active", async (req: Request, res: Response) => {
+    const query = req.query as any as UserQuery;
+    const users = await findActiveUsers(query);
     res.status(200).json(users);
 });
 router.post("/", async (req: Request, res: Response) => {

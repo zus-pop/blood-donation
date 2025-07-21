@@ -26,6 +26,10 @@ export const UserSchema = new Schema(
         role: {
             type: String,
             enum: ["ADMIN", "STAFF", "MEMBER", "HOSPITAL"],
+        },
+        isDeleted: {
+            type: Boolean,
+            default: false,
         }
 
     },
