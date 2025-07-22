@@ -8,7 +8,9 @@ const SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 export async function login(authLoginDto: AuthLoginDto) {
   const user = await findUserByEmail(authLoginDto.email);
-
+  if (user.isDeleted) {
+    throw new Error("The account does not exist");
+  }
   const isMatched = await comparePassword(authLoginDto.password, user.password);
 
   //  compare hashed password with input password with bcrypt

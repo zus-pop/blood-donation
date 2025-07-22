@@ -17,7 +17,7 @@ import {
 import Loading from "@/components/loading";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { registerUser } from "../../../apis/auth.api";
@@ -67,6 +67,21 @@ export default function CreateUserDialog() {
       toast.error(error?.response?.data?.message || "Failed to create user");
     },
   });
+
+  // Reset form về giá trị mặc định mỗi khi đóng/mở modal
+  useEffect(() => {
+    if (!open) {
+      form.reset({
+        email: "",
+        firstName: "",
+        lastName: "",
+        phone: "",
+        role: "MEMBER",
+        password: "",
+      });
+    }
+  }, [open]);
+
   function onSubmit(values: any) {
     mutate(values);
   }

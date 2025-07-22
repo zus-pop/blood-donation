@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getUsers, deleteUser } from "@/apis/user.api";
+import { getActiveUsers, deleteUser } from "@/apis/user.api";
 import { DataTable } from "@/components/data-table";
 import { columns } from "./user-column";
 import CreateUserDialog from "./create-user-dialog";
@@ -10,9 +10,11 @@ const UserTable = () => {
   const { profile } = useProfileStore();
   const { data: users } = useQuery({
     queryKey: ["users"],
-    queryFn: getUsers,
+    queryFn: getActiveUsers,
     staleTime: 1000 * 60,
   });
+
+  const filteredUsers = users ?? [];
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: deleteUser,
@@ -38,7 +40,7 @@ const UserTable = () => {
       <DataTable
         filter="email"
         columns={columns({ onDelete: mutate })}
-        data={users ?? []}
+        data={filteredUsers}
       />
     </div>
   );

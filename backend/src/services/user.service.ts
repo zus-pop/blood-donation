@@ -1,8 +1,13 @@
+
 import { User } from "../models";
 import { UpdateUser, UserInput, UserQuery } from "../types/user.type";
 
 export async function findUsers(query: UserQuery) {
   const users = await User.find(query).select("-password");
+  return users;
+}
+export async function findActiveUsers(query: UserQuery) {
+  const users = await User.find({ ...query, isDeleted: false }).select("-password");
   return users;
 }
 export async function createUser(data: UserInput) {
@@ -34,7 +39,10 @@ export async function updateUser(id: string, data: UpdateUser) {
   return user;
 }
 export async function deleteUser(id: string) {
-  const user = await User.findByIdAndDelete(id).select("-password");
+  const user = await User.findByIdAndUpdate(id, { isDeleted: true }, {
+    new: true,
+    runValidators: true,
+  }).select("-password");
   if (!user) {
     throw new Error("User not found");
   }

@@ -14,7 +14,7 @@ import {
   useQuery as useUserQuery,
 } from "@tanstack/react-query";
 import { Edit } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   updateBloodRequest,
@@ -55,14 +55,20 @@ const BLOOD_COMPONENTS = [
   "RED_CELLS",
   "WHITE_CELLS",
 ];
-const STATUS_OPTIONS = [
-  "PENDING",
-  "APPROVAL",
-  "REJECTED",
-  "CANCELLED",
-  "FULL_FILLED",
-  "IN_PROGRESS",
-];
+
+
+const getNextStatuses = (current: string) => {
+  switch (current) {
+    case "PENDING":
+      return ["APPROVAL", "REJECTED", "CANCELLED"];
+    case "APPROVAL":
+      return ["IN_PROGRESS", "CANCELLED"];
+    case "IN_PROGRESS":
+      return ["FULL_FILLED", "CANCELLED"];
+    default:
+      return [];
+  }
+};
 
 const UpdateBloodRequestDialog = ({
   currentData,
@@ -77,7 +83,7 @@ const UpdateBloodRequestDialog = ({
     queryFn: getUsers,
     staleTime: 1000 * 60,
   });
-
+  console.log("Users:", users);
   const form = useForm<BloodRequestSchema>({
     resolver: zodResolver(bloodRequestSchema),
     defaultValues: {
@@ -102,6 +108,22 @@ const UpdateBloodRequestDialog = ({
       toast.success("Blood request updated successfully");
     },
   });
+
+  // Reset form về giá trị gốc mỗi khi mở modal
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        name: currentData.name,
+        phone: currentData.phone,
+        requestedBy: currentData.requestedBy._id,
+        bloodType: currentData.bloodType,
+        bloodComponent: currentData.bloodComponent,
+        quantity: currentData.quantity,
+        status: currentData.status,
+        address: currentData.address,
+      });
+    }
+  }, [open, currentData]);
 
   function onSubmit(data: BloodRequestSchema) {
     mutate({ id: currentData._id, data });

@@ -14,7 +14,7 @@ import {
   useQuery as useUserQuery,
 } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { createBloodRequest } from "@/apis/bloodrequest.api";
 import Loading from "@/components/loading";
@@ -41,7 +41,7 @@ import {
   bloodRequestSchema,
   type BloodRequestSchema,
 } from "./bloodrequest.schema";
-import { getUsers } from "@/apis/user.api";
+import { getActiveUsers } from "@/apis/user.api";
 import { toast } from "sonner";
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 const BLOOD_COMPONENTS = [
@@ -52,21 +52,17 @@ const BLOOD_COMPONENTS = [
   "WHITE_CELLS",
 ];
 const STATUS_OPTIONS = [
-  "PENDING",
-  "APPROVAL",
-  "REJECTED",
-  "CANCELLED",
-  "FULL_FILLED",
-  "IN_PROGRESS",
+  "PENDING"
 ];
 
 const CreateBloodRequestDialog = () => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState<boolean>(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const { data: users = [] } = useUserQuery({
-    queryKey: ["users"],
-    queryFn: getUsers,
+    queryKey: ["users-actives"],
+    queryFn: getActiveUsers,
     staleTime: 1000 * 60,
   });
 
@@ -95,9 +91,36 @@ const CreateBloodRequestDialog = () => {
     },
   });
 
+  // Reset form về giá trị mặc định mỗi khi đóng/mở modal
+  useEffect(() => {
+    if (!open) {
+      form.reset({
+        name: "",
+        phone: "",
+        bloodType: "",
+        bloodComponent: "WHOLE_BLOOD",
+        quantity: 100,
+        status: "PENDING",
+        address: "",
+        requestedBy: "",
+      });
+    }
+  }, [open]);
+
   function onSubmit(data: BloodRequestSchema) {
     mutate(data);
   }
+
+  useEffect(() => {
+    if (open && formRef.current) {
+      // blur any focused element when modal opens
+      setTimeout(() => {
+        if (document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur();
+        }
+      }, 100);
+    }
+  }, [open]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
