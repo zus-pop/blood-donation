@@ -4,6 +4,7 @@ import {
   CreateCategoryDto,
   UpdateCategoryDto,
 } from "../types/category.type";
+import { countBlogsByCategoryId } from "./blog.service";
 
 export async function findCategories(query: CategoryQuery) {
   const filter: CategoryQuery = {};
@@ -87,6 +88,12 @@ export async function updateCategoryById(id: string, data: UpdateCategoryDto) {
 }
 
 export async function deleteCategoryById(id: string) {
+  const hasRef = await countBlogsByCategoryId(id);
+
+  if (hasRef > 0) {
+    throw new Error("Cannot delete category with existing blogs");
+  }
+
   const deletedCategory = await Category.findByIdAndDelete(id);
 
   if (!deletedCategory) throw new Error("Category not found");

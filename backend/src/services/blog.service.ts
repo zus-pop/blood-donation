@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { Blog } from "../models";
 import { BlogQuery, CreateBlogDto, UpdateBlogDto } from "../types/blog.type";
 import { findCategoryById, findCategoryBySlug } from "./category.service";
@@ -72,4 +73,9 @@ export async function deleteBlog(id: string) {
   if (!deletedBlog) throw new Error("Blog not found");
 
   return deletedBlog;
+}
+
+export async function countBlogsByCategoryId(id: string) {
+  const count = await Blog.countDocuments({ category: new Types.ObjectId(id) });
+  return count;
 }
