@@ -21,6 +21,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormSchemaProvider,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -67,69 +68,80 @@ const UpdateCategoryDialog = ({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create New Category</DialogTitle>
+          <DialogTitle>Update Category</DialogTitle>
           <DialogDescription>
-            Create a new category. Fill in the details below.
+            Update the category details below.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <div className="h-full overflow-y-auto p-4 border rounded-md">
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Category Name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        <FormSchemaProvider schema={categorySchema}>
+          <Form {...form}>
+            <div className="h-full overflow-y-auto p-4 border rounded-md">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <div className="grid md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Category Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Category Name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <FormField
-                control={form.control}
-                name="slug"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Slug</FormLabel>
-                    <FormControl>
-                      <Input placeholder="category-slug" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  <FormField
+                    control={form.control}
+                    name="slug"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Slug</FormLabel>
+                        <FormControl>
+                          <Input placeholder="category-slug" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Category's Description"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Category's Description"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <div className="flex justify-center">
-                <Button className="text-xl" type="submit">
-                  <span className="p-2">
-                    {isPending ? <Loading inline message="Updating..." /> : <span>Submit</span>}
-                  </span>
-                </Button>
-              </div>
-            </form>
-          </div>
-        </Form>
+                <div className="flex justify-center">
+                  <Button className="text-xl" type="submit">
+                    <span className="p-2">
+                      {isPending ? (
+                        <Loading inline message="Updating..." />
+                      ) : (
+                        <span>Submit</span>
+                      )}
+                    </span>
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </Form>
+        </FormSchemaProvider>
       </DialogContent>
     </Dialog>
   );

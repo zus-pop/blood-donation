@@ -1,6 +1,6 @@
-import * as React from "react"
-import * as LabelPrimitive from "@radix-ui/react-label"
-import { Slot } from "@radix-ui/react-slot"
+import * as LabelPrimitive from "@radix-ui/react-label";
+import { Slot } from "@radix-ui/react-slot";
+import * as React from "react";
 import {
   Controller,
   FormProvider,
@@ -9,27 +9,104 @@ import {
   type ControllerProps,
   type FieldPath,
   type FieldValues,
-} from "react-hook-form"
+} from "react-hook-form";
 
-import { cn } from "@/lib/utils"
-import { Label } from "@/components/ui/label"
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import type { z } from "zod";
 
-const Form = FormProvider
+const Form = FormProvider;
 
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 > = {
-  name: TName
-}
+  name: TName;
+};
 
 const FormFieldContext = React.createContext<FormFieldContextValue>(
   {} as FormFieldContextValue
-)
+);
+
+// Create a context to store the schema
+const FormSchemaContext = React.createContext<z.ZodObject<any> | null>(null);
+
+// Custom hook to access the schema
+function useSchema() {
+  return React.useContext(FormSchemaContext);
+}
+
+// Schema provider component
+function FormSchemaProvider({
+  schema,
+  children,
+}: {
+  schema: z.ZodObject<any>;
+  children: React.ReactNode;
+}) {
+  return (
+    <FormSchemaContext.Provider value={schema}>
+      {children}
+    </FormSchemaContext.Provider>
+  );
+}
+
+// Helper function to check if a field is required in the Zod schema
+function isFieldRequired(schema: z.ZodObject<any>, fieldName: string): boolean {
+  try {
+    // Get the shape of the schema
+    const shape =
+      typeof schema._def.shape === "function"
+        ? schema._def.shape()
+        : schema._def.shape;
+
+    if (!shape) return false;
+
+    // Check if the field exists in the schema
+    if (!(fieldName in shape)) {
+      return false;
+    }
+
+    // Get the field's schema
+    const fieldSchema = shape[fieldName];
+    if (!fieldSchema) return false;
+
+    // Check if the field is optional
+    return !isOptionalField(fieldSchema);
+  } catch (error) {
+    console.error(`Error checking if field ${fieldName} is required:`, error);
+    return false;
+  }
+}
+
+// Helper function to determine if a field is optional
+function isOptionalField(fieldSchema: any): boolean {
+  // If the field is wrapped with .optional()
+  if (fieldSchema._def?.typeName === "ZodOptional") {
+    return true;
+  }
+
+  // If the field is nullable but not optional
+  if (fieldSchema._def?.typeName === "ZodNullable") {
+    // Check the inner type
+    return isOptionalField(fieldSchema._def.innerType);
+  }
+
+  // Other complex cases like union types that include undefined
+  if (fieldSchema._def?.typeName === "ZodUnion") {
+    return fieldSchema._def.options.some(
+      (option: any) =>
+        option._def.typeName === "ZodUndefined" ||
+        option._def.typeName === "ZodNull"
+    );
+  }
+
+  return false;
+}
 
 const FormField = <
   TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 >({
   ...props
 }: ControllerProps<TFieldValues, TName>) => {
@@ -37,21 +114,21 @@ const FormField = <
     <FormFieldContext.Provider value={{ name: props.name }}>
       <Controller {...props} />
     </FormFieldContext.Provider>
-  )
-}
+  );
+};
 
 const useFormField = () => {
-  const fieldContext = React.useContext(FormFieldContext)
-  const itemContext = React.useContext(FormItemContext)
-  const { getFieldState } = useFormContext()
-  const formState = useFormState({ name: fieldContext.name })
-  const fieldState = getFieldState(fieldContext.name, formState)
+  const fieldContext = React.useContext(FormFieldContext);
+  const itemContext = React.useContext(FormItemContext);
+  const { getFieldState } = useFormContext();
+  const formState = useFormState({ name: fieldContext.name });
+  const fieldState = getFieldState(fieldContext.name, formState);
 
   if (!fieldContext) {
-    throw new Error("useFormField should be used within <FormField>")
+    throw new Error("useFormField should be used within <FormField>");
   }
 
-  const { id } = itemContext
+  const { id } = itemContext;
 
   return {
     id,
@@ -60,19 +137,19 @@ const useFormField = () => {
     formDescriptionId: `${id}-form-item-description`,
     formMessageId: `${id}-form-item-message`,
     ...fieldState,
-  }
-}
+  };
+};
 
 type FormItemContextValue = {
-  id: string
-}
+  id: string;
+};
 
 const FormItemContext = React.createContext<FormItemContextValue>(
   {} as FormItemContextValue
-)
+);
 
 function FormItem({ className, ...props }: React.ComponentProps<"div">) {
-  const id = React.useId()
+  const id = React.useId();
 
   return (
     <FormItemContext.Provider value={{ id }}>
@@ -82,28 +159,43 @@ function FormItem({ className, ...props }: React.ComponentProps<"div">) {
         {...props}
       />
     </FormItemContext.Provider>
-  )
+  );
 }
 
 function FormLabel({
   className,
   ...props
 }: React.ComponentProps<typeof LabelPrimitive.Root>) {
-  const { error, formItemId } = useFormField()
+  const { error, formItemId } = useFormField();
+  const fieldContext = React.useContext(FormFieldContext);
+  const schema = useSchema();
+
+  // Check if the field is required based on the schema
+  const isRequired =
+    schema && fieldContext?.name
+      ? isFieldRequired(schema, fieldContext.name as string)
+      : false;
 
   return (
     <Label
       data-slot="form-label"
       data-error={!!error}
-      className={cn("data-[error=true]:text-destructive", className)}
+      className={cn(
+        "data-[error=true]:text-destructive aria-required:after:content-['*'] aria-required:after:text-red-600 aria-required:after:text-lg",
+        className
+      )}
       htmlFor={formItemId}
       {...props}
-    />
-  )
+    >
+      {props.children}
+      {isRequired && <span className="text-destructive text-lg">*</span>}
+    </Label>
+  );
 }
 
 function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
-  const { error, formItemId, formDescriptionId, formMessageId } = useFormField()
+  const { error, formItemId, formDescriptionId, formMessageId } =
+    useFormField();
 
   return (
     <Slot
@@ -117,11 +209,11 @@ function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
       aria-invalid={!!error}
       {...props}
     />
-  )
+  );
 }
 
 function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
-  const { formDescriptionId } = useFormField()
+  const { formDescriptionId } = useFormField();
 
   return (
     <p
@@ -130,15 +222,15 @@ function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
       className={cn("text-muted-foreground text-sm", className)}
       {...props}
     />
-  )
+  );
 }
 
 function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
-  const { error, formMessageId } = useFormField()
-  const body = error ? String(error?.message ?? "") : props.children
+  const { error, formMessageId } = useFormField();
+  const body = error ? String(error?.message ?? "") : props.children;
 
   if (!body) {
-    return null
+    return null;
   }
 
   return (
@@ -150,16 +242,17 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
     >
       {body}
     </p>
-  )
+  );
 }
 
 export {
-  useFormField,
   Form,
-  FormItem,
-  FormLabel,
   FormControl,
   FormDescription,
-  FormMessage,
   FormField,
-}
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormSchemaProvider,
+  useFormField,
+};

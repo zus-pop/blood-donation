@@ -3,7 +3,7 @@ import { z } from "zod";
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
-const baseEventSchema = z.object({
+export const baseEventSchema = z.object({
   _id: z.string().optional(),
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),

@@ -77,7 +77,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
     const category = await deleteCategoryById(id);
     res.status(200).json(category);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
 });
 

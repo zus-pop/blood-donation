@@ -19,10 +19,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormSchemaProvider,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { createEventSchema, type EventSchema } from "./event.schema";
+import {
+  baseEventSchema,
+  createEventSchema,
+  type EventSchema,
+} from "./event.schema";
 import { createEvent } from "@/apis/event.api";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 
@@ -83,125 +88,18 @@ const CreateEventDialog = () => {
             Create a new donation event. Fill in the details below.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-semibold">Title</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Event Title"
-                      {...field}
-                      className="h-12 text-base rounded-lg"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-semibold">Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Event Description"
-                      {...field}
-                      className="h-20 text-base rounded-lg"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormSchemaProvider schema={baseEventSchema}>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
-                name="registrationStartedAt"
+                name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-semibold">
-                      Registration Start
-                    </FormLabel>
-                    <FormControl>
-                      <DateTimePicker
-                        date={field.value}
-                        setDate={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="registrationEndedAt"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-semibold">
-                      Registration End
-                    </FormLabel>
-                    <FormControl>
-                      <DateTimePicker
-                        date={field.value}
-                        setDate={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="eventStartedAt"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-semibold">Event Start</FormLabel>
-                    <FormControl>
-                      <DateTimePicker
-                        date={field.value}
-                        setDate={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="eventEndedAt"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-semibold">Event End</FormLabel>
-                    <FormControl>
-                      <DateTimePicker
-                        date={field.value}
-                        setDate={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="slot"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-semibold">Slot</FormLabel>
+                    <FormLabel className="font-semibold">Title</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
-                        placeholder="Slot"
+                        placeholder="Event Title"
                         {...field}
                         className="h-12 text-base rounded-lg"
                       />
@@ -212,70 +110,179 @@ const CreateEventDialog = () => {
               />
               <FormField
                 control={form.control}
-                name="location"
+                name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-semibold">Location</FormLabel>
+                    <FormLabel className="font-semibold">Description</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Location"
+                      <Textarea
+                        placeholder="Event Description"
                         {...field}
-                        className="h-12 text-base rounded-lg"
+                        className="h-20 text-base rounded-lg"
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
-            <FormField
-              control={form.control}
-              name="image"
-              render={() => (
-                <FormItem>
-                  <FormLabel className="font-semibold">Image</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          form.setValue("image", file, {
-                            shouldValidate: true,
-                          });
-                        }
-                      }}
-                    />
-                  </FormControl>
-                  {typeof form.formState.errors.image === "object" &&
-                  form.formState.errors.image &&
-                  "message" in form.formState.errors.image
-                    ? form.formState.errors.image.message
-                    : null}
-                  {imageFile && (
-                    <img
-                      src={
-                        typeof imageFile === "string"
-                          ? imageFile
-                          : URL.createObjectURL(imageFile)
-                      }
-                      alt="Preview"
-                      className="mt-2 h-auto w-full"
-                    />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="registrationStartedAt"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-semibold">
+                        Registration Start
+                      </FormLabel>
+                      <FormControl>
+                        <DateTimePicker
+                          date={field.value}
+                          setDate={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </FormItem>
-              )}
-            />
-            <Button
-              type="submit"
-              disabled={isPending}
-              className="w-full h-12 text-lg font-bold rounded-lg bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800"
-            >
-              Create
-            </Button>
-          </form>
-        </Form>
+                />
+                <FormField
+                  control={form.control}
+                  name="registrationEndedAt"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-semibold">
+                        Registration End
+                      </FormLabel>
+                      <FormControl>
+                        <DateTimePicker
+                          date={field.value}
+                          setDate={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="eventStartedAt"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-semibold">
+                        Event Start
+                      </FormLabel>
+                      <FormControl>
+                        <DateTimePicker
+                          date={field.value}
+                          setDate={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="eventEndedAt"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-semibold">Event End</FormLabel>
+                      <FormControl>
+                        <DateTimePicker
+                          date={field.value}
+                          setDate={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="slot"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-semibold">Slot</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="Slot"
+                          {...field}
+                          className="h-12 text-base rounded-lg"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-semibold">Location</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Location"
+                          {...field}
+                          className="h-12 text-base rounded-lg"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="image"
+                render={() => (
+                  <FormItem>
+                    <FormLabel aria-required className="font-semibold">
+                      Image
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            form.setValue("image", file, {
+                              shouldValidate: true,
+                            });
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                    {imageFile && (
+                      <img
+                        src={
+                          typeof imageFile === "string"
+                            ? imageFile
+                            : URL.createObjectURL(imageFile)
+                        }
+                        alt="Preview"
+                        className="mt-2 h-auto w-full"
+                      />
+                    )}
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                disabled={isPending}
+                className="w-full h-12 text-lg font-bold rounded-lg bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800"
+              >
+                Create
+              </Button>
+            </form>
+          </Form>
+        </FormSchemaProvider>
       </DialogContent>
     </Dialog>
   );

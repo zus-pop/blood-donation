@@ -26,6 +26,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormSchemaProvider,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
@@ -113,199 +114,215 @@ const CreateBloodRequestDialog = () => {
             Fill in the details below to create a new blood request.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <div className="h-[70vh] overflow-y-auto p-4 border rounded-md">
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="requestedBy"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email of User</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={(val) => {
-                          field.onChange(val);
-                          // Auto fill name when user is selected
-                          const selectedUser = users.find(user => user._id === val);
-                          if (selectedUser) {
-                            form.setValue('name', `${selectedUser.firstName} ${selectedUser.lastName}`);
-                          }
-                        }}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select Email" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {users.map((user) => (
-                            <SelectItem key={user._id} value={user._id}>
-                              {user.email} ({user.firstName} {user.lastName})
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Your Full Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Enter your name"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="tel"
-                        placeholder="Enter your phone number"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        <FormSchemaProvider schema={bloodRequestSchema}>
+          <Form {...form}>
+            <div className="h-[70vh] overflow-y-auto p-4 border rounded-md">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <FormField
+                  control={form.control}
+                  name="requestedBy"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email of User</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={(val) => {
+                            field.onChange(val);
+                            // Auto fill name when user is selected
+                            const selectedUser = users.find(
+                              (user) => user._id === val
+                            );
+                            if (selectedUser) {
+                              form.setValue(
+                                "name",
+                                `${selectedUser.firstName} ${selectedUser.lastName}`
+                              );
+                            }
+                          }}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select Email" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {users.map((user) => (
+                              <SelectItem key={user._id} value={user._id}>
+                                {user.email} ({user.firstName} {user.lastName})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Your Full Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          placeholder="Enter your name"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone Number</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="tel"
+                          placeholder="Enter your phone number"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="bloodType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Blood Type</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select blood type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {BLOOD_TYPES.map((type) => (
-                            <SelectItem key={type} value={type}>
-                              {type}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="bloodComponent"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Blood Component</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select blood component" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {BLOOD_COMPONENTS.map((comp) => (
-                            <SelectItem key={comp} value={comp}>
-                              {comp}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="quantity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Quantity (bags)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        {...field}
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {STATUS_OPTIONS.map((status) => (
-                            <SelectItem key={status} value={status}>
-                              {status}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Address</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Address..." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex justify-center">
-                <Button className="text-xl" type="submit">
-                  <span className="p-2">
-                    {isPending ? <Loading inline message="Creating..." /> : <span>Submit</span>}
-                  </span>
-                </Button>
-              </div>
-            </form>
-          </div>
-        </Form>
+                <FormField
+                  control={form.control}
+                  name="bloodType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Blood Type</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select blood type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {BLOOD_TYPES.map((type) => (
+                              <SelectItem key={type} value={type}>
+                                {type}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="bloodComponent"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Blood Component</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select blood component" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {BLOOD_COMPONENTS.map((comp) => (
+                              <SelectItem key={comp} value={comp}>
+                                {comp}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="quantity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Quantity (bags)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {STATUS_OPTIONS.map((status) => (
+                              <SelectItem key={status} value={status}>
+                                {status}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Address..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex justify-center">
+                  <Button className="text-xl" type="submit">
+                    <span className="p-2">
+                      {isPending ? (
+                        <Loading inline message="Creating..." />
+                      ) : (
+                        <span>Submit</span>
+                      )}
+                    </span>
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </Form>
+        </FormSchemaProvider>
       </DialogContent>
     </Dialog>
   );

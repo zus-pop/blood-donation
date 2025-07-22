@@ -5,6 +5,7 @@ import { columns } from "./category-column";
 import CreateCategoryDialog from "./create-category-dialog";
 import { toast } from "sonner";
 import { useProfileStore } from "@/store/profileStore";
+import { AxiosError } from "axios";
 
 const CategoryTable = () => {
   const { profile } = useProfileStore();
@@ -18,6 +19,13 @@ const CategoryTable = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       toast.success("Delete category successfully");
+    },
+    onError: (err) => {
+      toast.error(
+        err instanceof AxiosError
+          ? err.response?.data.message
+          : "Failed to delete category"
+      );
     },
   });
 

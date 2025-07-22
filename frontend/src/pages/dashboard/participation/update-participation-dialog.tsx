@@ -1,21 +1,47 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Edit } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { participationSchema, type ParticipationSchema } from "./participation.schema";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormSchemaProvider,
+} from "@/components/ui/form";
+import {
+  participationSchema,
+  type ParticipationSchema,
+} from "./participation.schema";
 import { updateParticipation } from "@/apis/participation.api";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 
 interface UpdateParticipationDialogProps {
   currentData: ParticipationSchema & { _id: string };
 }
 
-const UpdateParticipationDialog = ({ currentData }: UpdateParticipationDialogProps) => {
+const UpdateParticipationDialog = ({
+  currentData,
+}: UpdateParticipationDialogProps) => {
   const [open, setOpen] = useState(false);
   const form = useForm<ParticipationSchema>({
     resolver: zodResolver(participationSchema),
@@ -29,7 +55,8 @@ const UpdateParticipationDialog = ({ currentData }: UpdateParticipationDialogPro
 
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
-    mutationFn: (data: ParticipationSchema) => updateParticipation(currentData._id, data),
+    mutationFn: (data: ParticipationSchema) =>
+      updateParticipation(currentData._id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["participations"] });
       setOpen(false);
@@ -37,11 +64,15 @@ const UpdateParticipationDialog = ({ currentData }: UpdateParticipationDialogPro
     },
     onError: () => {
       toast.error("Cập nhật thất bại. Vui lòng thử lại!");
-    }
+    },
   });
 
   const onSubmit = (data: ParticipationSchema) => {
-    mutate({ userId: currentData.userId, eventId: currentData.eventId, status: data.status });
+    mutate({
+      userId: currentData.userId,
+      eventId: currentData.eventId,
+      status: data.status,
+    });
   };
 
   return (
@@ -59,39 +90,46 @@ const UpdateParticipationDialog = ({ currentData }: UpdateParticipationDialogPro
             Update the participation. Edit the details below.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="REGISTERED">REGISTERED</SelectItem>
-                        <SelectItem value="CANCELLED">CANCELLED</SelectItem>
-                        <SelectItem value="ATTENDED">ATTENDED</SelectItem>
-                        <SelectItem value="NOT_ELIGIBLE">NOT ELIGIBLE</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full" disabled={isPending}>
-              Update
-            </Button>
-          </form>
-        </Form>
+        <FormSchemaProvider schema={participationSchema}>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="REGISTERED">REGISTERED</SelectItem>
+                          <SelectItem value="CANCELLED">CANCELLED</SelectItem>
+                          <SelectItem value="ATTENDED">ATTENDED</SelectItem>
+                          <SelectItem value="NOT_ELIGIBLE">
+                            NOT ELIGIBLE
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full" disabled={isPending}>
+                Update
+              </Button>
+            </form>
+          </Form>
+        </FormSchemaProvider>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default UpdateParticipationDialog; 
+export default UpdateParticipationDialog;

@@ -21,14 +21,23 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { registerUser } from "../../../apis/auth.api";
-import { UserSchema } from "./user.schema";
+import { userSchema } from "./user.schema";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormSchemaProvider,
+} from "@/components/ui/form";
 
 export default function CreateUserDialog() {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const form = useForm({
     resolver: zodResolver(
-      UserSchema.pick({
+      userSchema.pick({
         email: true,
         firstName: true,
         lastName: true,
@@ -54,6 +63,9 @@ export default function CreateUserDialog() {
       form.reset();
       toast.success("User created successfully");
     },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || "Failed to create user");
+    },
   });
   function onSubmit(values: any) {
     mutate(values);
@@ -68,39 +80,116 @@ export default function CreateUserDialog() {
         <DialogHeader>
           <DialogTitle>Create User</DialogTitle>
         </DialogHeader>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <Input placeholder="First Name" {...form.register("firstName")} />
-          <Input placeholder="Last Name" {...form.register("lastName")} />
-          <Input placeholder="Phone" {...form.register("phone")} />
-          <Input placeholder="Email" {...form.register("email")} />
-          <Input
-            placeholder="Password"
-            type="password"
-            {...form.register("password")}
-          />
-          <div>
-            <label className="block mb-1">Role</label>
-            <Select
-              value={form.watch("role")}
-              onValueChange={(val) => form.setValue("role", val)}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select role" />
-              </SelectTrigger>
-              <SelectContent>
-                {ROLE_OPTIONS.map((role) => (
-                  <SelectItem key={role} value={role}>
-                    {role}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <FormSchemaProvider schema={userSchema}>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="First Name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Last Name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Phone" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Password"
+                        type="password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Role</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {ROLE_OPTIONS.map((role) => (
+                          <SelectItem key={role} value={role}>
+                            {role}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <Button type="submit" disabled={isPending} className="w-full">
-            {isPending ? <Loading inline message="Creating..." /> : "Create"}
-          </Button>
-        </form>
+              <Button type="submit" disabled={isPending} className="w-full">
+                {isPending ? (
+                  <Loading inline message="Creating..." />
+                ) : (
+                  "Create"
+                )}
+              </Button>
+            </form>
+          </Form>
+        </FormSchemaProvider>
       </DialogContent>
     </Dialog>
   );

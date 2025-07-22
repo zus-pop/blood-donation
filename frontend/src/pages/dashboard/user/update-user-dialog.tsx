@@ -21,6 +21,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormSchemaProvider,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
@@ -30,7 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UserSchema } from "./user.schema";
+import { userSchema } from "./user.schema";
 import { toast } from "sonner";
 
 const ROLE_OPTIONS = ["ADMIN", "MEMBER", "STAFF"];
@@ -45,7 +46,7 @@ const UpdateUserDialog = ({ currentData }: UpdateUserDialogProps) => {
 
   const form = useForm({
     resolver: zodResolver(
-      UserSchema.pick({
+      userSchema.pick({
         email: true,
         firstName: true,
         lastName: true,
@@ -87,93 +88,102 @@ const UpdateUserDialog = ({ currentData }: UpdateUserDialogProps) => {
           <DialogTitle>Update User</DialogTitle>
           <DialogDescription>Update the user details below.</DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>First Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Last Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Role</FormLabel>
-                  <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {ROLE_OPTIONS.map((role) => (
-                          <SelectItem key={role} value={role}>
-                            {role}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex justify-center">
-              <Button className="text-xl" type="submit" disabled={isPending}>
-                <span className="p-2">
-                  {isPending ? <Loading inline message="Updating..." /> : <span>Submit</span>}
-                </span>
-              </Button>
-            </div>
-          </form>
-        </Form>
+        <FormSchemaProvider schema={userSchema}>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Role</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {ROLE_OPTIONS.map((role) => (
+                            <SelectItem key={role} value={role}>
+                              {role}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-center">
+                <Button className="text-xl" type="submit" disabled={isPending}>
+                  <span className="p-2">
+                    {isPending ? (
+                      <Loading inline message="Updating..." />
+                    ) : (
+                      <span>Submit</span>
+                    )}
+                  </span>
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </FormSchemaProvider>
       </DialogContent>
     </Dialog>
   );
