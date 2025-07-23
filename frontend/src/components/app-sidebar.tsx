@@ -40,6 +40,11 @@ const data = {
   },
   navMain: [
     {
+      title: "Dashboard",
+      url: ".",
+      icon: IconDatabase,
+    },
+    {
       title: "User Management",
       url: "users",
       icon: IconUser,
@@ -166,7 +171,9 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { profile } = useProfileStore();
-  const [currentItem, setCurrentItem] = React.useState<string | null>(null);
+  // Set Dashboard as the default active tab
+  const [currentItem, setCurrentItem] = React.useState<string | null>("Dashboard");
+  
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -176,7 +183,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <Link to="/dashboard" onClick={() => setCurrentItem(null)}>
+              <Link to="/dashboard" onClick={() => setCurrentItem("Dashboard")}>
                 <Droplets className="!size-8 text-sidebar-primary" />
                 <span className="text-xl font-bold">Bloody</span>
               </Link>
