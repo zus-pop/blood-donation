@@ -34,7 +34,7 @@ const DashboardHome = () => (
           <TotalDonations />
         </div>
       </div>
-      
+
       <div className="group relative overflow-hidden bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 p-8 border border-white/50 hover:scale-[1.02] hover:-translate-y-1">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <div className="relative z-10">
@@ -61,7 +61,7 @@ const DashboardHome = () => (
           <InventoryChart />
         </div>
       </div>
-      
+
       <div className="group relative overflow-hidden bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 p-8 border border-white/50 hover:scale-[1.01] hover:-translate-y-1">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <div className="relative z-10">
@@ -96,7 +96,7 @@ const DashboardHome = () => (
           <LineDonationTrendChart />
         </div>
       </div>
-      
+
       <div className="group relative overflow-hidden bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 p-8 border border-white/50 hover:scale-[1.005] hover:-translate-y-1">
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <div className="relative z-10">
@@ -104,7 +104,7 @@ const DashboardHome = () => (
             <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-xl shadow-lg">
               <div className="w-5 h-3 bg-white rounded opacity-90"></div>
             </div>
-            <h2 className="text-2xl font-bold text-gray-800">Request Patterns</h2>
+            <h2 className="text-2xl font-bold text-gray-800">Blood Requests</h2>
             <div className="ml-auto">
               <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-cyan-100 text-cyan-700 text-sm font-medium rounded-full">
                 <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></div>

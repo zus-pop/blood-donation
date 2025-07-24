@@ -13,7 +13,7 @@ const SummaryCards = () => {
   useEffect(() => {
     getInventories().then(setInventory);
     getUsers().then(setUsers);
-    getBloodRequests({ status: "pending" }).then(setRequests);
+    getBloodRequests({ status: "PENDING" }).then(setRequests);
     getEvents().then(setEvents);
   }, []);
 

@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { UserProps } from "@/apis/user.api";
 import UpdateUserDialog from "./update-user-dialog";
+import RestoreUserDialog from "./restore-user-dialog";
+import { useState } from "react";
 import { formatDate } from "@/lib/utils";
 import { useProfileStore } from "@/store/profileStore";
 
@@ -121,10 +123,29 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<UserProps>[] => [
                                 <DropdownMenuItem asChild>
                                     <UpdateUserDialog currentData={user} />
                                 </DropdownMenuItem>
+
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => onDelete(user._id)} className="text-red-600 cursor-pointer">
-                                    Delete
-                                </DropdownMenuItem>
+                                {user.isDeleted === true && (() => {
+                                    const [open, setOpen] = useState(false);
+                                    return <>
+                                        <DropdownMenuItem
+                                            className="text-green-600 cursor-pointer"
+                                            onClick={e => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                setOpen(true);
+                                            }}
+                                        >
+                                            Restore
+                                        </DropdownMenuItem>
+                                        <RestoreUserDialog user={user} open={open} setOpen={setOpen} />
+                                    </>;
+                                })()}
+                                {user.isDeleted === false && (
+                                    <DropdownMenuItem onClick={() => onDelete(user._id)} className="text-red-600 cursor-pointer">
+                                        Delete
+                                    </DropdownMenuItem>
+                                )}
                             </>
                         )}
                     </DropdownMenuContent>
