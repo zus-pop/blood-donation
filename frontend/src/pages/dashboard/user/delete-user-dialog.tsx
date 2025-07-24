@@ -47,4 +47,4 @@ export default function DeleteUserDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};
