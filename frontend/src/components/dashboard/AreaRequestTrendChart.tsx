@@ -7,13 +7,15 @@ const AreaRequestTrendChart = () => {
 
   useEffect(() => {
     getBloodRequests({}).then((reqs) => {
-      // Group by date (YYYY-MM-DD)
+      // Group by month (YYYY-MM)
       const grouped: Record<string, number> = {};
       reqs.forEach((item: any) => {
-        const date = (item.createdAt || item.date || "").slice(0, 10);
-        grouped[date] = (grouped[date] || 0) + 1;
+        const month = (item.createdAt || item.date || "").slice(0, 7); // YYYY-MM
+        if (month) {
+          grouped[month] = (grouped[month] || 0) + 1;
+        }
       });
-      // Sort by date
+      // Sort by month
       const sorted = Object.entries(grouped)
         .sort(([a], [b]) => a.localeCompare(b))
         .map(([date, count]) => ({ date, count }));
