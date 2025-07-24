@@ -9,8 +9,10 @@ const PieBloodTypeChart = () => {
 
   useEffect(() => {
     getInventories().then((inv) => {
+      // Only include inventories that are not USED or EXPIRED
+      const filtered = inv.filter((item: any) => item.status !== "USED" && item.status !== "EXPIRED");
       const grouped: Record<string, number> = {};
-      inv.forEach((item: any) => {
+      filtered.forEach((item: any) => {
         const type = typeof item.bloodType === "string" ? item.bloodType : item.bloodType?.bloodType;
         const quantity = item.unit ?? item.quantity ?? 0;
         grouped[type] = (grouped[type] || 0) + quantity;
@@ -21,7 +23,7 @@ const PieBloodTypeChart = () => {
 
   return (
     <div className="bg-white rounded shadow p-4 mb-6">
-      <div className="font-semibold mb-2">Blood Type Distribution</div>
+      <div className="font-semibold mb-2">Available and Reserved Blood Type Distribution</div>
       <ResponsiveContainer width="100%" height={260}>
         <PieChart>
           <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
