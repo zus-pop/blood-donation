@@ -8,13 +8,12 @@ import ScrollToTop from "./components/scroll-to-top";
 
 const Login = lazy(() => import("./pages/dashboard/Login"));
 const Header = lazy(() => import("./components/header"));
-// const WelcomeDashBoard = lazy(() => import("./components/welcome-dashboard"));
 const BlogTable = lazy(() => import("./pages/dashboard/blog/blog-table"));
 const CategoryTable = lazy(
   () => import("./pages/dashboard/category/category-table")
 );
 const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
-const DashboardHome = lazy(() => import("./pages/dashboard/DashboardHome"));
+const DashboardIndexWrapper = lazy(() => import("./pages/dashboard/DashboardIndexWrapper"));
 const Home = lazy(() => import("./pages/clients/Home"));
 const BloodRequestsManage = lazy(
   () => import("./pages/dashboard/bloodrequest/index")
@@ -119,7 +118,7 @@ export default createBrowserRouter([
     children: [
       {
         index: true,
-        element: withSuspense(DashboardHome),
+        element: withSuspense(DashboardIndexWrapper),
       },
       {
         path: "blog",
