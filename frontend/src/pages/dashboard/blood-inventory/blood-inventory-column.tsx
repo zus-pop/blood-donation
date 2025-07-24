@@ -182,9 +182,15 @@ export const columns = ({
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             {profile?.role === "STAFF" && (
               <>
-                <DropdownMenuItem asChild>
-                  <UpdateBloodInventoryDialog currentData={inventory} />
-                </DropdownMenuItem>
+                {inventory.status !== "USED" && inventory.status !== "EXPIRED" ? (
+                  <DropdownMenuItem asChild>
+                    <UpdateBloodInventoryDialog currentData={inventory} />
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem disabled>
+                    <span title="Cannot update USED or EXPIRED inventory" className="text-gray-400 cursor-not-allowed">Update (disabled)</span>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   asChild
