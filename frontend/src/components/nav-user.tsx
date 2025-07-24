@@ -37,21 +37,21 @@ export function NavUser({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-                size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                    <div className="flex items-center gap-2">
-                        <span className="truncate font-medium">{user.name}</span>
-                        <Badge variant="default" className="text-xs">
-                            {user.role}
-                        </Badge>
-                    </div>
-                    <span className="text-muted-foreground truncate text-xs">
-                        {user.email}
-                    </span>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <div className="flex items-center gap-2">
+                  <span className="truncate font-medium">{user.name}</span>
+                  <Badge variant="default" className="text-xs">
+                    {user.role}
+                  </Badge>
                 </div>
-                <IconDotsVertical className="ml-auto size-4" />
+                <span className="text-muted-foreground truncate text-xs">
+                  {user.email}
+                </span>
+              </div>
+              <IconDotsVertical className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -95,6 +95,7 @@ export function NavUser({
               className="cursor-pointer"
               onClick={() => {
                 clearProfile();
+                localStorage.removeItem("dashboard_welcome_shown");
                 navigate("/login");
               }}
             >

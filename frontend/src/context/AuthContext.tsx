@@ -148,6 +148,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
     setIsAuthenticated(false);
     clearProfile();
+    localStorage.removeItem("dashboard_welcome_shown");
     toast.info("You have been logged out.");
   };
 

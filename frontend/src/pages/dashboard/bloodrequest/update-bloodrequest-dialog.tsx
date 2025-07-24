@@ -141,6 +141,7 @@ const UpdateBloodRequestDialog = ({
             Update the blood request details below.
           </DialogDescription>
         </DialogHeader>
+
         <FormSchemaProvider schema={bloodRequestSchema}>
           <Form {...form}>
             <div className="h-[70vh] overflow-y-auto p-4 border rounded-md">
@@ -151,12 +152,14 @@ const UpdateBloodRequestDialog = ({
                 <FormField
                   control={form.control}
                   name="requestedBy"
+
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>User</FormLabel>
                       <FormControl>
                         <Select
                           value={field.value || ""}
+                          disabled
                           onValueChange={(val) => {
                             field.onChange(val);
                             // Auto fill name when user is selected

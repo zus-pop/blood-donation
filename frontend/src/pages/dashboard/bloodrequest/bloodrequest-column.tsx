@@ -66,7 +66,15 @@ export const columns = ({
     },
     {
       accessorKey: "quantity",
-      header: "Quantity",
+      header: "Quantity (ml)",
+      //căn giữa
+      cell: ({ row }) => {
+        return (
+          <div className="ml-7">
+            {row.original.quantity}
+          </div>
+        );
+      }
     },
 
     {
