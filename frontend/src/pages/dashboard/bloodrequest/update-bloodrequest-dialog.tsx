@@ -147,12 +147,14 @@ const UpdateBloodRequestDialog = ({
               <FormField
                 control={form.control}
                 name="requestedBy"
+
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>User</FormLabel>
                     <FormControl>
                       <Select
                         value={field.value || ""}
+                        disabled
                         onValueChange={(val) => {
                           field.onChange(val);
                           // Auto fill name when user is selected
