@@ -13,7 +13,7 @@ const SummaryCards = () => {
   useEffect(() => {
     getInventories().then(setInventory);
     getUsers().then(setUsers);
-    getBloodRequests({ status: "pending" }).then(setRequests);
+    getBloodRequests({ status: "PENDING" }).then(setRequests);
     getEvents().then(setEvents);
   }, []);
 
@@ -27,11 +27,16 @@ const SummaryCards = () => {
     bloodTypeCount[type] = (bloodTypeCount[type] || 0) + quantity;
   });
 
+  // Only count inventory items that are not USED or EXPIRED
+  const validInventory = inventory.filter(
+    (i) => i.status !== "USED" && i.status !== "EXPIRED"
+  );
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       <div className="bg-white rounded shadow p-4">
         <div className="text-sm text-gray-500">Total Blood Units (ml)</div>
-        <div className="text-2xl font-bold">{inventory.reduce((sum, i) => sum + (i.unit ?? i.quantity ?? 0), 0)}</div>
+        <div className="text-2xl font-bold">{validInventory.reduce((sum, i) => sum + (i.unit ?? i.quantity ?? 0), 0)}</div>
       </div>
       <div className="bg-white rounded shadow p-4">
         <div className="text-sm text-gray-500">Registered Donors</div>

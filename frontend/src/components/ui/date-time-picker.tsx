@@ -8,9 +8,15 @@ import {
 } from "./popover";
 import { Button } from "./button";
 import { Calendar } from "./calendar";
-import { cn } from "@/lib/utils";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
 import { Label } from "./label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./select";
+import { cn } from "@/lib/utils";
 
 interface DateTimePickerProps {
   date: Date | undefined;
@@ -19,22 +25,39 @@ interface DateTimePickerProps {
   disabled?: boolean;
 }
 
-export function DateTimePicker({ date, setDate, disablePast = false, disabled = false }: DateTimePickerProps) {
+export function DateTimePicker({ 
+  date, 
+  setDate, 
+  disablePast = false, 
+  disabled = false 
+}: DateTimePickerProps) {
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // Reset time to start of day for comparison
+  today.setHours(0, 0, 0, 0);
 
   const handleDateSelect = (selectedDate: Date | undefined) => {
     if (!selectedDate) {
       setDate(undefined);
       return;
     }
-    const newDate = new Date(date || new Date());
-    newDate.setFullYear(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
-    setDate(newDate);
+    
+    // If there's an existing date, preserve the time
+    if (date) {
+      const newDate = new Date(selectedDate);
+      newDate.setHours(date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
+      setDate(newDate);
+    } else {
+      // If no existing date, set time to current time or default
+      const newDate = new Date(selectedDate);
+      const now = new Date();
+      newDate.setHours(now.getHours(), now.getMinutes(), 0, 0);
+      setDate(newDate);
+    }
   };
 
   const handleTimeChange = (type: "hour" | "minute", value: string) => {
-    const newDate = new Date(date || new Date());
+    if (!date) return;
+    
+    const newDate = new Date(date);
     if (type === "hour") {
       newDate.setHours(parseInt(value));
     } else {
@@ -42,7 +65,7 @@ export function DateTimePicker({ date, setDate, disablePast = false, disabled = 
     }
     setDate(newDate);
   };
-  
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -55,7 +78,17 @@ export function DateTimePicker({ date, setDate, disablePast = false, disabled = 
           disabled={disabled}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? date.toLocaleString("en-US", { year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: true }) : <span>Pick a date and time</span>}
+          {date ? (
+            date.toLocaleDateString("en-US", { 
+              year: "numeric", 
+              month: "short", 
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit"
+            })
+          ) : (
+            <span>Pick a date and time</span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 z-50">
@@ -69,7 +102,11 @@ export function DateTimePicker({ date, setDate, disablePast = false, disabled = 
         <div className="p-4 border-t border-border grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label>Hour</Label>
-            <Select onValueChange={(value) => handleTimeChange("hour", value)} value={date?.getHours().toString().padStart(2, '0')} disabled={disabled}>
+            <Select 
+              onValueChange={(value) => handleTimeChange("hour", value)} 
+              value={date?.getHours().toString().padStart(2, '0')}
+              disabled={disabled}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Hour" />
               </SelectTrigger>
@@ -84,7 +121,11 @@ export function DateTimePicker({ date, setDate, disablePast = false, disabled = 
           </div>
           <div className="space-y-2">
             <Label>Minute</Label>
-            <Select onValueChange={(value) => handleTimeChange("minute", value)} value={date?.getMinutes().toString().padStart(2, '0')} disabled={disabled}>
+            <Select 
+              onValueChange={(value) => handleTimeChange("minute", value)} 
+              value={date?.getMinutes().toString().padStart(2, '0')}
+              disabled={disabled}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Minute" />
               </SelectTrigger>

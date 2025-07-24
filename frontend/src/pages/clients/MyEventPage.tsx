@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getParticipations } from "@/apis/participation.api";
 import { getEvents } from "@/apis/event.api";
 import { useProfileStore } from "@/store/profileStore";
-import { formatDate, formatEventDateShort } from "@/lib/utils";
+import { formatEventDateShort } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Clock, ListChecks, CalendarX, Plus, Heart } from "lucide-react";
 

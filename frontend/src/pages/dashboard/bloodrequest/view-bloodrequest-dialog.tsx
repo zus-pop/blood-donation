@@ -49,11 +49,10 @@ const ViewBloodRequestDialog = ({
               <span className="font-semibold">Requested By:</span>
             </div>
             <div className="ml-7 text-gray-700">
-              {bloodrequest.requestedBy.email}
+              {bloodrequest.requestedBy?.email || <span className="italic text-gray-400">N/A</span>}
               <br />
               <span className="text-xs text-gray-500">
-                {bloodrequest.requestedBy.firstName}{" "}
-                {bloodrequest.requestedBy.lastName}
+                {bloodrequest.requestedBy?.firstName || ""} {bloodrequest.requestedBy?.lastName || ""}
               </span>
             </div>
             <div className="flex items-center gap-2 text-base mt-2">
@@ -95,9 +94,8 @@ const ViewBloodRequestDialog = ({
             </div>
             <div className="ml-7 text-gray-700">
               <span
-                className={`px-2 py-1 rounded-full text-sm font-bold ${
-                  statusColor[bloodrequest.status as keyof typeof statusColor]
-                }`}
+                className={`px-2 py-1 rounded-full text-sm font-bold ${statusColor[bloodrequest.status as keyof typeof statusColor]
+                  }`}
               >
                 {bloodrequest.status}
               </span>

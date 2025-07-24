@@ -283,7 +283,6 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                 control={form.control}
                 name="status"
                 render={({ field }) => {
-                  const isStatusLocked = currentData.status === "ENDED" || currentData.status === "CANCELLED";
                   return (
                     <FormItem>
                       <FormLabel>Status</FormLabel>

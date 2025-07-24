@@ -178,24 +178,7 @@ const UpdateOnsiteCheckDialog = ({
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="canDonate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-semibold">Can Donate</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="checkbox"
-                        checked={!!field.value}
-                        readOnly
-                        disabled
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
               <Button type="submit" className="w-full" disabled={isPending}>
                 Update
               </Button>

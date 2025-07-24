@@ -3,7 +3,7 @@ import { MoreHorizontal } from "lucide-react";
 import type { CategoryProps } from "@/apis/category.api";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
