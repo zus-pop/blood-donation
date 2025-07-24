@@ -9,35 +9,29 @@ import {
 import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { cn } from "@/lib/utils";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
-import { Label } from "./label";
 
 interface DateTimePickerProps {
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
+  minDate?: Date;
+  maxDate?: Date;
 }
 
-export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
+export function DateTimePicker({ date, setDate, minDate, maxDate }: DateTimePickerProps) {
   const handleDateSelect = (selectedDate: Date | undefined) => {
     if (!selectedDate) {
       setDate(undefined);
       return;
     }
-    const newDate = new Date(date || new Date());
-    newDate.setFullYear(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+    // Kiểm tra min/max
+    if (minDate && selectedDate < minDate) return;
+    if (maxDate && selectedDate > maxDate) return;
+    // Chỉ lấy ngày, bỏ giờ phút
+    const newDate = new Date(selectedDate);
+    newDate.setHours(0, 0, 0, 0);
     setDate(newDate);
   };
 
-  const handleTimeChange = (type: "hour" | "minute", value: string) => {
-    const newDate = new Date(date || new Date());
-    if (type === "hour") {
-      newDate.setHours(parseInt(value));
-    } else {
-      newDate.setMinutes(parseInt(value));
-    }
-    setDate(newDate);
-  };
-  
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -49,7 +43,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? date.toLocaleString("en-US", { year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: true }) : <span>Pick a date and time</span>}
+          {date ? date.toLocaleDateString("en-US", { year: "numeric", month: "numeric", day: "numeric" }) : <span>Pick a date</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 z-50">
@@ -58,39 +52,12 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
           selected={date}
           onSelect={handleDateSelect}
           initialFocus
+          disabled={(day: Date) => {
+            if (minDate && day < minDate) return true;
+            if (maxDate && day > maxDate) return true;
+            return false;
+          }}
         />
-        <div className="p-4 border-t border-border grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label>Hour</Label>
-            <Select onValueChange={(value) => handleTimeChange("hour", value)} value={date?.getHours().toString().padStart(2, '0')}>
-              <SelectTrigger>
-                <SelectValue placeholder="Hour" />
-              </SelectTrigger>
-              <SelectContent>
-                {Array.from({ length: 24 }, (_, i) => (
-                  <SelectItem key={i} value={i.toString().padStart(2, '0')}>
-                    {i.toString().padStart(2, '0')}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label>Minute</Label>
-            <Select onValueChange={(value) => handleTimeChange("minute", value)} value={date?.getMinutes().toString().padStart(2, '0')}>
-              <SelectTrigger>
-                <SelectValue placeholder="Minute" />
-              </SelectTrigger>
-              <SelectContent>
-                 {Array.from({ length: 60 }, (_, i) => (
-                  <SelectItem key={i} value={i.toString().padStart(2, '0')}>
-                    {i.toString().padStart(2, '0')}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
       </PopoverContent>
     </Popover>
   );

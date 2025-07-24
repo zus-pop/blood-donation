@@ -23,6 +23,11 @@ export const getActiveUsers = async (): Promise<UserProps[]> => {
     const res = await myAxios.get("/users/active");
     return res.data;
 };
+// Lấy danh sách user đã bị xóa (isDeleted = true)
+export const getDeletedUsers = async (): Promise<UserProps[]> => {
+    const res = await myAxios.get("/users", { params: { isDeleted: true } });
+    return res.data;
+};
 export const deleteUser = async (id: string): Promise<void> => {
     await myAxios.delete(`/users/${id}`);
 };
