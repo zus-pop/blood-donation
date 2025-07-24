@@ -15,9 +15,11 @@ const InventoryChart = () => {
 
   useEffect(() => {
     getInventories().then((inv) => {
+      // Only include inventories that are not USED or EXPIRED
+      const filtered = inv.filter((item: any) => item.status !== "USED" && item.status !== "EXPIRED");
       // Group by bloodType
       const grouped: Record<string, number> = {};
-      inv.forEach((item: any) => {
+      filtered.forEach((item: any) => {
         const type = typeof item.bloodType === "string" ? item.bloodType : item.bloodType?.bloodType;
         const quantity = item.unit ?? item.quantity ?? 0;
         grouped[type] = (grouped[type] || 0) + quantity;
@@ -28,7 +30,7 @@ const InventoryChart = () => {
 
   return (
     <div className="bg-white rounded shadow p-4 mb-6">
-      <div className="font-semibold mb-2">Inventory Overview</div>
+      <div className="font-semibold mb-2">Available and Reserved Blood Inventory Overview</div>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" />
