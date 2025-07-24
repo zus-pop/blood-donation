@@ -50,7 +50,6 @@ const CreateOnsiteCheckDialog = () => {
       hemoglobinLevel: undefined,
       bodyTemperature: undefined,
       weight: undefined,
-      canDonate: undefined,
     },
   });
   const queryClient = useQueryClient();
@@ -58,14 +57,18 @@ const CreateOnsiteCheckDialog = () => {
     mutationFn: createOnsiteCheck,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["onsitechecks"] });
+      toast.success("Onsite check created successfully!");
       setOpen(false);
       form.reset();
     },
-    onError: (error) => {
-      toast.error(`Error creating onsite check: ${error.message}`);
+    onError: (error: any) => {
+      console.error("Error creating onsite check:", error);
+      const errorMessage = error?.response?.data?.detail || error?.response?.data?.error || error?.message || "Failed to create onsite check";
+      toast.error(`Error creating onsite check: ${errorMessage}`);
     },
   });
   const onSubmit = (data: OnsiteCheckSchema) => {
+    console.log("Submitting onsitecheck data:", data);
     mutate({ ...data, participationId: String(data.participationId ?? "") });
   };
   const { data: participations } = useQuery({
@@ -257,24 +260,7 @@ const CreateOnsiteCheckDialog = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="canDonate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-semibold">Can Donate</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="checkbox"
-                        checked={!!field.value}
-                        readOnly
-                        disabled
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
               <Button type="submit" className="w-full" disabled={isPending}>
                 Create
               </Button>

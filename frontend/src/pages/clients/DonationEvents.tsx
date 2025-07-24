@@ -1,11 +1,20 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { getEvents } from "@/apis/event.api";
 import type { EventProps } from "@/apis/event.api";
 import { useAuth } from "@/context/AuthContext";
 import { createParticipation, getParticipations } from "@/apis/participation.api";
+import { formatEventDateShort } from "@/lib/utils";
 import { toast } from "sonner";
+import { Calendar } from "lucide-react";
 
 export default function DonationEvents() {
   const [events, setEvents] = useState<EventProps[]>([]);
@@ -13,10 +22,25 @@ export default function DonationEvents() {
   const [error, setError] = useState<string | null>(null);
   const { openModal, isAuthenticated, user } = useAuth();
   const [userParticipations, setUserParticipations] = useState<any[]>([]);
+  const [selectedMonth, setSelectedMonth] = useState<string>("all");
   const [page, setPage] = useState(1);
   const pageSize = 3;
-  const totalPages = Math.ceil(events.length / pageSize);
-  const paginatedEvents = events.slice((page - 1) * pageSize, page * pageSize);
+  
+  // Filter events by month
+  const filteredEvents = events.filter((event) => {
+    if (selectedMonth === "all") {
+      return true;
+    }
+    
+    const eventDate = new Date(event.eventStartedAt);
+    const eventMonth = eventDate.getMonth() + 1; // getMonth() returns 0-11, we need 1-12
+    const selectedMonthNum = parseInt(selectedMonth);
+    
+    return eventMonth === selectedMonthNum;
+  });
+  
+  const totalPages = Math.ceil(filteredEvents.length / pageSize);
+  const paginatedEvents = filteredEvents.slice((page - 1) * pageSize, page * pageSize);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -24,7 +48,15 @@ export default function DonationEvents() {
       setError(null);
       try {
         const data = await getEvents();
-        setEvents(data);
+        // Filter out ENDED and CANCELLED events
+        const activeEvents = data.filter(event => 
+          event.status !== "ENDED" && event.status !== "CANCELLED"
+        );
+        // Sort events by eventStartedAt from nearest to farthest
+        const sortedEvents = activeEvents.sort((a, b) => 
+          new Date(a.eventStartedAt).getTime() - new Date(b.eventStartedAt).getTime()
+        );
+        setEvents(sortedEvents);
       } catch {
         setError("Failed to load events");
       } finally {
@@ -51,6 +83,11 @@ export default function DonationEvents() {
     fetchUserParticipations();
   }, [isAuthenticated, user]);
 
+  // Reset page when month filter changes
+  useEffect(() => {
+    setPage(1);
+  }, [selectedMonth]);
+
   // Tập hợp các eventId user đã từng đăng ký (bất kỳ status nào)
   const registeredEventIds = new Set(userParticipations.map(p => p.event));
 
@@ -62,6 +99,12 @@ export default function DonationEvents() {
     // Lấy event user muốn đăng ký
     const eventToRegister = events.find(e => e._id === eventId);
     if (!eventToRegister) return;
+    
+    // Check if event is still available for registration
+    if (eventToRegister.status === "ENDED" || eventToRegister.status === "CANCELLED") {
+      toast.error(`Cannot register for ${eventToRegister.status.toLowerCase()} events.`);
+      return;
+    }
     // Lấy các participation attended
     const attendedParts = userParticipations.filter(p => p.status === "ATTENDED");
     if (attendedParts.length > 0) {
@@ -78,11 +121,11 @@ export default function DonationEvents() {
       const threeMonthsAfter = new Date(latestAttendedEnd);
       threeMonthsAfter.setMonth(threeMonthsAfter.getMonth() + 3);
       if (eventStart <= latestAttendedEnd) {
-        toast.error("Bạn không thể đăng ký sự kiện có thời gian trước hoặc trùng với sự kiện bạn đã hiến máu gần nhất.");
+        toast.error("You cannot register for events that occur before or at the same time as your most recent blood donation event.");
         return;
       }
       if (eventStart <= threeMonthsAfter) {
-        toast.error("Bạn đã tham gia 1 sự kiện hiến máu trong vòng 3 tháng trở lại đây, vui lòng chờ đủ 3 tháng để đăng ký sự kiện mới.");
+        toast.error("You have participated in a blood donation event within the past 3 months. Please wait for the full 3-month period before registering for a new event.");
         return;
       }
     }
@@ -105,10 +148,75 @@ export default function DonationEvents() {
   return (
     <div className="container mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold mb-8 text-center">Upcoming Donation Events</h1>
+      
+      {/* Month Filter */}
+      <div className="flex justify-center mb-8">
+        <div className="w-full max-w-xs">
+                     <Select value={selectedMonth} onValueChange={(value) => {
+             setSelectedMonth(value);
+             setPage(1); // Reset to first page when filter changes
+           }}>
+             <SelectTrigger className="w-full">
+               <SelectValue placeholder="Select month" />
+             </SelectTrigger>
+             <SelectContent>
+               <SelectItem value="all">All months</SelectItem>
+               <SelectItem value="1">January</SelectItem>
+               <SelectItem value="2">February</SelectItem>
+               <SelectItem value="3">March</SelectItem>
+               <SelectItem value="4">April</SelectItem>
+               <SelectItem value="5">May</SelectItem>
+               <SelectItem value="6">June</SelectItem>
+               <SelectItem value="7">July</SelectItem>
+               <SelectItem value="8">August</SelectItem>
+               <SelectItem value="9">September</SelectItem>
+               <SelectItem value="10">October</SelectItem>
+               <SelectItem value="11">November</SelectItem>
+               <SelectItem value="12">December</SelectItem>
+             </SelectContent>
+           </Select>
+        </div>
+      </div>
+      
       {loading ? (
         <div className="text-center">Loading events...</div>
       ) : error ? (
         <div className="text-center text-red-500">{error}</div>
+      ) : filteredEvents.length === 0 ? (
+        <div className="text-center py-16">
+          <div className="mb-6">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-red-50 to-pink-100 flex items-center justify-center mx-auto mb-4">
+              <Calendar className="w-12 h-12 text-red-400" />
+            </div>
+                         <h3 className="text-2xl font-bold text-gray-800 mb-2">
+               {selectedMonth !== "all"
+                 ? `No events in ${selectedMonth === "1" ? "January" : selectedMonth === "2" ? "February" : selectedMonth === "3" ? "March" : selectedMonth === "4" ? "April" : selectedMonth === "5" ? "May" : selectedMonth === "6" ? "June" : selectedMonth === "7" ? "July" : selectedMonth === "8" ? "August" : selectedMonth === "9" ? "September" : selectedMonth === "10" ? "October" : selectedMonth === "11" ? "November" : "December"}`
+                 : "No events yet"}
+             </h3>
+             <p className="text-gray-500 mb-6 max-w-md mx-auto">
+               {selectedMonth !== "all"
+                 ? `There are currently no blood donation events in ${selectedMonth === "1" ? "January" : selectedMonth === "2" ? "February" : selectedMonth === "3" ? "March" : selectedMonth === "4" ? "April" : selectedMonth === "5" ? "May" : selectedMonth === "6" ? "June" : selectedMonth === "7" ? "July" : selectedMonth === "8" ? "August" : selectedMonth === "9" ? "September" : selectedMonth === "10" ? "October" : selectedMonth === "11" ? "November" : "December"}. Please select another month or view all events.`
+                 : "There are currently no blood donation events. Please check back later."}
+             </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                             {selectedMonth !== "all" && (
+                 <Button
+                   onClick={() => setSelectedMonth("all")}
+                   variant="outline"
+                   className="px-6 py-2"
+                 >
+                   View all months
+                 </Button>
+               )}
+               <Button
+                 onClick={() => window.location.href = '/'}
+                 className="bg-red-600 hover:bg-red-700 text-white px-6 py-2"
+               >
+                 Go to Home
+               </Button>
+            </div>
+          </div>
+        </div>
       ) : (
         <>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
@@ -123,14 +231,28 @@ export default function DonationEvents() {
                 </div>
                 <CardContent className="p-6">
                   <h2 className="text-xl font-bold mb-2 group-hover:text-red-600 transition-colors duration-200">{event.title}</h2>
-                  <p className="mb-2 text-muted-foreground">{event.description}</p>
-                  <div className="mb-2 text-sm">
-                    Date: <span className="font-medium">{event.eventStartedAt?.slice(0, 10)}</span>
+                  <p className="mb-3 text-muted-foreground line-clamp-2">{event.description}</p>
+                  
+                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 mb-4 border border-blue-100">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                                                 <span className="text-sm font-medium text-gray-600">🗓️ Start:</span>
+                        <span className="text-sm font-bold text-blue-600">
+                          {event.eventStartedAt ? formatEventDateShort(event.eventStartedAt) : 'N/A'}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                                                 <span className="text-sm font-medium text-gray-600">⏰ End:</span>
+                        <span className="text-sm font-bold text-purple-600">
+                          {event.eventEndedAt ? formatEventDateShort(event.eventEndedAt) : 'N/A'}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                                                 <span className="text-sm font-medium text-gray-600">📍 Location:</span>
+                        <span className="text-sm font-bold text-green-600">{event.location || 'Thu Duc City'}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="mb-2 text-sm">
-                    End date: <span className="font-medium">{event.eventEndedAt?.slice(0, 10)}</span>
-                  </div>
-                  <div className="mb-4 text-sm">Location: <span className="font-medium">Thu Duc City</span></div>
                   {registeredEventIds.has(event._id) ? (
                     <Button
                       disabled

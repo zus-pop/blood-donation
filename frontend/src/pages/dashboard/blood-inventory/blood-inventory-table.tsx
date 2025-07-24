@@ -65,7 +65,7 @@ const BloodInventoryTable = () => {
     );
 
   return (
-    <div>
+    <div className="mx-4 mt-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">

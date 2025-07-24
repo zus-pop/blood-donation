@@ -11,9 +11,9 @@ const DonationProcess = () => {
       icon: User,
     },
     {
-      title: "Health Screening",
+      title: "Onsite Check",
       description:
-        "Brief physical examination and confidential health questionnaire.",
+        "Comprehensive health parameter screening necessary for blood donation.",
       icon: Info,
     },
     {

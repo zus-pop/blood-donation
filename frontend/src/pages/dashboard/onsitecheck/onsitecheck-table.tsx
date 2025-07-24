@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import CreateOnsiteCheckDialog from "./create-onsitecheck-dialog";
 import { columns } from "./onsitecheck-column";
 import { useProfileStore } from "../../../store/profileStore";
+import { toast } from "sonner";
 
 const OnsiteCheckTable = () => {
   const { profile } = useProfileStore();
@@ -18,6 +19,10 @@ const OnsiteCheckTable = () => {
     mutationFn: deleteOnsiteCheck,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["onsitechecks"] });
+      toast.success("Onsite check deleted successfully");
+    },
+    onError: () => {
+      toast.error("Failed to delete onsite check");
     },
   });
 
@@ -111,7 +116,7 @@ const OnsiteCheckTable = () => {
     );
 
   return (
-    <div>
+    <div className="mx-4 mt-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">

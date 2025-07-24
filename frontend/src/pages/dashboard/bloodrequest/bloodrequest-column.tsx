@@ -26,28 +26,28 @@ interface ActionsProps {
 export const columns = ({
   onDelete,
 }: ActionsProps): ColumnDef<BloodRequestProps>[] => [
-    {
-      accessorKey: "_id",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
+    // {
+    //   accessorKey: "_id",
+    //   header: ({ table }) => (
+    //     <Checkbox
+    //       checked={
+    //         table.getIsAllPageRowsSelected() ||
+    //         (table.getIsSomePageRowsSelected() && "indeterminate")
+    //       }
+    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //       aria-label="Select all"
+    //     />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <Checkbox
+    //       checked={row.getIsSelected()}
+    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //       aria-label="Select row"
+    //     />
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
     {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="User" />

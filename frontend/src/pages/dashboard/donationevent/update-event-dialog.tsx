@@ -30,6 +30,7 @@ import {
 } from "./event.schema";
 import { updateEvent } from "@/apis/event.api";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -38,7 +39,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const statusOptions = ["UPCOMING", "ONGOING", "ENDED", "CANCELLED"];
+// Function to get valid status transitions
+const getValidStatusOptions = (currentStatus: string): string[] => {
+  const allowedTransitions: Record<string, string[]> = {
+    "UPCOMING": ["UPCOMING", "ONGOING", "CANCELLED"],
+    "ONGOING": ["ONGOING", "ENDED"],
+    "ENDED": ["ENDED"], // Only itself (no changes allowed)
+    "CANCELLED": ["CANCELLED"] // Only itself (no changes allowed)
+  };
+  
+  return allowedTransitions[currentStatus] || ["UPCOMING", "ONGOING", "ENDED", "CANCELLED"];
+};
 
 interface UpdateEventDialogProps {
   currentData: UpdateEventSchema & { _id: string };
@@ -46,6 +57,8 @@ interface UpdateEventDialogProps {
 
 const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
   const [open, setOpen] = useState(false);
+  const isEventLocked = currentData.status === "ENDED" || currentData.status === "CANCELLED";
+  
   const form = useForm<UpdateEventSchema>({
     resolver: zodResolver(updateEventSchema),
   });
@@ -68,6 +81,10 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["events"] });
       setOpen(false);
+      toast.success("Event updated successfully!");
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.detail || error?.response?.data?.error || "Failed to update event");
     },
   });
   const imageFile = form.watch("image");
@@ -121,6 +138,13 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
           <DialogDescription className="text-center mb-4">
             Update the donation event. Edit the details below.
           </DialogDescription>
+          {isEventLocked && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+              <p className="text-sm text-yellow-800 text-center">
+                ⚠️ This event is <strong>{currentData.status.toLowerCase()}</strong> and cannot be modified.
+              </p>
+            </div>
+          )}
         </DialogHeader>
         <FormSchemaProvider schema={baseEventSchema}>
           <Form {...form}>
@@ -132,7 +156,7 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                   <FormItem>
                     <FormLabel>Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="Event Title" {...field} />
+                      <Input placeholder="Event Title" {...field} disabled={isEventLocked} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -145,7 +169,7 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Event Description" {...field} />
+                      <Textarea placeholder="Event Description" {...field} disabled={isEventLocked} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -162,6 +186,8 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                         <DateTimePicker
                           date={field.value}
                           setDate={field.onChange}
+                          disablePast={true}
+                          disabled={isEventLocked}
                         />
                       </FormControl>
                       <FormMessage />
@@ -178,6 +204,8 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                         <DateTimePicker
                           date={field.value}
                           setDate={field.onChange}
+                          disablePast={true}
+                          disabled={isEventLocked}
                         />
                       </FormControl>
                       <FormMessage />
@@ -196,6 +224,8 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                         <DateTimePicker
                           date={field.value}
                           setDate={field.onChange}
+                          disablePast={true}
+                          disabled={isEventLocked}
                         />
                       </FormControl>
                       <FormMessage />
@@ -212,6 +242,8 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                         <DateTimePicker
                           date={field.value}
                           setDate={field.onChange}
+                          disablePast={true}
+                          disabled={isEventLocked}
                         />
                       </FormControl>
                       <FormMessage />
@@ -227,7 +259,7 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                     <FormItem>
                       <FormLabel>Slot</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="Slot" {...field} />
+                        <Input type="number" placeholder="Slot" {...field} disabled={isEventLocked} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -240,30 +272,33 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                     <FormItem>
                       <FormLabel>Location</FormLabel>
                       <FormControl>
-                        <Input placeholder="Location" {...field} />
+                        <Input placeholder="Location" {...field} disabled={isEventLocked} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-              <FormField
+                              <FormField
                 control={form.control}
                 name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                render={({ field }) => {
+                  const isStatusLocked = currentData.status === "ENDED" || currentData.status === "CANCELLED";
+                  return (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        disabled={isEventLocked}
+                      >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a status" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {statusOptions.map((status) => (
+                        {getValidStatusOptions(currentData.status).map((status) => (
                           <SelectItem key={status} value={status}>
                             {status}
                           </SelectItem>
@@ -271,8 +306,14 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                       </SelectContent>
                     </Select>
                     <FormMessage />
+                    {isEventLocked && (
+                      <p className="text-xs text-muted-foreground">
+                        Status cannot be changed for {currentData.status.toLowerCase()} events
+                      </p>
+                    )}
                   </FormItem>
-                )}
+                );
+                }}
               />
               <FormField
                 control={form.control}
@@ -284,6 +325,7 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
                       <Input
                         type="file"
                         accept="image/*"
+                        disabled={isEventLocked}
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (file) {
@@ -311,10 +353,10 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
               />
               <Button
                 type="submit"
-                disabled={isPending}
+                disabled={isPending || isEventLocked}
                 className="w-full h-12 text-lg font-bold rounded-lg"
               >
-                Update
+                {isEventLocked ? `Cannot Update ${currentData.status.charAt(0) + currentData.status.slice(1).toLowerCase()} Event` : "Update"}
               </Button>
             </form>
           </Form>

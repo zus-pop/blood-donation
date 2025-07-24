@@ -25,3 +25,24 @@ export function formatDate(date: Date, showTime: boolean = true) {
     });
   }
 }
+
+export function formatEventDate(dateString: string) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("vi-VN", {
+    weekday: "long",
+    year: "numeric", 
+    month: "long",
+    day: "numeric",
+    timeZone: "Asia/Ho_Chi_Minh",
+  });
+}
+
+export function formatEventDateShort(dateString: string) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("vi-VN", {
+    year: "numeric",
+    month: "short", 
+    day: "numeric",
+    timeZone: "Asia/Ho_Chi_Minh",
+  });
+}

@@ -5,6 +5,7 @@ import { DataTable } from "@/components/data-table";
 import { columns } from "./event-column";
 import CreateEventDialog from "./create-event-dialog";
 import { useProfileStore } from "@/store/profileStore";
+import { toast } from "sonner";
 
 const EventTable = () => {
   const { profile } = useProfileStore();
@@ -17,11 +18,16 @@ const EventTable = () => {
     mutationFn: deleteEvent,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["events"] });
+      toast.success("Event deleted successfully");
+      
+    },
+    onError: () => {
+      toast.error("Failed to delete event");
     },
   });
 
   return (
-    <div>
+    <div className="mx-4 mt-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">

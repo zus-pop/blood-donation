@@ -11,6 +11,7 @@ import CreateParticipationDialog from "./create-participation-dialog";
 import type { ParticipationProps as ApiParticipationProps } from "@/apis/participation.api";
 import type { ParticipationProps } from "./participation-column";
 import { useProfileStore } from "@/store/profileStore";
+import { toast } from "sonner";
 
 const ParticipationTable = () => {
   const { profile } = useProfileStore();
@@ -31,6 +32,10 @@ const ParticipationTable = () => {
     mutationFn: deleteParticipation,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["participations"] });
+      toast.success("Participation deleted successfully");  
+    },
+    onError: () => {
+      toast.error("Failed to delete participation");
     },
   });
 
@@ -63,7 +68,7 @@ const ParticipationTable = () => {
     );
 
   return (
-    <div>
+    <div className="mx-4 mt-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">

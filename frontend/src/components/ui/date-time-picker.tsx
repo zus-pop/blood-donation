@@ -15,9 +15,14 @@ import { Label } from "./label";
 interface DateTimePickerProps {
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
+  disablePast?: boolean;
+  disabled?: boolean;
 }
 
-export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
+export function DateTimePicker({ date, setDate, disablePast = false, disabled = false }: DateTimePickerProps) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Reset time to start of day for comparison
+
   const handleDateSelect = (selectedDate: Date | undefined) => {
     if (!selectedDate) {
       setDate(undefined);
@@ -47,6 +52,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
             "w-full justify-start text-left font-normal h-12",
             !date && "text-muted-foreground"
           )}
+          disabled={disabled}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? date.toLocaleString("en-US", { year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: true }) : <span>Pick a date and time</span>}
@@ -57,12 +63,13 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
           mode="single"
           selected={date}
           onSelect={handleDateSelect}
+          disabled={disablePast ? (date) => date < today : undefined}
           initialFocus
         />
         <div className="p-4 border-t border-border grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label>Hour</Label>
-            <Select onValueChange={(value) => handleTimeChange("hour", value)} value={date?.getHours().toString().padStart(2, '0')}>
+            <Select onValueChange={(value) => handleTimeChange("hour", value)} value={date?.getHours().toString().padStart(2, '0')} disabled={disabled}>
               <SelectTrigger>
                 <SelectValue placeholder="Hour" />
               </SelectTrigger>
@@ -77,7 +84,7 @@ export function DateTimePicker({ date, setDate }: DateTimePickerProps) {
           </div>
           <div className="space-y-2">
             <Label>Minute</Label>
-            <Select onValueChange={(value) => handleTimeChange("minute", value)} value={date?.getMinutes().toString().padStart(2, '0')}>
+            <Select onValueChange={(value) => handleTimeChange("minute", value)} value={date?.getMinutes().toString().padStart(2, '0')} disabled={disabled}>
               <SelectTrigger>
                 <SelectValue placeholder="Minute" />
               </SelectTrigger>

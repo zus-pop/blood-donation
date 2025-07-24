@@ -30,6 +30,7 @@ import {
 } from "./event.schema";
 import { createEvent } from "@/apis/event.api";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
+import { toast } from "sonner";
 
 const CreateEventDialog = () => {
   const [open, setOpen] = useState(false);
@@ -49,6 +50,10 @@ const CreateEventDialog = () => {
       queryClient.invalidateQueries({ queryKey: ["events"] });
       setOpen(false);
       form.reset();
+      toast.success("Event created successfully!");
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.detail || error?.response?.data?.error || "Failed to create event");
     },
   });
   const imageFile = form.watch("image");
@@ -130,36 +135,38 @@ const CreateEventDialog = () => {
                   control={form.control}
                   name="registrationStartedAt"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold">
-                        Registration Start
-                      </FormLabel>
-                      <FormControl>
-                        <DateTimePicker
-                          date={field.value}
-                          setDate={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                                      <FormItem>
+                    <FormLabel className="font-semibold">
+                      Registration Start
+                    </FormLabel>
+                    <FormControl>
+                      <DateTimePicker
+                        date={field.value}
+                        setDate={field.onChange}
+                        disablePast={true}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                   )}
                 />
                 <FormField
                   control={form.control}
                   name="registrationEndedAt"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold">
-                        Registration End
-                      </FormLabel>
-                      <FormControl>
-                        <DateTimePicker
-                          date={field.value}
-                          setDate={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                                      <FormItem>
+                    <FormLabel className="font-semibold">
+                      Registration End
+                    </FormLabel>
+                    <FormControl>
+                      <DateTimePicker
+                        date={field.value}
+                        setDate={field.onChange}
+                        disablePast={true}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                   )}
                 />
               </div>
@@ -168,34 +175,36 @@ const CreateEventDialog = () => {
                   control={form.control}
                   name="eventStartedAt"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold">
-                        Event Start
-                      </FormLabel>
-                      <FormControl>
-                        <DateTimePicker
-                          date={field.value}
-                          setDate={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                                      <FormItem>
+                    <FormLabel className="font-semibold">
+                      Event Start
+                    </FormLabel>
+                    <FormControl>
+                      <DateTimePicker
+                        date={field.value}
+                        setDate={field.onChange}
+                        disablePast={true}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                   )}
                 />
                 <FormField
                   control={form.control}
                   name="eventEndedAt"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold">Event End</FormLabel>
-                      <FormControl>
-                        <DateTimePicker
-                          date={field.value}
-                          setDate={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                                      <FormItem>
+                    <FormLabel className="font-semibold">Event End</FormLabel>
+                    <FormControl>
+                      <DateTimePicker
+                        date={field.value}
+                        setDate={field.onChange}
+                        disablePast={true}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                   )}
                 />
               </div>

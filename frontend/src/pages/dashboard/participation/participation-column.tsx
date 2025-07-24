@@ -71,28 +71,28 @@ interface ActionsProps {
 export const columns = ({
   onDelete,
 }: ActionsProps): ColumnDef<ParticipationProps>[] => [
-    {
-      accessorKey: "_id",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
+    // {
+    //   accessorKey: "_id",
+    //   header: ({ table }) => (
+    //     <Checkbox
+    //       checked={
+    //         table.getIsAllPageRowsSelected() ||
+    //         (table.getIsSomePageRowsSelected() && "indeterminate")
+    //       }
+    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //       aria-label="Select all"
+    //     />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <Checkbox
+    //       checked={row.getIsSelected()}
+    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //       aria-label="Select row"
+    //     />
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
     // Hidden column for search
     {
       accessorKey: "userNameForSearch",
@@ -125,18 +125,40 @@ export const columns = ({
     },
     {
       accessorKey: "status",
-      header: "Status",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Status" />
+      ),
       cell: ({ row }) => {
         const status = row.original.status;
         let color = "";
+        let icon = "";
         switch (status) {
-          case "REGISTERED": color = "bg-blue-100 text-blue-700"; break;
-          case "ATTENDED": color = "bg-green-100 text-green-700"; break;
-          case "CANCELLED": color = "bg-red-100 text-red-700"; break;
-          case "NOT_ELIGIBLE": color = "bg-gray-300 text-gray-700"; break;
-          default: color = "bg-gray-100 text-gray-700";
+          case "REGISTERED": 
+            color = "bg-blue-100 text-blue-700"; 
+            icon = "📝";
+            break;
+          case "ATTENDED": 
+            color = "bg-green-100 text-green-700"; 
+            icon = "✅";
+            break;
+          case "CANCELLED": 
+            color = "bg-red-100 text-red-700"; 
+            icon = "❌";
+            break;
+          case "NOT_ELIGIBLE": 
+            color = "bg-gray-300 text-gray-700"; 
+            icon = "⚠️";
+            break;
+          default: 
+            color = "bg-gray-100 text-gray-700";
+            icon = "❓";
         }
-        return <span className={`px-2 py-1 rounded text-xs font-semibold ${color}`}>{status === "NOT_ELIGIBLE" ? "Not Eligible" : status}</span>;
+        return (
+          <span className={`px-2 py-1 rounded text-xs font-semibold ${color} flex items-center gap-1 w-fit`}>
+            <span>{icon}</span>
+            {status === "NOT_ELIGIBLE" ? "Not Eligible" : status}
+          </span>
+        );
       },
     },
     {

@@ -79,7 +79,8 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div>
+    <div className="mx-2"
+    >
       <div className="flex items-center py-4">
         <div className="relative max-w-sm w-full">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">

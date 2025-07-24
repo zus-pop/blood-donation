@@ -17,6 +17,18 @@ export const findParticipations = async (query: ParticipationQuery) => {
 
 export const createParticipation = async (data: CreateParticipationDto) => {
   const { user, event, status } = data;
+  
+  // Check if event exists and is still available for registration
+  const eventData = await DonationEvent.findById(event);
+  if (!eventData) {
+    throw new Error("Event not found.");
+  }
+  
+  // Prevent registration for ended or cancelled events
+  if (eventData.status === "ENDED" || eventData.status === "CANCELLED") {
+    throw new Error(`Cannot register for ${eventData.status.toLowerCase()} events.`);
+  }
+  
   const existingParticipation = await Participation.findOne({
     userId: user,
     eventId: event,
@@ -40,11 +52,44 @@ function addMonths(date: Date, months: number) {
   return d;
 }
 
+// Validate status transitions based on business rules
+function validateStatusTransition(currentStatus: string, newStatus: string): boolean {
+  // Define allowed transitions
+  const allowedTransitions: Record<string, string[]> = {
+    "REGISTERED": ["REGISTERED", "CANCELLED", "ATTENDED", "NOT_ELIGIBLE"],
+    "CANCELLED": [], // Cannot change from CANCELLED
+    "ATTENDED": [], // Cannot change from ATTENDED  
+    "NOT_ELIGIBLE": ["REGISTERED", "CANCELLED", "ATTENDED", "NOT_ELIGIBLE"]
+  };
+  
+  const validNextStatuses = allowedTransitions[currentStatus] || [];
+  return validNextStatuses.includes(newStatus);
+}
+
 export const updateParticipation = async (id: string, data: UpdateParticipationDto) => {
   const participation = await Participation.findById(id);
   if (!participation) throw new Error("Participation not found");
+  
   const { status } = data;
-  if (status) participation.status = status;
+  if (status && status !== participation.status) {
+    // Validate status transition
+    if (!validateStatusTransition(participation.status, status)) {
+      const allowedTransitions: Record<string, string[]> = {
+        "REGISTERED": ["CANCELLED", "ATTENDED", "NOT_ELIGIBLE"],
+        "CANCELLED": [],
+        "ATTENDED": [],
+        "NOT_ELIGIBLE": ["REGISTERED", "CANCELLED", "ATTENDED"]
+      };
+      const validNextStatuses = allowedTransitions[participation.status] || [];
+      
+      if (validNextStatuses.length === 0) {
+        throw new Error(`Cannot change status from ${participation.status}. This participation status is final and cannot be modified.`);
+      } else {
+        throw new Error(`Cannot change status from ${participation.status} to ${status}. Valid transitions: ${validNextStatuses.join(', ')}`);
+      }
+    }
+    participation.status = status;
+  }
   const saved = await participation.save();
 
   // Nếu chuyển sang ATTENDED thì hủy các participation REGISTERED khác dưới 3 tháng

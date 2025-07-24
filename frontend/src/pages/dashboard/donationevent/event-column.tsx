@@ -38,28 +38,28 @@ interface ActionsProps {
 export const columns = ({
   onDelete,
 }: ActionsProps): ColumnDef<EventProps>[] => [
-    {
-      accessorKey: "_id",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
+    // {
+    //   accessorKey: "_id",
+    //   header: ({ table }) => (
+    //     <Checkbox
+    //       checked={
+    //         table.getIsAllPageRowsSelected() ||
+    //         (table.getIsSomePageRowsSelected() && "indeterminate")
+    //       }
+    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //       aria-label="Select all"
+    //     />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <Checkbox
+    //       checked={row.getIsSelected()}
+    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //       aria-label="Select row"
+    //     />
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
     {
       accessorKey: "title",
       header: ({ column }) => (
@@ -67,20 +67,26 @@ export const columns = ({
       ),
     },
     {
-      accessorKey: "registrationStartedAt",
-      header: "Registration Start",
+      accessorKey: "eventStartedAt",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Event Start" />
+      ),
       cell: ({ row }) =>
-        formatDate(new Date(row.original.registrationStartedAt as string), true),
+        formatDate(new Date(row.original.eventStartedAt as string), true),
     },
     {
-      accessorKey: "registrationEndedAt",
-      header: "Registration End",
+      accessorKey: "eventEndedAt",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Event End" />
+      ),
       cell: ({ row }) =>
-        formatDate(new Date(row.original.registrationEndedAt as string), true),
+        formatDate(new Date(row.original.eventEndedAt as string), true),
     },
     {
       accessorKey: "status",
-      header: "Status",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Status" />
+      ),
       cell: ({ row }) => {
         const status = row.original.status;
         let color = "";

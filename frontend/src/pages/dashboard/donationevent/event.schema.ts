@@ -12,15 +12,23 @@ export const baseEventSchema = z.object({
   status: z.enum(["UPCOMING", "ONGOING", "ENDED", "CANCELLED"]),
   registrationStartedAt: z.date({
     required_error: "Registration start date is required.",
+  }).refine((date) => date > new Date(), {
+    message: "Registration start date cannot be in the past",
   }),
   registrationEndedAt: z.date({
     required_error: "Registration end date is required.",
+  }).refine((date) => date > new Date(), {
+    message: "Registration end date cannot be in the past",
   }),
   eventStartedAt: z.date({
     required_error: "Event start date is required.",
+  }).refine((date) => date > new Date(), {
+    message: "Event start date cannot be in the past",
   }),
   eventEndedAt: z.date({
     required_error: "Event end date is required.",
+  }).refine((date) => date > new Date(), {
+    message: "Event end date cannot be in the past",
   }),
 });
 

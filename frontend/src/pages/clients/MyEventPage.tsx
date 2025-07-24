@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { getParticipations } from "@/apis/participation.api";
 import { getEvents } from "@/apis/event.api";
 import { useProfileStore } from "@/store/profileStore";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatEventDateShort } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Clock, ListChecks } from "lucide-react";
+import { Calendar, MapPin, Clock, ListChecks, CalendarX, Plus, Heart } from "lucide-react";
 
 const statusColor = {
   REGISTERED: "bg-gradient-to-r from-blue-400 to-blue-600 text-white",
@@ -57,10 +57,61 @@ export default function MyEventPage() {
         </div>
       </div>
       {myEvents.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16">
-          <img src="https://cdn.dribbble.com/users/1162077/screenshots/3848914/no-data.png" alt="No events" className="w-60 mb-4 opacity-80" />
-          <div className="text-lg text-gray-500 mb-2">You have not registered for any events yet.</div>
-          <a href="/donationevents" className="inline-block mt-2 px-6 py-2 rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold shadow hover:scale-105 transition">Register Now</a>
+        <div className="flex flex-col items-center justify-center py-20">
+          <div className="relative mb-8">
+            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-red-50 to-pink-100 flex items-center justify-center mb-4 mx-auto">
+              <CalendarX className="w-16 h-16 text-red-400" />
+            </div>
+            <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-500 flex items-center justify-center">
+              <Heart className="w-4 h-4 text-white" />
+            </div>
+          </div>
+          
+          <h3 className="text-2xl font-bold text-gray-800 mb-2">No Events Yet</h3>
+          <p className="text-gray-500 text-center mb-6 max-w-md">
+            You haven't registered for any donation events yet. Start making a difference by joining our community events!
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-3">
+            <a 
+              href="/donationevents" 
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
+            >
+              <Plus className="w-4 h-4" />
+              Register for Events
+            </a>
+            <a 
+              href="/donationevents" 
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border-2 border-red-200 text-red-600 font-semibold hover:bg-red-50 transition-all duration-200"
+            >
+              <Calendar className="w-4 h-4" />
+              View All Events
+            </a>
+          </div>
+          
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center max-w-2xl">
+            <div className="p-4">
+              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-2">
+                <Heart className="w-6 h-6 text-blue-500" />
+              </div>
+              <h4 className="font-semibold text-gray-800 mb-1">Save Lives</h4>
+              <p className="text-sm text-gray-500">Your donation can save up to 3 lives</p>
+            </div>
+            <div className="p-4">
+              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-2">
+                <Calendar className="w-6 h-6 text-green-500" />
+              </div>
+              <h4 className="font-semibold text-gray-800 mb-1">Easy Registration</h4>
+              <p className="text-sm text-gray-500">Quick and simple event registration</p>
+            </div>
+            <div className="p-4">
+              <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-2">
+                <MapPin className="w-6 h-6 text-purple-500" />
+              </div>
+              <h4 className="font-semibold text-gray-800 mb-1">Convenient Locations</h4>
+              <p className="text-sm text-gray-500">Events near your location</p>
+            </div>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -73,15 +124,23 @@ export default function MyEventPage() {
                 <Calendar className="h-5 w-5 text-red-500" />
                 <span className="font-bold text-lg md:text-xl truncate">{item.eventDetail?.title || "[Deleted]"}</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-600 text-sm mb-1">
-                <Clock className="h-4 w-4 text-blue-500" />
-                {item.eventDetail ? (
-                  <>
-                    <span>{formatDate(new Date(item.eventDetail.eventStartedAt), true)}</span>
-                    <span className="mx-1 text-xs text-gray-400">to</span>
-                    <span>{formatDate(new Date(item.eventDetail.eventEndedAt), true)}</span>
-                  </>
-                ) : "-"}
+              <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-3 mb-2 border border-green-100">
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center">
+                    <Clock className="h-4 w-4 mr-2 text-green-500" />
+                                         <span className="font-medium text-gray-700">Start:</span>
+                    <span className="ml-2 text-green-600 font-semibold">
+                      {item.eventDetail ? formatEventDateShort(item.eventDetail.eventStartedAt) : '-'}
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <Calendar className="h-4 w-4 mr-2 text-blue-500" />
+                                         <span className="font-medium text-gray-700">End:</span>
+                    <span className="ml-2 text-blue-600 font-semibold">
+                      {item.eventDetail ? formatEventDateShort(item.eventDetail.eventEndedAt) : '-'}
+                    </span>
+                  </div>
+                </div>
               </div>
               <div className="flex items-center gap-2 text-gray-600 text-sm mb-2">
                 <MapPin className="h-4 w-4 text-green-500" />

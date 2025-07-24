@@ -38,28 +38,28 @@ interface ActionsProps {
 export const columns = ({
   onDelete,
 }: ActionsProps): ColumnDef<OnsiteCheckProps>[] => [
-    {
-      accessorKey: "_id",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
+    // {
+    //   accessorKey: "_id",
+    //   header: ({ table }) => (
+    //     <Checkbox
+    //       checked={
+    //         table.getIsAllPageRowsSelected() ||
+    //         (table.getIsSomePageRowsSelected() && "indeterminate")
+    //       }
+    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //       aria-label="Select all"
+    //     />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <Checkbox
+    //       checked={row.getIsSelected()}
+    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //       aria-label="Select row"
+    //     />
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
     {
       accessorKey: "userName",
       header: ({ column }) => (
@@ -76,33 +76,51 @@ export const columns = ({
     },
     {
       accessorKey: "pulseRate",
-      header: "Pulse Rate",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Pulse Rate" />
+      ),
     },
     {
       accessorKey: "bloodPressure",
-      header: "Blood Pressure",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Blood Pressure" />
+      ),
     },
     {
       accessorKey: "hemoglobinLevel",
-      header: "Hemoglobin Level",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Hemoglobin Level" />
+      ),
     },
     {
       accessorKey: "bodyTemperature",
-      header: "Body Temperature",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Body Temperature" />
+      ),
     },
     {
       accessorKey: "weight",
-      header: "Weight",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Weight" />
+      ),
     },
     {
       accessorKey: "canDonate",
-      header: "Can Donate",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Can Donate" />
+      ),
       cell: ({ row }) => {
         const canDonate = row.original.canDonate;
         return canDonate ? (
-          <span className="px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-700">Yes</span>
+          <span className="px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-700 flex items-center gap-1 w-fit">
+            <span>✅</span>
+            Yes
+          </span>
         ) : (
-          <span className="px-2 py-1 rounded text-xs font-semibold bg-red-100 text-red-700">No</span>
+          <span className="px-2 py-1 rounded text-xs font-semibold bg-red-100 text-red-700 flex items-center gap-1 w-fit">
+            <span>❌</span>
+            No
+          </span>
         );
       },
     },
