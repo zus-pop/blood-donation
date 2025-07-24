@@ -23,6 +23,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormSchemaProvider,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
@@ -93,135 +94,157 @@ const UpdateBlogDialog = ({ currentData }: { currentData: BlogProps }) => {
             Update a blog. Fill in the details below.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <div className="h-[80vh] overflow-y-auto p-4 border rounded-md">
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Article Title" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="slug"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Slug</FormLabel>
-                    <FormControl>
-                      <Input placeholder="article-slug" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="category"
-                render={({ field }) => (
-                  <>
-                    <FormLabel>Category</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+        <FormSchemaProvider schema={blogSchema}>
+          <Form {...form}>
+            <div className="h-[80vh] overflow-y-auto p-4 border rounded-md">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
                       <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select a category" />
-                        </SelectTrigger>
+                        <Input placeholder="Article Title" {...field} />
                       </FormControl>
-                      <SelectContent>
-                        {categories?.map((category) => (
-                          <SelectItem key={category._id} value={category._id}>
-                            {category.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="slug"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Slug</FormLabel>
+                        <FormControl>
+                          <Input placeholder="article-slug" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <FormField
-                control={form.control}
-                name="summary"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Summary</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Brief summary..." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Category</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {categories?.map((category) => (
+                              <SelectItem
+                                key={category._id}
+                                value={category._id}
+                              >
+                                {category.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-              <FormField
-                control={form.control}
-                name="content"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Content</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Full content here..." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="summary"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Summary</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Brief summary..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormItem>
-                <FormLabel>Image</FormLabel>
-                <FormControl>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        form.setValue("image", file, { shouldValidate: true });
+                <FormField
+                  control={form.control}
+                  name="content"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Content</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Full content here..."
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormItem>
+                  <FormLabel>Image</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          form.setValue("image", file, {
+                            shouldValidate: true,
+                          });
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  {form.formState.errors.image && (
+                    <p className="text-sm font-medium text-destructive">
+                      {form.formState.errors.image.message}
+                    </p>
+                  )}
+                  {imageFile && (
+                    <img
+                      src={
+                        typeof imageFile === "string"
+                          ? imageFile
+                          : URL.createObjectURL(imageFile)
                       }
-                    }}
-                  />
-                </FormControl>
-                {form.formState.errors.image && (
-                  <p className="text-sm font-medium text-destructive">
-                    {form.formState.errors.image.message}
-                  </p>
-                )}
-                {imageFile && (
-                  <img
-                    src={
-                      typeof imageFile === "string"
-                        ? imageFile
-                        : URL.createObjectURL(imageFile)
-                    }
-                    alt="Preview"
-                    className="mt-2 h-auto w-full"
-                  />
-                )}
-              </FormItem>
+                      alt="Preview"
+                      className="mt-2 h-auto w-full"
+                    />
+                  )}
+                </FormItem>
 
-              <div className="flex justify-center">
-                <Button disabled={isPending} className="text-xl" type="submit">
-                  <span className="p-2">
-                    {isPending ? <Loading inline message="Updating..." /> : <span>Submit</span>}
-                  </span>
-                </Button>
-              </div>
-            </form>
-          </div>
-        </Form>
+                <div className="flex justify-center">
+                  <Button
+                    disabled={isPending}
+                    className="text-xl"
+                    type="submit"
+                  >
+                    <span className="p-2">
+                      {isPending ? (
+                        <Loading inline message="Updating..." />
+                      ) : (
+                        <span>Submit</span>
+                      )}
+                    </span>
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </Form>
+        </FormSchemaProvider>
       </DialogContent>
     </Dialog>
   );

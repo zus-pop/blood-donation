@@ -22,6 +22,7 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
+  FormSchemaProvider,
 } from "@/components/ui/form";
 import {
   Select,
@@ -51,8 +52,16 @@ type User = {
 
 const COMPONENT_TYPES = ["WHOLE_BLOOD", "PLASMA", "PLATELETS", "RBC"];
 const STATUS_OPTIONS = [
-  { value: "AVAILABLE", label: "Available", color: "bg-green-100 text-green-800" },
-  { value: "RESERVED", label: "Reserved", color: "bg-yellow-100 text-yellow-800" },
+  {
+    value: "AVAILABLE",
+    label: "Available",
+    color: "bg-green-100 text-green-800",
+  },
+  {
+    value: "RESERVED",
+    label: "Reserved",
+    color: "bg-yellow-100 text-yellow-800",
+  },
   { value: "USED", label: "Used", color: "bg-gray-100 text-gray-800" },
   { value: "EXPIRED", label: "Expired", color: "bg-red-100 text-red-800" },
 ];
@@ -78,7 +87,10 @@ const UpdateBloodInventoryDialog = ({ currentData }: { currentData: any }) => {
       // Get userId from current data
       let userId = "";
       if (currentData.userId) {
-        userId = typeof currentData.userId === "object" ? currentData.userId._id : currentData.userId;
+        userId =
+          typeof currentData.userId === "object"
+            ? currentData.userId._id
+            : currentData.userId;
       }
 
       form.reset({
@@ -136,151 +148,166 @@ const UpdateBloodInventoryDialog = ({ currentData }: { currentData: any }) => {
         <DialogHeader>
           <DialogTitle>Update Blood Inventory</DialogTitle>
           <DialogDescription>
-            Update the blood inventory details below. Changes will be reflected immediately.
+            Update the blood inventory details below. Changes will be reflected
+            immediately.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="bloodType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Blood Type</FormLabel>
-                  <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select blood type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {bloodTypes.map((type: BloodType) => (
-                          <SelectItem key={type._id} value={type._id}>
-                            {type.bloodType}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="userId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Donor</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={field.value}
-                      onValueChange={field.onChange}
-                      disabled={usersLoading}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select donor" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {users.map((user: User) => (
-                          <SelectItem key={user._id} value={user._id}>
-                            {user.firstName || ""} {user.lastName || ""} ({user.email})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="componentType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Component Type</FormLabel>
-                  <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select component type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {COMPONENT_TYPES.map((comp) => (
-                          <SelectItem key={comp} value={comp}>
-                            {comp.replace("_", " ")}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quantity (ml)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      min={1}
-                      placeholder="Enter quantity"
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {STATUS_OPTIONS.map((status) => (
-                          <SelectItem key={status.value} value={status.value}>
-                            <div className="flex items-center gap-2">
-                              <span className={`px-2 py-1 rounded text-xs ${status.color}`}>
-                                {status.label}
-                              </span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline" type="button">
-                  Cancel
+        <FormSchemaProvider schema={bloodInventorySchema}>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="bloodType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Blood Type</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select blood type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {bloodTypes.map((type: BloodType) => (
+                            <SelectItem key={type._id} value={type._id}>
+                              {type.bloodType}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="userId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Donor</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        disabled={usersLoading}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select donor" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {users.map((user: User) => (
+                            <SelectItem key={user._id} value={user._id}>
+                              {user.firstName || ""} {user.lastName || ""} (
+                              {user.email})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="componentType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Component Type</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select component type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {COMPONENT_TYPES.map((comp) => (
+                            <SelectItem key={comp} value={comp}>
+                              {comp.replace("_", " ")}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Quantity (ml)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={1}
+                        placeholder="Enter quantity"
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {STATUS_OPTIONS.map((status) => (
+                            <SelectItem key={status.value} value={status.value}>
+                              <div className="flex items-center gap-2">
+                                <span
+                                  className={`px-2 py-1 rounded text-xs ${status.color}`}
+                                >
+                                  {status.label}
+                                </span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="outline" type="button">
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? "Updating..." : "Update Inventory"}
                 </Button>
-              </DialogClose>
-              <Button type="submit" disabled={isPending}>
-                {isPending ? "Updating..." : "Update Inventory"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+              </DialogFooter>
+            </form>
+          </Form>
+        </FormSchemaProvider>
       </DialogContent>
     </Dialog>
   );

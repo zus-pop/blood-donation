@@ -19,10 +19,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormSchemaProvider,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { updateEventSchema, type UpdateEventSchema } from "./event.schema";
+import {
+  baseEventSchema,
+  updateEventSchema,
+  type UpdateEventSchema,
+} from "./event.schema";
 import { updateEvent } from "@/apis/event.api";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import {
@@ -117,46 +122,17 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
             Update the donation event. Edit the details below.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Event Title" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Event Description" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormSchemaProvider schema={baseEventSchema}>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
-                name="registrationStartedAt"
+                name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Registration Start</FormLabel>
+                    <FormLabel>Title</FormLabel>
                     <FormControl>
-                      <DateTimePicker
-                        date={field.value}
-                        setDate={field.onChange}
-                      />
+                      <Input placeholder="Event Title" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -164,154 +140,185 @@ const UpdateEventDialog = ({ currentData }: UpdateEventDialogProps) => {
               />
               <FormField
                 control={form.control}
-                name="registrationEndedAt"
+                name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Registration End</FormLabel>
+                    <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <DateTimePicker
-                        date={field.value}
-                        setDate={field.onChange}
-                      />
+                      <Textarea placeholder="Event Description" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="eventStartedAt"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Event Start</FormLabel>
-                    <FormControl>
-                      <DateTimePicker
-                        date={field.value}
-                        setDate={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="eventEndedAt"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Event End</FormLabel>
-                    <FormControl>
-                      <DateTimePicker
-                        date={field.value}
-                        setDate={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="slot"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Slot</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="Slot" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="location"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Location</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Location" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a status" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {statusOptions.map((status) => (
-                        <SelectItem key={status} value={status}>
-                          {status}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="image"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Image</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          form.setValue("image", file, {
-                            shouldValidate: true,
-                          });
-                        }
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                  {imageFile && (
-                    <img
-                      src={
-                        typeof imageFile === "string"
-                          ? imageFile
-                          : URL.createObjectURL(imageFile)
-                      }
-                      alt="Preview"
-                      className="mt-2 h-auto w-full"
-                    />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="registrationStartedAt"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Registration Start</FormLabel>
+                      <FormControl>
+                        <DateTimePicker
+                          date={field.value}
+                          setDate={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </FormItem>
-              )}
-            />
-            <Button
-              type="submit"
-              disabled={isPending}
-              className="w-full h-12 text-lg font-bold rounded-lg"
-            >
-              Update
-            </Button>
-          </form>
-        </Form>
+                />
+                <FormField
+                  control={form.control}
+                  name="registrationEndedAt"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Registration End</FormLabel>
+                      <FormControl>
+                        <DateTimePicker
+                          date={field.value}
+                          setDate={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="eventStartedAt"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Event Start</FormLabel>
+                      <FormControl>
+                        <DateTimePicker
+                          date={field.value}
+                          setDate={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="eventEndedAt"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Event End</FormLabel>
+                      <FormControl>
+                        <DateTimePicker
+                          date={field.value}
+                          setDate={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="slot"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Slot</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Slot" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Location</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Location" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {statusOptions.map((status) => (
+                          <SelectItem key={status} value={status}>
+                            {status}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="image"
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Image</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            form.setValue("image", file, {
+                              shouldValidate: true,
+                            });
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                    {imageFile && (
+                      <img
+                        src={
+                          typeof imageFile === "string"
+                            ? imageFile
+                            : URL.createObjectURL(imageFile)
+                        }
+                        alt="Preview"
+                        className="mt-2 h-auto w-full"
+                      />
+                    )}
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                disabled={isPending}
+                className="w-full h-12 text-lg font-bold rounded-lg"
+              >
+                Update
+              </Button>
+            </form>
+          </Form>
+        </FormSchemaProvider>
       </DialogContent>
     </Dialog>
   );
