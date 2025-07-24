@@ -85,7 +85,7 @@ const DashboardHome = () => (
             <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg">
               <div className="w-5 h-1 bg-white rounded-full opacity-90"></div>
             </div>
-            <h2 className="text-2xl font-bold text-gray-800">Donation Trends</h2>
+            <h2 className="text-2xl font-bold text-gray-800">Monthly Blood Inventory Additions</h2>
             <div className="ml-auto">
               <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-orange-100 text-orange-700 text-sm font-medium rounded-full">
                 <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>

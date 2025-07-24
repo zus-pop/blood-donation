@@ -25,7 +25,7 @@ const LineDonationTrendChart = () => {
 
   return (
     <div className="bg-white rounded shadow p-4 mb-6">
-      <div className="font-semibold mb-2">Donation Trend Over Time</div>
+      <div className="font-semibold mb-2">Monthly Blood Invetory Additions</div>
       <ResponsiveContainer width="100%" height={260}>
         <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" />
