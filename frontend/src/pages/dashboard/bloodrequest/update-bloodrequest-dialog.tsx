@@ -88,7 +88,7 @@ const UpdateBloodRequestDialog = ({
     defaultValues: {
       name: currentData.name,
       phone: currentData.phone,
-      requestedBy: currentData.requestedBy._id,
+      requestedBy: currentData.requestedBy?._id || "",
       bloodType: currentData.bloodType,
       bloodComponent: currentData.bloodComponent,
       quantity: currentData.quantity,
@@ -114,7 +114,7 @@ const UpdateBloodRequestDialog = ({
       form.reset({
         name: currentData.name,
         phone: currentData.phone,
-        requestedBy: currentData.requestedBy._id,
+        requestedBy: currentData.requestedBy?._id || "",
         bloodType: currentData.bloodType,
         bloodComponent: currentData.bloodComponent,
         quantity: currentData.quantity,
