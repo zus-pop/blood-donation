@@ -17,6 +17,7 @@ import RestoreUserDialog from "./restore-user-dialog";
 import { useState } from "react";
 import { formatDate } from "@/lib/utils";
 import { useProfileStore } from "@/store/profileStore";
+import DeleteUserDialog from "./delete-user-dialog";
 
 interface ActionsProps {
     onDelete: (id: string) => void;
@@ -142,8 +143,10 @@ export const columns = ({ onDelete }: ActionsProps): ColumnDef<UserProps>[] => [
                                     </>;
                                 })()}
                                 {user.isDeleted === false && (
-                                    <DropdownMenuItem onClick={() => onDelete(user._id)} className="text-red-600 cursor-pointer">
-                                        Delete
+                                    <DropdownMenuItem asChild className="text-red-600 cursor-pointer">
+                                        <DeleteUserDialog
+                                            callback={() => onDelete(user._id)}
+                                        />
                                     </DropdownMenuItem>
                                 )}
                             </>
